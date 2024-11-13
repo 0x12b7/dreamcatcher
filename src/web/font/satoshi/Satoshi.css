@@ -1,0 +1,49 @@
+@font-face { 
+    font-family: "satoshi-black-italic"; 
+    src: url(./satoshi-black-italic.otf) format("opentype");
+}
+
+@font-face { 
+    font-family: "satoshi-black"; 
+    src: url(./satoshi-black.otf) format("opentype"); 
+}
+
+@font-face { 
+    font-family: "satoshi-bold-italic"; 
+    src: url(./satoshi-bold-italic.otf) format("opentype"); 
+}
+
+@font-face { 
+    font-family: "satoshi-bold"; 
+    src: url(./satoshi-bold.otf) format("opentype"); 
+}
+
+@font-face { 
+    font-family: "satoshi-italic"; 
+    src: url(./satoshi-italic.otf) format("opentype"); 
+}
+
+@font-face { 
+    font-family: "satoshi-light-italic"; 
+    src: url(./satoshi-light-italic.otf) format("opentype"); 
+}
+
+@font-face { 
+    font-family: "satoshi-light"; 
+    src: url(./satoshi-light.otf) format("opentype"); 
+}
+
+@font-face { 
+    font-family: "satoshi-medium-italic"; 
+    src: url(./satoshi-medium-italic.otf) format("opentype"); 
+}
+
+@font-face { 
+    font-family: "satoshi-medium"; 
+    src: url(./satoshi-medium.otf) format("opentype"); 
+}
+
+@font-face { 
+    font-family: "satoshi-regular"; 
+    src: url(./satoshi-regular.otf) format("opentype"); 
+}
