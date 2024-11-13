@@ -1,0 +1,79 @@
+@font-face {
+    font-family: "roboto-mono-bold";
+    src: url(./RobotoMonoBold.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-bold-italic";
+    src: url(./RobotoMonoBoldItalic.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-extra-light";
+    src: url(./RobotoMonoExtraLight.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-extra-light-italic";
+    src: url(./RobotoMonoExtraLightItalic.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-italic";
+    src: url(./RobotoMonoItalic.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-italic-variable-font-weight";
+    src: url(./RobotoMonoItalicVariableFontWeight.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-light";
+    src: url(./RobotoMonoLight.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-light-italic";
+    src: url(./RobotoMonoLightItalic.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-medium";
+    src: url(./RobotoMonoMedium.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-medium-italic";
+    src: url(./RobotoMonoMediumItalic.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-regular";
+    src: url(./RobotoMonoRegular.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-semi-bold";
+    src: url(./RobotoMonoSemiBold.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-semi-bold-italic";
+    src: url(./RobotoMonoSemiBoldItalic.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-thin";
+    src: url(./RobotoMonoThin.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-thin-italic";
+    src: url(./RobotoMonoThinItalic.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "roboto-mono-variable-font-weight";
+    src: url(./RobotoMonoVariableFontWeight.ttf) format("truetype");
+}
