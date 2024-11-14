@@ -25534,13 +25534,13 @@ function rho(count) {
 }
 
 // src/web/component/lib/retro-minima/RetroMinimaConfig.ts
-var PRIMARY_COLOR = TIMPERWOLD;
 var BG_COLOR = EEIRE_BLACK;
 var FONT_FAMILY = "electro-harmonix";
 
 // src/web/component/lib/retro-minima/container/RetroMinimaContainer.tsx
 var jsx_dev_runtime2 = __toESM(require_jsx_dev_runtime(), 1);
 function RetroMinimaContainer({
+  label,
   style,
   children,
   ...more
@@ -25571,14 +25571,14 @@ function RetroMinimaContainer({
               flexDirection: "row",
               justifyContent: "start",
               alignItems: "center",
-              background: PRIMARY_COLOR,
+              background: TIMPERWOLD,
               color: BG_COLOR,
               fontSize: rho(2n),
               fontFamily: FONT_FAMILY,
               fontWeight: "normal",
               padding: 5
             },
-            children: "TRANSACTION_VOLUME"
+            children: label
           }, undefined, false, undefined, this)
         }, undefined, false, undefined, this),
         /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("div", {
@@ -25589,214 +25589,264 @@ function RetroMinimaContainer({
             alignItems: "center",
             borderWidth: 1,
             borderStyle: "solid",
-            borderColor: PRIMARY_COLOR,
+            borderColor: GHOST_BLACK,
             width: "100%",
             height: "100%",
             flexGrow: 1
-          }
+          },
+          children
         }, undefined, false, undefined, this)
       ]
     }, undefined, true, undefined, this)
   }, undefined, false, undefined, this);
 }
 
-// src/web/component/lib/retro-minima/container/RetroMinimaEdgedContainer.tsx
+// src/web/component/lib/retro-minima/chart/RetroMinimaCandlestick.tsx
 var jsx_dev_runtime3 = __toESM(require_jsx_dev_runtime(), 1);
-function RetroMinimaEdgedContainer(props) {
+function RetroMinimaCandlestick(props) {
   const {
-    w = 0,
-    h = 0,
-    p = 10,
-    m = 0,
-    bg = EEIRE_BLACK,
-    borderWidth = 1,
-    borderStyle = "solid",
-    borderColor = GHOST_BLACK,
-    withTopLeft,
-    withTopRight,
-    withBottomLeft,
-    withBottomRight,
-    edgeSize = 40,
-    edgeFill = 50,
-    edgeColor = TIMPERWOLD,
-    edgeWidth = 2.5,
-    edgeStyle = "solid",
-    topLeftEdgeWidth,
-    topLeftEdgeStyle,
-    topLeftEdgeColor,
-    topRightEdgeWidth,
-    topRightEdgeStyle,
-    topRightEdgeColor,
-    bottomLeftEdgeWidth,
-    bottomLeftEdgeStyle,
-    bottomLeftEdgeColor,
-    bottomRightEdgeWidth,
-    bottomRightEdgeStyle,
-    bottomRightEdgeColor,
-    children
+    outlineColor,
+    bodyW = 5,
+    bodyH = 0,
+    bodyColor,
+    topWickW = 1,
+    topWickH = 0,
+    bottomWickW = 1,
+    bottomWickH = 0,
+    wickColor = TIMPERWOLD,
+    distance
   } = props;
-  const offset = -borderWidth;
-  const proportion = `${edgeFill}%`;
-  const edgeContainerStyle = {
+  const centerStyle = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center",
-    background: bg,
-    width: edgeSize,
-    aspectRatio: 1 / 1,
-    position: "absolute"
+    alignItems: "center"
   };
-  const edgeStyle_ = {
-    width: proportion,
-    height: proportion
+  const containerStyle = {
+    ...centerStyle,
+    position: "absolute",
+    bottom: distance
+  };
+  const topWickStyle = {
+    ...centerStyle,
+    width: topWickW,
+    height: topWickH,
+    background: wickColor
+  };
+  const bottomWickStyle = {
+    width: bottomWickW,
+    height: bottomWickH,
+    background: wickColor
+  };
+  const bodyStyle = {
+    width: bodyW,
+    height: bodyH,
+    background: bodyColor,
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: outlineColor
   };
   return /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(jsx_dev_runtime3.Fragment, {
     children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-      style: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        position: "relative",
-        borderWidth,
-        borderStyle,
-        borderColor
-      },
+      style: containerStyle,
       children: [
         /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-          style: {
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "start",
-            alignItems: "start",
-            width: w,
-            height: h,
-            padding: p,
-            margin: m,
-            zIndex: 1
-          },
-          children
+          style: topWickStyle
         }, undefined, false, undefined, this),
         /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-          style: {
-            ...edgeContainerStyle,
-            left: offset,
-            top: offset,
-            opacity: withTopLeft ? 1 : 0,
-            justifyContent: "start",
-            alignItems: "start"
-          },
-          children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-            style: {
-              ...edgeStyle_,
-              borderTopWidth: topLeftEdgeWidth ?? edgeWidth,
-              borderTopStyle: topLeftEdgeStyle ?? edgeStyle,
-              borderTopColor: topLeftEdgeColor ?? edgeColor,
-              borderLeftWidth: topLeftEdgeWidth ?? edgeWidth,
-              borderLeftStyle: topLeftEdgeStyle ?? edgeStyle,
-              borderLeftColor: topLeftEdgeColor ?? edgeColor
-            }
-          }, undefined, false, undefined, this)
+          style: bodyStyle
         }, undefined, false, undefined, this),
         /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-          style: {
-            ...edgeContainerStyle,
-            right: offset,
-            top: offset,
-            opacity: withTopRight ? 1 : 0,
-            justifyContent: "start",
-            alignItems: "end"
-          },
-          children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-            style: {
-              ...edgeStyle_,
-              borderTopWidth: topRightEdgeWidth ?? edgeWidth,
-              borderTopStyle: topRightEdgeStyle ?? edgeStyle,
-              borderTopColor: topRightEdgeColor ?? edgeColor,
-              borderRightWidth: topRightEdgeWidth ?? edgeWidth,
-              borderRightStyle: topRightEdgeStyle ?? edgeStyle,
-              borderRightColor: topRightEdgeColor ?? edgeColor
-            }
-          }, undefined, false, undefined, this)
-        }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-          style: {
-            ...edgeContainerStyle,
-            left: offset,
-            bottom: offset,
-            opacity: withBottomLeft ? 1 : 0,
-            justifyContent: "end",
-            alignItems: "start"
-          },
-          children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-            style: {
-              ...edgeStyle_,
-              borderBottomWidth: bottomLeftEdgeWidth ?? edgeWidth,
-              borderBottomStyle: bottomLeftEdgeStyle ?? edgeStyle,
-              borderBottomColor: bottomLeftEdgeColor ?? edgeColor,
-              borderLeftWidth: bottomLeftEdgeWidth ?? edgeWidth,
-              borderLeftStyle: bottomLeftEdgeStyle ?? edgeStyle,
-              borderLeftColor: bottomLeftEdgeColor ?? edgeColor
-            }
-          }, undefined, false, undefined, this)
-        }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-          style: {
-            ...edgeContainerStyle,
-            right: offset,
-            bottom: offset,
-            opacity: withBottomRight ? 1 : 0,
-            justifyContent: "end",
-            alignItems: "end"
-          },
-          children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-            style: {
-              ...edgeStyle_,
-              borderBottomWidth: bottomRightEdgeWidth ?? edgeWidth,
-              borderBottomStyle: bottomRightEdgeStyle ?? edgeStyle,
-              borderBottomColor: bottomRightEdgeColor ?? edgeColor,
-              borderRightWidth: bottomRightEdgeWidth ?? edgeWidth,
-              borderRightStyle: bottomRightEdgeStyle ?? edgeStyle,
-              borderRightColor: bottomRightEdgeColor ?? edgeColor
-            }
-          }, undefined, false, undefined, this)
+          style: bottomWickStyle
         }, undefined, false, undefined, this)
       ]
     }, undefined, true, undefined, this)
+  }, undefined, false, undefined, this);
+}
+
+// src/web/component/lib/retro-minima/chart/RetroMinimaChart.tsx
+var jsx_dev_runtime4 = __toESM(require_jsx_dev_runtime(), 1);
+function RetroMinimaChart() {
+  const points = [
+    [0, 0, 0, 50],
+    [3, 8, 10, 2],
+    [6, 5, 7, 8],
+    [0, 5, 7, 8]
+  ];
+  const lowest = () => {
+    let lowest2 = Infinity;
+    for (let i = 0;i < points.length; i++) {
+      let point = points[i];
+      for (let ii = 0;ii < 4; ii++) {
+        let stat = point[ii];
+        if (stat < lowest2) {
+          lowest2 = stat;
+        }
+      }
+    }
+    return lowest2;
+  };
+  const highest = () => {
+    let highest2 = -Infinity;
+    for (let i = 0;i < points.length; i++) {
+      let point = points[i];
+      for (let ii = 0;ii < 4; ii++) {
+        let stat = point[ii];
+        if (stat > highest2) {
+          highest2 = stat;
+        }
+      }
+    }
+    return highest2;
+  };
+  const candlestickCount = points.length;
+  const w = 600;
+  const h = 300;
+  const tick = h / (highest() - lowest());
+  const __wrapper = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "start",
+    alignItems: "center",
+    width: w,
+    height: h
+  };
+  const __candlestickWrapper = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "start",
+    alignItems: "center",
+    width: w / candlestickCount,
+    height: "100%",
+    flexGrow: 1,
+    position: "relative"
+  };
+  const candlestickWrappers = [];
+  for (let i = 0;i < candlestickCount; i++) {
+    const [wickLow, bodyStart, bodyEnd, wickHigh] = points[i];
+    const wickLowPosition = h - (wickLow - lowest()) * tick;
+    const wickHighPosition = h - (wickHigh - lowest()) * tick;
+    const bodyStartPosition = h - (bodyStart - lowest()) * tick;
+    const bodyEndPosition = h - (bodyEnd - lowest()) * tick;
+    const topWickHeight = wickHighPosition - bodyStartPosition;
+    const bottomWickHeight = bodyEndPosition - wickLowPosition;
+    const bodyHeight = Math.abs(bodyStartPosition - bodyEndPosition);
+    const distanceFromBottom = wickLowPosition;
+    candlestickWrappers.push(/* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+      style: __candlestickWrapper,
+      children: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(RetroMinimaCandlestick, {
+        outlineColor: "white",
+        bodyW: 5,
+        bodyH: bodyHeight,
+        bodyColor: "white",
+        topWickW: 1,
+        topWickH: topWickHeight,
+        bottomWickW: 1,
+        bottomWickH: bottomWickHeight,
+        wickColor: "white",
+        distance: distanceFromBottom
+      }, undefined, false, undefined, this)
+    }, i, false, undefined, this));
+  }
+  return /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+    style: __wrapper,
+    children: candlestickWrappers
   }, undefined, false, undefined, this);
 }
 
 // src/web/page/TalismanPage.tsx
-var jsx_dev_runtime4 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime5 = __toESM(require_jsx_dev_runtime(), 1);
 function TalismanPage() {
-  return /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(jsx_dev_runtime4.Fragment, {
-    children: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(ResponsiveAnchorPage, {
-      children: [
-        /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(RetroMinimaEdgedContainer, {
-          withTopLeft: true,
-          withBottomRight: true,
-          w: 200,
-          h: 200,
-          children: "Hello World My name is  Joe Hanes."
-        }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(RetroMinimaContainer, {
-          style: {
-            width: 400,
-            aspectRatio: 4 / 1
-          },
-          color: ""
-        }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(RetroMinimaContainer, {
-          style: {
-            width: 300,
-            aspectRatio: 4 / 1
-          },
-          color: ""
-        }, undefined, false, undefined, this)
-      ]
-    }, undefined, true, undefined, this)
+  return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(jsx_dev_runtime5.Fragment, {
+    children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(ResponsiveAnchorPage, {
+      children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(RetroMinimaContainer, {
+        label: "METADATA",
+        style: {
+          width: 400,
+          height: 200
+        },
+        children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(TalismanPageTable, {}, undefined, false, undefined, this)
+      }, undefined, false, undefined, this)
+    }, undefined, false, undefined, this)
   }, undefined, false, undefined, this);
+}
+function TalismanPageTable(props) {
+  const { style, children, ...more } = props;
+  const __table = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "start",
+    alignItems: "start",
+    width: "100%",
+    height: "100%",
+    flexGrow: 1,
+    fontSize: "1em",
+    fontFamily: "electro-harmonix",
+    fontWeight: "normal",
+    color: TIMPERWOLD,
+    padding: 20,
+    ...style
+  };
+  const __row = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    flexGrow: 1,
+    gap: 20
+  };
+  const __item = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "start",
+    alignItems: "center",
+    width: "100%",
+    flexGrow: 1
+  };
+  const __item__heading = {
+    ...__item,
+    justifyContent: "center",
+    background: TIMPERWOLD,
+    color: EEIRE_BLACK
+  };
+  return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(jsx_dev_runtime5.Fragment, {
+    children: [
+      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(RetroMinimaChart, {}, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+        style: __table,
+        ...more,
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+            style: __row,
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+                style: __item__heading,
+                children: "NAME"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+                style: __item,
+                children: "Blue Sky Capital"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+            style: __row,
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+                style: __item__heading,
+                children: "SYMBOL"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+                style: __item,
+                children: "BSC"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
 }
 
 // src/web/lib/react/Render.ts
@@ -25820,17 +25870,17 @@ function render(app) {
 }
 
 // src/web/App.tsx
-var jsx_dev_runtime5 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime6 = __toESM(require_jsx_dev_runtime(), 1);
 function App() {
-  return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(jsx_dev_runtime5.Fragment, {
-    children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(BrowserRouter, {
-      children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(Routes, {
-        children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(Route, {
+  return /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(jsx_dev_runtime6.Fragment, {
+    children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(BrowserRouter, {
+      children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(Routes, {
+        children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(Route, {
           path: "/",
-          element: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(TalismanPage, {}, undefined, false, undefined, this)
+          element: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(TalismanPage, {}, undefined, false, undefined, this)
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this)
     }, undefined, false, undefined, this)
   }, undefined, false, undefined, this);
 }
-render(/* @__PURE__ */ jsx_dev_runtime5.jsxDEV(App, {}, undefined, false, undefined, this));
+render(/* @__PURE__ */ jsx_dev_runtime6.jsxDEV(App, {}, undefined, false, undefined, this));

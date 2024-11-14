@@ -2,13 +2,17 @@ import type {ReactNode} from "react";
 import type {ComponentPropsWithRef} from "react";
 import {rho} from "../../../../style/unit/Rho";
 import * as RetroMinimaConfig from "../RetroMinimaConfig";
+import * as ColorPalette from "../../../../style/ColorPalette";
 
 export function RetroMinimaContainer({
+    label,
     style,
     children,
     ... more}:
         & ComponentPropsWithRef<"div">
-        & {}): ReactNode {
+        & {
+        label: string;
+    }): ReactNode {
     return <>
         <div
             style={{
@@ -34,14 +38,14 @@ export function RetroMinimaContainer({
                         flexDirection: "row",
                         justifyContent: "start",
                         alignItems: "center",
-                        background: RetroMinimaConfig.PRIMARY_COLOR,
+                        background: ColorPalette.TIMPERWOLD,
                         color: RetroMinimaConfig.BG_COLOR,
                         fontSize: rho(2n),
                         fontFamily: RetroMinimaConfig.FONT_FAMILY,
                         fontWeight: "normal",
                         padding: 5
                     }}>
-                    TRANSACTION_VOLUME
+                    {label}
                 </div>
             </div>
             <div
@@ -52,12 +56,12 @@ export function RetroMinimaContainer({
                     alignItems: "center",
                     borderWidth: 1,
                     borderStyle: "solid",
-                    borderColor: RetroMinimaConfig.PRIMARY_COLOR,
+                    borderColor: ColorPalette.GHOST_BLACK,
                     width: "100%",
                     height: "100%",
                     flexGrow: 1
                 }}>
-
+                {children}
             </div>
         </div>
     </>;
