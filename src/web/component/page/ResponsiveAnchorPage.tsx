@@ -2,6 +2,7 @@ import type {ReactNode} from "react";
 import type {ComponentPropsWithRef as ReactComponentPropsWithRef} from "react";
 import type {Device} from "../../hook/observer/window/Device";
 import {useDevice} from "../../hook/observer/window/Device";
+import * as ColorPalette from "../../style/ColorPalette";
 
 export function ResponsiveAnchorPage({
     navigation,
@@ -31,6 +32,7 @@ export function ResponsiveAnchorPage({
                 alignItems: "center",
                 width: "100vw",
                 height: "100vh",
+                background: ColorPalette.EEIRE_BLACK,
                 ... style
             }}
             {... more}>

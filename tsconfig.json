@@ -20,6 +20,9 @@
 		"paths": {
 			"@common/*": [
 				"src/web/common/*"
+			],
+			"@component/*": [
+				"src/web/component/*"
 			]
 		}
 	}

@@ -1,4 +1,5 @@
-export const EEIRE_BLACK = "#202020" as const;
+export const EEIRE_BLACK = "#121212" as const;
+export const GHOST_BLACK = "#202020" as const;
 export const JET = "#333333" as const;
 export const ONYX = "#3D3D3D" as const;
 export const OUTER_SPACE = "#474747" as const;
