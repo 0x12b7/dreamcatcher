@@ -4,65 +4,56 @@ import * as ColorPalette from "../../../../style/ColorPalette";
 
 export type RetroMinimaCandlestickProps = {
     outlineColor: string;
-    bodyW?: number;
-    bodyH?: number;
+    bodyW: number | string;
+    bodyH: number | string;
     bodyColor: string;
-    topWickW?: number;
-    topWickH?: number;
-    bottomWickW?: number;
-    bottomWickH?: number;
+    topWickW: number | string;
+    topWickH: number | string;
+    bottomWickW: number | string;
+    bottomWickH: number | string;
     wickColor: string;
-    distance: number;
+    distance: number; /// distance from the bottom of the candlestick slot.
 };
+
 export function RetroMinimaCandlestick(props: RetroMinimaCandlestickProps): ReactNode {
-    const {
-        outlineColor,
-        bodyW = 5,
-        bodyH = 0,
-        bodyColor,
-        topWickW = 1,
-        topWickH = 0,
-        bottomWickW = 1,
-        bottomWickH = 0,
-        wickColor = ColorPalette.TIMPERWOLD,
-        distance
-    } = props;
-    const centerStyle: Style = {
+    let {outlineColor, bodyW, bodyH, bodyColor, topWickW, topWickH, bottomWickW, bottomWickH, wickColor, distance} = props;
+    let __center: Style = {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center"
-    };
-    const containerStyle: Style = {
-        ... centerStyle,
+    } as const;
+    let __container: Style = {
+        ... __center,
         position: "absolute",
         bottom: distance
-    };
-    const topWickStyle: Style = {
-        ... centerStyle,
+    } as const;
+    let __topWick: Style = {
+        ... __center,
         width: topWickW,
         height: topWickH,
         background: wickColor
-    };
-    const bottomWickStyle: Style = {
+    } as const;
+    let __bottomWick: Style = {
+        ... __center,
         width: bottomWickW,
         height: bottomWickH,
         background: wickColor
-    };
-    const bodyStyle: Style = {
+    } as const;
+    let __body: Style = {
         width: bodyW,
         height: bodyH,
         background: bodyColor,
         borderWidth: 1,
         borderStyle: "solid",
         borderColor: outlineColor
-    };
+    } as const;
 
     return <>
-        <div style={containerStyle}>
-            <div style={topWickStyle}/>
-            <div style={bodyStyle}/>
-            <div style={bottomWickStyle}/>
+        <div style={__container}>
+            <div style={__topWick}/>
+            <div style={__body}/>
+            <div style={__bottomWick}/>
         </div>
     </>;
 }
