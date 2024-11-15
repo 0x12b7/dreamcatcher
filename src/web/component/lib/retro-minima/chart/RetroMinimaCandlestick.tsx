@@ -12,10 +12,11 @@ export type RetroMinimaCandlestickProps = {
     bottomWickH: number | string;
     wickColor: string;
     distance: number; /// distance from the bottom of the candlestick slot.
+    space: number;
 };
 
 export function RetroMinimaCandlestick(props: RetroMinimaCandlestickProps): ReactNode {
-    let {outlineColor, bodyW, bodyH, bodyColor, topWickW, topWickH, bottomWickW, bottomWickH, wickColor, distance} = props;
+    let {outlineColor, bodyW, bodyH, bodyColor, topWickW, topWickH, bottomWickW, bottomWickH, wickColor, distance, space} = props;
     let __center: Style = {
         display: "flex",
         flexDirection: "column",
@@ -25,6 +26,7 @@ export function RetroMinimaCandlestick(props: RetroMinimaCandlestickProps): Reac
     let __container: Style = {
         ... __center,
         position: "absolute",
+        left: space,
         bottom: distance
     } as const;
     let __topWick: Style = {

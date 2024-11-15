@@ -25463,7 +25463,9 @@ function useDevice() {
 // src/web/style/ColorPalette.ts
 var EEIRE_BLACK = "#121212";
 var GHOST_BLACK = "#202020";
+var BITTER_SWEET = "#F15555";
 var TIMPERWOLD = "#D7D6D5";
+var SPRING_GREEN = "#22FC8F";
 
 // src/web/component/page/ResponsiveAnchorPage.tsx
 var jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
@@ -25473,7 +25475,34 @@ function ResponsiveAnchorPage({
   children,
   ...more
 }) {
-  const device = useDevice();
+  let device = useDevice();
+  let __wrapper = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "start",
+    alignItems: "center",
+    width: "100vw",
+    height: "100vh",
+    background: EEIRE_BLACK,
+    ...style
+  };
+  let __responsiveWrapper = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "start",
+    alignItems: "center",
+    width: size(),
+    height: "100%"
+  };
+  let __contentWrapper = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+    flexGrow: 1
+  };
   function size() {
     switch (device) {
       case "laptop":
@@ -25486,38 +25515,14 @@ function ResponsiveAnchorPage({
   }
   return /* @__PURE__ */ jsx_dev_runtime.jsxDEV(jsx_dev_runtime.Fragment, {
     children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-      style: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "start",
-        alignItems: "center",
-        width: "100vw",
-        height: "100vh",
-        background: EEIRE_BLACK,
-        ...style
-      },
+      style: __wrapper,
       ...more,
       children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-        style: {
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "start",
-          alignItems: "center",
-          width: size(),
-          height: "100%"
-        },
+        style: __responsiveWrapper,
         children: [
           navigation,
           /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-            style: {
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              height: "100%",
-              flexGrow: 1
-            },
+            style: __contentWrapper,
             children
           }, undefined, false, undefined, this)
         ]
@@ -25604,7 +25609,7 @@ function RetroMinimaContainer(props) {
 // src/web/component/lib/retro-minima/chart/RetroMinimaCandlestick.tsx
 var jsx_dev_runtime3 = __toESM(require_jsx_dev_runtime(), 1);
 function RetroMinimaCandlestick(props) {
-  let { outlineColor, bodyW, bodyH, bodyColor, topWickW, topWickH, bottomWickW, bottomWickH, wickColor, distance } = props;
+  let { outlineColor, bodyW, bodyH, bodyColor, topWickW, topWickH, bottomWickW, bottomWickH, wickColor, distance, space } = props;
   let __center = {
     display: "flex",
     flexDirection: "column",
@@ -25614,6 +25619,7 @@ function RetroMinimaCandlestick(props) {
   let __container = {
     ...__center,
     position: "absolute",
+    left: space,
     bottom: distance
   };
   let __topWick = {
@@ -25654,94 +25660,197 @@ function RetroMinimaCandlestick(props) {
   }, undefined, false, undefined, this);
 }
 
+// src/web/component/lib/retro-minima/chart/RetroMinimaChartPoint.ts
+var RetroMinimaChartPoint = (point) => point;
+
+// src/web/common/util/base/Assert.ts
+function assert(condition, errcode) {
+  if (condition)
+    return;
+  if (errcode)
+    throw Error(errcode);
+  throw Error("CRIT_ERR");
+}
+
+// src/web/common/util/base/None.ts
+function none(item) {
+  if (item === undefined)
+    return true;
+  if (item === null)
+    return true;
+  if (Array.isArray(item))
+    return item.length === 0;
+  return false;
+}
+
+// src/web/common/util/base/Some.ts
+function some(item) {
+  return !none(item);
+}
+
 // src/web/component/lib/retro-minima/chart/RetroMinimaChart.tsx
+var import_react3 = __toESM(require_react(), 1);
+var import_react4 = __toESM(require_react(), 1);
 var jsx_dev_runtime4 = __toESM(require_jsx_dev_runtime(), 1);
-function RetroMinimaChart() {
-  const points = [
-    [0, 0, 0, 50],
-    [3, 8, 10, 2],
-    [6, 5, 7, 8],
-    [0, 5, 7, 8]
-  ];
-  const lowest = () => {
-    let lowest2 = Infinity;
-    for (let i = 0;i < points.length; i++) {
-      let point = points[i];
-      for (let ii = 0;ii < 4; ii++) {
-        let stat = point[ii];
-        if (stat < lowest2) {
-          lowest2 = stat;
-        }
-      }
-    }
-    return lowest2;
-  };
-  const highest = () => {
-    let highest2 = -Infinity;
-    for (let i = 0;i < points.length; i++) {
-      let point = points[i];
-      for (let ii = 0;ii < 4; ii++) {
-        let stat = point[ii];
-        if (stat > highest2) {
-          highest2 = stat;
-        }
-      }
-    }
-    return highest2;
-  };
-  const candlestickCount = points.length;
-  const w = 600;
-  const h = 300;
-  const tick = h / (highest() - lowest());
-  const __wrapper = {
+function RetroMinimaChart(props) {
+  let { w, h, points, style, children, ...more } = props;
+  let [slots, setSlots] = import_react3.useState([]);
+  let container$ = {
     display: "flex",
     flexDirection: "row",
     justifyContent: "start",
     alignItems: "center",
     width: w,
-    height: h
+    height: h,
+    ...style
   };
-  const __candlestickWrapper = {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "start",
-    alignItems: "center",
-    width: w / candlestickCount,
-    height: "100%",
-    flexGrow: 1,
-    position: "relative"
-  };
-  const candlestickWrappers = [];
-  for (let i = 0;i < candlestickCount; i++) {
-    const [wickLow, bodyStart, bodyEnd, wickHigh] = points[i];
-    const wickLowPosition = h - (wickLow - lowest()) * tick;
-    const wickHighPosition = h - (wickHigh - lowest()) * tick;
-    const bodyStartPosition = h - (bodyStart - lowest()) * tick;
-    const bodyEndPosition = h - (bodyEnd - lowest()) * tick;
-    const topWickHeight = wickHighPosition - bodyStartPosition;
-    const bottomWickHeight = bodyEndPosition - wickLowPosition;
-    const bodyHeight = Math.abs(bodyStartPosition - bodyEndPosition);
-    const distanceFromBottom = wickLowPosition;
-    candlestickWrappers.push(/* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
-      style: __candlestickWrapper,
-      children: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(RetroMinimaCandlestick, {
-        outlineColor: "white",
-        bodyW: 5,
-        bodyH: bodyHeight,
-        bodyColor: "white",
-        topWickW: 1,
-        topWickH: topWickHeight,
-        bottomWickW: 1,
-        bottomWickH: bottomWickHeight,
-        wickColor: "white",
-        distance: distanceFromBottom
-      }, undefined, false, undefined, this)
-    }, i, false, undefined, this));
-  }
-  return /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
-    style: __wrapper,
-    children: candlestickWrappers
+  import_react4.useEffect(() => {
+    let bullishColor = SPRING_GREEN;
+    let bearishColor = BITTER_SWEET;
+    let oldestTimestamp = _oldestTimestamp(points);
+    let latestTimestamp = _latestTimestamp(points);
+    let data = [];
+    let timestamp = oldestTimestamp;
+    while (timestamp <= latestTimestamp) {
+      data.push(_lookup(points, timestamp));
+      timestamp++;
+    }
+    let min = _low(data);
+    let max = _high(data);
+    let tick = _tick(h, min, max);
+    let slot$ = {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      position: "relative",
+      height: "100%"
+    };
+    let space = 0;
+    let slots2 = data.map((point, key) => {
+      let bullish = point.close > point.open;
+      let bearish = point.close < point.open;
+      let idle = point.close === point.open;
+      let color = bullish ? bullishColor : bearishColor;
+      let wickW = 10;
+      let bodyDiff = bullish ? point.close - point.open : point.open - point.close;
+      let bodyW = 20;
+      let bodyH = bodyDiff * tick;
+      let topWickDiff = bullish ? point.wickHigh - point.close : point.wickHigh - point.open;
+      let topWickW = wickW;
+      let topWickH = topWickDiff * tick;
+      let bottomWickDiff = bullish ? point.open - point.wickLow : point.close - point.wickLow;
+      let bottomWickW = wickW;
+      let bottomWickH = bottomWickDiff * tick;
+      let distance = point.wickLow * tick;
+      return /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(jsx_dev_runtime4.Fragment, {
+        children: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+          style: slot$,
+          children: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(RetroMinimaCandlestick, {
+            outlineColor: color,
+            bodyW,
+            bodyH,
+            bodyColor: color,
+            topWickW,
+            topWickH,
+            bottomWickW,
+            bottomWickH,
+            wickColor: color,
+            distance,
+            space: space += 25
+          }, undefined, false, undefined, this)
+        }, key, false, undefined, this)
+      }, undefined, false, undefined, this);
+    });
+    setSlots(slots2);
+  }, [points, w, h]);
+  return /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(jsx_dev_runtime4.Fragment, {
+    children: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+      style: container$,
+      ...more,
+      children: [...slots]
+    }, undefined, true, undefined, this)
   }, undefined, false, undefined, this);
+}
+function _tick(height, low, high) {
+  return height / (high - low);
+}
+function _low(points, timestamp0, timestamp1) {
+  let result = _high(points);
+  let i = 0n;
+  while (i < points.length) {
+    let point = points[Number(i)];
+    if (point.wickLow < result)
+      result = point.wickLow;
+    i++;
+  }
+  return result;
+}
+function _high(points) {
+  let result = 0;
+  let i = 0n;
+  while (i < points.length) {
+    let point = points[Number(i)];
+    if (point.wickHigh > result)
+      result = point.wickHigh;
+    i++;
+  }
+  return result;
+}
+function _lookup(points, timestamp) {
+  points = _sort(points);
+  let nearestLeadingPoint = null;
+  let zero = RetroMinimaChartPoint({
+    timestamp,
+    open: 0,
+    close: 0,
+    wickHigh: 0,
+    wickLow: 0
+  });
+  let i = 0n;
+  while (i < points.length) {
+    let point = points[Number(i)];
+    if (point.timestamp === timestamp)
+      return point;
+    if (point.timestamp > timestamp) {
+      if (!nearestLeadingPoint)
+        return zero;
+      let lastKnownClose = nearestLeadingPoint.close;
+      return RetroMinimaChartPoint({
+        timestamp,
+        open: lastKnownClose,
+        close: lastKnownClose,
+        wickHigh: lastKnownClose,
+        wickLow: lastKnownClose
+      });
+    }
+    nearestLeadingPoint = point;
+    i++;
+  }
+  return zero;
+}
+function _oldestTimestamp(points) {
+  assert(some(points), "ERR_POINTS_REQUIRED");
+  points = _sort(points);
+  let point = points.at(0);
+  assert(some(point), "ERR_POINT_REQUIRED");
+  return point.timestamp;
+}
+function _latestTimestamp(points) {
+  assert(some(points), "ERR_POINTS_REQUIRED");
+  points = _sort(points);
+  let point = points.at(-1);
+  assert(some(point), "ERR_POINT_REQUIRED");
+  return point.timestamp;
+}
+function _sort(points) {
+  return points.slice().sort((x, y) => {
+    if (x.timestamp < y.timestamp)
+      return -1;
+    if (x.timestamp > y.timestamp)
+      return 1;
+    return 0;
+  });
 }
 
 // src/web/page/TalismanPage.tsx
@@ -25802,7 +25911,29 @@ function TalismanPageTable(props) {
   };
   return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(jsx_dev_runtime5.Fragment, {
     children: [
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(RetroMinimaChart, {}, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(RetroMinimaChart, {
+        w: 600,
+        h: 300,
+        points: [{
+          timestamp: 0n,
+          wickLow: 4,
+          wickHigh: 10,
+          open: 5,
+          close: 6
+        }, {
+          timestamp: 5n,
+          wickHigh: 20,
+          open: 6,
+          close: 8,
+          wickLow: 6
+        }, {
+          timestamp: 10n,
+          wickLow: 4,
+          wickHigh: 15,
+          open: 8,
+          close: 20
+        }]
+      }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
         style: __table,
         ...more,
@@ -25841,17 +25972,6 @@ function TalismanPageTable(props) {
 
 // src/web/lib/react/Render.ts
 var import_client = __toESM(require_client(), 1);
-
-// src/web/common/util/base/Assert.ts
-function assert(condition, errcode) {
-  if (condition)
-    return;
-  if (errcode)
-    throw Error(errcode);
-  throw Error("CRIT_ERR");
-}
-
-// src/web/lib/react/Render.ts
 function render(app) {
   let element = document.getElementById("root");
   assert(!!element, "ERR_RENDER_TARGET_REQUIRED");

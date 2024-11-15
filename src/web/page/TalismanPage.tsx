@@ -68,7 +68,28 @@ export function TalismanPageTable(props: TalismanPageTableProps): ReactNode {
     };
 
     return <>
-        <RetroMinimaChart/>
+        <RetroMinimaChart
+            w={600}
+            h={300}
+            points={[{
+                timestamp: 0n,
+                wickLow: 4,
+                wickHigh: 10,
+                open: 5,
+                close: 6
+            }, {
+                timestamp: 5n,
+                wickHigh: 20,
+                open: 6,
+                close: 8,
+                wickLow: 6
+            }, {
+                timestamp: 10n,
+                wickLow: 4,
+                wickHigh: 15,
+                open: 8,
+                close: 20
+            }]}/>
 
         <div style={__table} {... more}>
             <div style={__row}>
