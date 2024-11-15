@@ -14,8 +14,12 @@ export function RetroMinimaChart(props: RetroMinimaChartProps): ReactNode {
 
 }
 
+/// NOTE Divides the height of the chart to get the units of distance to increase
+///      the price from the lowest price to the highest price in terms of
+///      pixels. Used to calculate the position of a candlestick on the
+///      y axis.
 function _tick(height: number, low: number, high: number): number {
-    
+    return height / (high - low);
 }
 
 function _low(points: ReadonlyArray<RetroMinimaChartPoint>): number {
@@ -40,6 +44,11 @@ function _high(points: ReadonlyArray<RetroMinimaChartPoint>): number {
     return result;
 }
 
+/// NOTE Will look up a point based on timestamp and if it cannot find it will
+///      return the price of the first leading candlestick. ie. the last known
+///      closing candlestick was at $50, then it is assumed the price is still
+///      as $50. If there are no leading candlesticks then the price is assumed
+///      to be at $0.
 function _lookup(points: ReadonlyArray<RetroMinimaChartPoint>, timestamp: bigint): RetroMinimaChartPoint {
     points = _sort(points);
     let nearestLeadingPoint: Maybe<RetroMinimaChartPoint> = null;
@@ -55,7 +64,17 @@ function _lookup(points: ReadonlyArray<RetroMinimaChartPoint>, timestamp: bigint
     while (i < points.length) {
         let point: RetroMinimaChartPoint = points[Number(i)];
         if (point.timestamp === timestamp) return point;
-        if (point.timestamp > timestamp) return nearestLeadingPoint ?? zero;
+        if (point.timestamp > timestamp) {
+            if (!nearestLeadingPoint) return zero;
+            let lastKnownClose: number = nearestLeadingPoint.close;
+            return RetroMinimaChartPoint({
+                timestamp: timestamp,
+                open: lastKnownClose,
+                close: lastKnownClose,
+                wickHigh: lastKnownClose,
+                wickLow: lastKnownClose
+            });
+        }
         nearestLeadingPoint = point;
         i++;
     }
