@@ -1,6 +1,5 @@
 import type {ReactNode} from "react";
 import type {CSSProperties as Style} from "react";
-import * as ColorPalette from "../../../../style/ColorPalette";
 
 export type RetroMinimaCandlestickProps = {
     outlineColor: string;

@@ -25539,61 +25539,61 @@ var FONT_FAMILY = "electro-harmonix";
 
 // src/web/component/lib/retro-minima/container/RetroMinimaContainer.tsx
 var jsx_dev_runtime2 = __toESM(require_jsx_dev_runtime(), 1);
-function RetroMinimaContainer({
-  label,
-  style,
-  children,
-  ...more
-}) {
+function RetroMinimaContainer(props) {
+  let { label, style, children, ...more } = props;
+  let __wrapper = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+    ...style
+  };
+  let __labelWrapper = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "start",
+    alignItems: "center",
+    width: "100%"
+  };
+  let __label = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "start",
+    alignItems: "center",
+    background: TIMPERWOLD,
+    color: BG_COLOR,
+    fontSize: rho(2n),
+    fontFamily: FONT_FAMILY,
+    fontWeight: "normal",
+    padding: 5
+  };
+  let __container = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: GHOST_BLACK,
+    width: "100%",
+    height: "100%",
+    flexGrow: 1
+  };
   return /* @__PURE__ */ jsx_dev_runtime2.jsxDEV(jsx_dev_runtime2.Fragment, {
     children: /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("div", {
-      style: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 10,
-        ...style
-      },
+      style: __wrapper,
       ...more,
       children: [
         /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("div", {
-          style: {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "start",
-            alignItems: "center",
-            width: "100%"
-          },
+          style: __labelWrapper,
           children: /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("div", {
-            style: {
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "start",
-              alignItems: "center",
-              background: TIMPERWOLD,
-              color: BG_COLOR,
-              fontSize: rho(2n),
-              fontFamily: FONT_FAMILY,
-              fontWeight: "normal",
-              padding: 5
-            },
+            style: __label,
             children: label
           }, undefined, false, undefined, this)
         }, undefined, false, undefined, this),
         /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("div", {
-          style: {
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            borderWidth: 1,
-            borderStyle: "solid",
-            borderColor: GHOST_BLACK,
-            width: "100%",
-            height: "100%",
-            flexGrow: 1
-          },
+          style: __container,
           children
         }, undefined, false, undefined, this)
       ]
@@ -25604,41 +25604,31 @@ function RetroMinimaContainer({
 // src/web/component/lib/retro-minima/chart/RetroMinimaCandlestick.tsx
 var jsx_dev_runtime3 = __toESM(require_jsx_dev_runtime(), 1);
 function RetroMinimaCandlestick(props) {
-  const {
-    outlineColor,
-    bodyW = 5,
-    bodyH = 0,
-    bodyColor,
-    topWickW = 1,
-    topWickH = 0,
-    bottomWickW = 1,
-    bottomWickH = 0,
-    wickColor = TIMPERWOLD,
-    distance
-  } = props;
-  const centerStyle = {
+  let { outlineColor, bodyW, bodyH, bodyColor, topWickW, topWickH, bottomWickW, bottomWickH, wickColor, distance } = props;
+  let __center = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center"
   };
-  const containerStyle = {
-    ...centerStyle,
+  let __container = {
+    ...__center,
     position: "absolute",
     bottom: distance
   };
-  const topWickStyle = {
-    ...centerStyle,
+  let __topWick = {
+    ...__center,
     width: topWickW,
     height: topWickH,
     background: wickColor
   };
-  const bottomWickStyle = {
+  let __bottomWick = {
+    ...__center,
     width: bottomWickW,
     height: bottomWickH,
     background: wickColor
   };
-  const bodyStyle = {
+  let __body = {
     width: bodyW,
     height: bodyH,
     background: bodyColor,
@@ -25648,16 +25638,16 @@ function RetroMinimaCandlestick(props) {
   };
   return /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(jsx_dev_runtime3.Fragment, {
     children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-      style: containerStyle,
+      style: __container,
       children: [
         /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-          style: topWickStyle
+          style: __topWick
         }, undefined, false, undefined, this),
         /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-          style: bodyStyle
+          style: __body
         }, undefined, false, undefined, this),
         /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-          style: bottomWickStyle
+          style: __bottomWick
         }, undefined, false, undefined, this)
       ]
     }, undefined, true, undefined, this)

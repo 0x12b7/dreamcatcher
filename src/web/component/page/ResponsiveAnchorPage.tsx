@@ -1,4 +1,5 @@
 import type {ReactNode} from "react";
+import type {CSSProperties as Style} from "react";
 import type {ComponentPropsWithRef as ReactComponentPropsWithRef} from "react";
 import type {Device} from "../../hook/observer/window/Device";
 import {useDevice} from "../../hook/observer/window/Device";
@@ -13,7 +14,34 @@ export function ResponsiveAnchorPage({
         & {
         navigation?: ReactNode;
     }): ReactNode {
-    const device: Device = useDevice();
+    let device: Device = useDevice();
+    let __wrapper: Style = {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "start",
+        alignItems: "center",
+        width: "100vw",
+        height: "100vh",
+        background: ColorPalette.EEIRE_BLACK,
+        ... style
+    } as const;
+    let __responsiveWrapper: Style = {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "start",
+        alignItems: "center",
+        width: size(),
+        height: "100%"
+    } as const;
+    let __contentWrapper: Style = {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100%",
+        flexGrow: 1
+    } as const;
 
     function size(): number {
         switch (device) {
@@ -24,38 +52,10 @@ export function ResponsiveAnchorPage({
     }
 
     return <>
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "start",
-                alignItems: "center",
-                width: "100vw",
-                height: "100vh",
-                background: ColorPalette.EEIRE_BLACK,
-                ... style
-            }}
-            {... more}>
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "start",
-                    alignItems: "center",
-                    width: size(),
-                    height: "100%"
-                }}>
+        <div style={__wrapper} {... more}>
+            <div style={__responsiveWrapper}>
                 {navigation}
-                <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "100%",
-                        height: "100%",
-                        flexGrow: 1
-                    }}>
+                <div style={__contentWrapper}>
                     {children}
                 </div>
             </div>
