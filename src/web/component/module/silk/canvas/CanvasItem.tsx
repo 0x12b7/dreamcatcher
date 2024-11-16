@@ -1,28 +1,25 @@
 import type {ReactNode} from "react";
-import type {SpringConfig} from "react-spring";
+import type {PositionProps} from "@silk";
+import type {AnimationProps} from "@silk";
+import type {ParentProps} from "@silk";
 import {animated} from "react-spring";
 import {useSpring} from "react-spring";
 import {useEffect} from "react";
 
-export type PositionProps = {
-    x?: number;
-    y?: number;
-    animation?:
-        & SpringConfig
-        & {
-        delay?: number;
-    };
-    children?: ReactNode;
-};
+export type CanvasItemProps =
+    & PositionProps
+    & AnimationProps
+    & ParentProps
+    & {};
 
-export function Position(props: PositionProps): ReactNode {
-    let {x = 0, y = 0, animation, children} = props;
-    let [spring, setSpring] = useSpring(() => ({top: y, left: x}));
+export function CanvasItem(props: CanvasItemProps): ReactNode {
+    let {x = 0, y = 0, z = 0n, animation, children} = props;
+    let [spring, setSpring] = useSpring(() => ({top: y, left: x, zIndex: Number(z)}));
 
     useEffect(() => {
-        setSpring.start({top: y, left: x, ... animation});
+        setSpring.start({top: y, left: x, zIndex: Number(z), ... animation});
         return;
-    }, [x, y]);
+    }, [x, y, z]);
 
     return <>
         <animated.div 
@@ -40,7 +37,7 @@ export function Position(props: PositionProps): ReactNode {
 }
 
 
-<Position
+<CanvasItem
     x={50}
     y={0}
     animation={{
@@ -48,4 +45,4 @@ export function Position(props: PositionProps): ReactNode {
         duration: 5000
     }}>
     
-</Position>
+</CanvasItem>

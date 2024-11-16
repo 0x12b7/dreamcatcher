@@ -1,3 +1,6 @@
+export * from "./props/AnimationProps";
+export * from "./props/ParentProps";
+export * from "./props/PositionProps";
 export * from "./type/unit/AbsoluteUnit";
 export * from "./type/unit/AngleUnit";
 export * from "./type/unit/FrequencyUnit";

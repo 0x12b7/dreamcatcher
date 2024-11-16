@@ -1,4 +1,6 @@
 export type AbsoluteUnit =
+    /// shorthand for pixels
+    | number
     | "px"
     | "em"
     | "rem"

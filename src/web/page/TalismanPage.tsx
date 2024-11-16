@@ -2,8 +2,8 @@ import type {ReactNode} from "react";
 import type {CSSProperties as Style} from "react";
 import type {ComponentPropsWithRef as ReactProps} from "react";
 import {ResponsiveAnchorPage} from "@component/page/ResponsiveAnchorPage";
-import {RetroMinimaContainer} from "@component/lib/retro-minima/container/RetroMinimaContainer";
-import {RetroMinimaChart} from "@component/lib/retro-minima/chart/RetroMinimaChart";
+import {RetroMinimaContainer} from "@component/module/retro-minima/container/RetroMinimaContainer";
+import {RetroMinimaChart} from "@component/module/retro-minima/chart/RetroMinimaChart";
 import * as ColorPalette from "../style/ColorPalette";
 
 export function TalismanPage(): ReactNode {
