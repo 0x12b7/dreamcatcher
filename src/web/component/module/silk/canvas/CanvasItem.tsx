@@ -38,6 +38,9 @@ export function CanvasItem(props: CanvasItemProps): ReactNode {
 
 
 <CanvasItem
+    w={500}
+    h={200}
+    pt={20}
     x={50}
     y={0}
     animation={{
