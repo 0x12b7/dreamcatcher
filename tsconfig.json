@@ -24,7 +24,7 @@
 			"@component/*": [
 				"src/web/component/*"
 			],
-			"@component::silk": [
+			"@silk": [
 				"src/web/component/lib/silk/Silk.cpk.ts"
 			]
 		}
