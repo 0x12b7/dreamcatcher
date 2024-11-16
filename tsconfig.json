@@ -23,6 +23,9 @@
 			],
 			"@component/*": [
 				"src/web/component/*"
+			],
+			"@component::silk": [
+				"src/web/component/lib/silk/Silk.cpk.ts"
 			]
 		}
 	}
