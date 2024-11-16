@@ -1,12 +1,14 @@
+import type {Global} from "@silk";
+
 export type AbsoluteUnit =
-    /// shorthand for pixels
-    | number
-    | "px"
-    | "em"
-    | "rem"
-    | "pt"
-    | "cm"
-    | "mm"
-    | "in"
-    | "pc"
-    | "ch";
+    | Global
+    | number /// shorthand for pixels
+    | `${number}px`
+    | `${number}em`
+    | `${number}rem`
+    | `${number}pt`
+    | `${number}cm`
+    | `${number}mm`
+    | `${number}in`
+    | `${number}pc`
+    | `${number}ch`;

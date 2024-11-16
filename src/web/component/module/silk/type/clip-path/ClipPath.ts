@@ -1,4 +1,7 @@
+import type {Global} from "@silk";
+
 export type ClipPath =
+    | Global
     | "none"
     | `inset(${string})`
     | `circle(${string})`

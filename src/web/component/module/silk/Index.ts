@@ -5,6 +5,7 @@ export * from "./props/PositionProps";
 export * from "./props/SizeProps";
 export * from "./type/aspect-ratio/AspectRatio";
 export * from "./type/clip-path/ClipPath";
+export * from "./type/global/Global";
 export * from "./type/overflow/Overflow";
 export * from "./type/unit/AbsoluteUnit";
 export * from "./type/unit/AngleUnit";
