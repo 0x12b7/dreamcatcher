@@ -1,8 +1,8 @@
 import type {ReactNode} from "react";
 import type {CSSProperties as Style} from "react";
 import type {ComponentPropsWithRef as ReactComponentPropsWithRef} from "react";
-import type {Device} from "../../hook/observer/window/Device";
-import {useDevice} from "../../hook/observer/window/Device";
+import type {Device} from "../module/silk/hook/observer/Device";
+import {useDevice} from "../module/silk/hook/observer/Device";
 import * as ColorPalette from "../../style/ColorPalette";
 
 export function ResponsiveAnchorPage({

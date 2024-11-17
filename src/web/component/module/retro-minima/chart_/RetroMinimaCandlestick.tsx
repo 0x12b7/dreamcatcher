@@ -15,7 +15,7 @@ export type RetroMinimaCandlestickProps = {
     space: number;
 };
 
-export function RetroMinimaCandlestick(props: RetroMinimaCandlestickProps): ReactNode {
+export function RetroMinimaCandlesticks(props: RetroMinimaCandlestickProps): ReactNode {
     let {outlineColor, bodyW, bodyH, bodyColor, topWickW, topWickH, bottomWickW, bottomWickH, wickColor, distance, space} = props;
     let __center: Style = {
         display: "flex",

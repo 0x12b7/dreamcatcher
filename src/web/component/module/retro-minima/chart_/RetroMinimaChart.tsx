@@ -72,7 +72,18 @@ export function RetroMinimaChart(props: RetroMinimaChartProps): ReactNode {
             let distance: number = point.wickLow * tick;
             return <>
                 <div key={key} style={slot$}>
-                    <RetroMinimaCandlestick outlineColor={color} bodyW={bodyW} bodyH={bodyH} bodyColor={color} topWickW={topWickW} topWickH={topWickH} bottomWickW={bottomWickW} bottomWickH={bottomWickH} wickColor={color} distance={distance} space={space += 25}/>
+                    <RetroMinimaCandlestick 
+                        outlineColor={color} 
+                        bodyW={bodyW} 
+                        bodyH={bodyH} 
+                        bodyColor={color} 
+                        topWickW={topWickW} 
+                        topWickH={topWickH} 
+                        bottomWickW={bottomWickW} 
+                        bottomWickH={bottomWickH} 
+                        wickColor={color} 
+                        distance={distance} 
+                        space={space += 25}/>
                 </div>
             </>
         });

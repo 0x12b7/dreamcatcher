@@ -24,6 +24,7 @@
 			"@component/*": [
 				"src/web/component/*"
 			],
+			"@retro-minima": ["src/web/component/module/retro-minima/Index.ts"],
 			"@silk": [
 				"src/web/component/module/silk/Index.ts"
 			]
