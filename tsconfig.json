@@ -18,16 +18,14 @@
 		"noPropertyAccessFromIndexSignature": false,
 		"baseUrl": ".",
 		"paths": {
-			"@common/*": [
-				"src/web/common/*"
-			],
-			"@component/*": [
-				"src/web/component/*"
-			],
+			/// common
+			"@seal": ["src/web/common/module/seal/Index.ts"],
+			"@common/*": ["src/web/common/*"],
+			
+			/// react
+			"@component/*": ["src/web/component/*"],
 			"@retro-minima": ["src/web/component/module/retro-minima/Index.ts"],
-			"@silk": [
-				"src/web/component/module/silk/Index.ts"
-			]
+			"@silk": ["src/web/component/module/silk/Index.ts"]
 		}
 	}
 }

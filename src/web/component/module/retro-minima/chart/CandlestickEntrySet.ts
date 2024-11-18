@@ -1,10 +1,23 @@
 import type {Maybe} from "@common/util/base/Maybe";
-import {CandlestickEntry} from "./CandlestickEntry";
 import {assert} from "@common/util/base/Assert";
 import {some} from "@common/util/base/Some";
 import {none} from "@common/util/base/None";
 
-export function CandlestickEntrySet(_set: Array<CandlestickEntry>, _startTimestamp: bigint, _endTimestamp: bigint) {
+
+/// ~90,000,000 candles to process for a 24 hr timeframe
+/// generation which can be expensive to calculate on the client
+/// especially if done everytime a Talisman is loaded.
+/// the alternative is to do this on the back end and cache it.
+
+
+export type CandlestickEntryMap = {
+    [key: number]: CandlestickEntry;
+};
+
+let x: CandlestickEntryMap = {};
+x[4.5];
+
+export function CandlestickEntrySets(_set: Array<CandlestickEntry>, _startTimestamp: bigint, _endTimestamp: bigint) {
     return (() => {
         assert(some(_set));
         assert(_startTimestamp >= 0n);
@@ -13,9 +26,7 @@ export function CandlestickEntrySet(_set: Array<CandlestickEntry>, _startTimesta
         assert(_endTimestamp < (2n ** 256n));
         _sort();
         _fill();
-        _sort();
         _parse();
-        _sort();
 
         return ({
             generate,
@@ -160,14 +171,4 @@ export function CandlestickEntrySet(_set: Array<CandlestickEntry>, _startTimesta
     }
 }
 
-let set = CandlestickEntrySet([
-    CandlestickEntry({
-        timestamp: 5n,
-        open: 24,
-        close: 54,
-        wickLow: 10,
-        wickHigh: 80
-    })
-], 0n, 1731856895n);
 
-console.log(set.generate(100n));

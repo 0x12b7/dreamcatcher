@@ -30,6 +30,7 @@
 		"react-router-dom": "^6.28.0",
 		"react-scramble": "^0.5.1",
 		"react-spring": "^9.7.4",
-		"react-typical": "^0.1.3"
+		"react-typical": "^0.1.3",
+		"ts-results": "^3.3.0"
 	}
 }
