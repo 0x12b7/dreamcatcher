@@ -7,5 +7,5 @@ const port: bigint = 3000n;
 const app = Express()
     .use(Express.static(directory))
     .use(Express.json())
-    .use(await ReactRouter(directory))
+    .use((await ReactRouter(directory)).unwrap())
     .listen(port);

@@ -2,7 +2,6 @@ import type {ReactNode} from "react";
 import type {ComponentPropsWithRef} from "react";
 import type {CSSProperties as Style} from "react";
 import {rho} from "../../../../style/unit/Rho";
-import * as RetroMinimaConfig from "../RetroMinimaConfig";
 import * as ColorPalette from "../../../../style/ColorPalette";
 
 export type RetroMinimaContainerProps =
@@ -33,9 +32,9 @@ export function RetroMinimaContainer(props: RetroMinimaContainerProps): ReactNod
         justifyContent: "start",
         alignItems: "center",
         background: ColorPalette.TIMPERWOLD,
-        color: RetroMinimaConfig.BG_COLOR,
+        color: ColorPalette.TIMPERWOLD,
         fontSize: rho(2n),
-        fontFamily: RetroMinimaConfig.FONT_FAMILY,
+        fontFamily: undefined,
         fontWeight: "normal",
         padding: 5
     } as const;

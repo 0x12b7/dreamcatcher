@@ -23,6 +23,7 @@
 			"@common/*": ["src/web/common/*"],
 			
 			/// react
+			"@style/*": ["src/web/style/*"],
 			"@component/*": ["src/web/component/*"],
 			"@retro-minima": ["src/web/component/module/retro-minima/Index.ts"],
 			"@chrt": ["src/web/component/module/chart/Index.ts"],

@@ -3,6 +3,7 @@ import {BrowserRouter} from "react-router-dom";
 import {Routes} from "react-router-dom";
 import {Route} from "react-router-dom";
 import {TalismanPage} from "./page/TalismanPage";
+import {RetroMinimaPriceChart} from "./component/module/retro-minima/chart/RetroMinimaPriceChart";
 import {render} from "./lib/react/Render";
 
 function App(): ReactNode {

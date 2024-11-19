@@ -9,6 +9,7 @@ export * from "./type/Function";
 export * from "./type/Maybe";
 export * from "./type/MaybeAsync";
 export * from "./type/Outcome";
+export * from "./util/Array";
 export {Ok} from "ts-results";
 export {Err} from "ts-results";
 export {Result} from "ts-results";
