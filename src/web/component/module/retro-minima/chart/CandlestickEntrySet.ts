@@ -1,4 +1,5 @@
 import type {Maybe} from "@common/util/base/Maybe";
+import {CandlestickEntry} from "./CandlestickEntry";
 import {assert} from "@common/util/base/Assert";
 import {some} from "@common/util/base/Some";
 import {none} from "@common/util/base/None";
@@ -169,6 +170,57 @@ export function CandlestickEntrySets(_set: Array<CandlestickEntry>, _startTimest
         assert(result[result.length - 1].length <= Number(count));
         return result;
     }
+}
+
+
+function _lookupRange(set: ReadonlyArray<CandlestickEntry>, timestamps: ReadonlyArray<bigint>): ReadonlyArray<CandlestickEntry> {
+
+}
+
+type CandlestickEntryLedger = {[timestamp: number]: Maybe<CandlestickEntry>};
+
+/// the map must be sorted.
+function _lookup(map: Map<bigint, Maybe<CandlestickEntry>>, timestamp: bigint): Maybe<Readonly<CandlestickEntry>> {
+    return map.get(timestamp);
+}
+
+function _last(map: Map<bigint>fromTimestamp: bigint): number {
+    let timestamp: bigint = fromTimestamp;
+    while (timestamp >= 0) {
+        let entry: Maybe<CandlestickEntry> = _lookup(timestamp);
+        if (some(entry) && entry!.close !== 0) return entry!.close;
+        timestamp --;
+    }
+    return 0;
+}
+
+function _range(map: Map<bigint, Maybe<CandlestickEntry>>): [min: number, max: number] {
+    let min: number = 0;
+    let max: number = Number.MAX_SAFE_INTEGER;
+    let timestamp: bigint = 0n;
+    while (timestamp < map.size) {
+        let point: Maybe<CandlestickEntry> = map.get(timestamp);
+
+        if (point.min < min) min = point.min;
+        if (point.max > max) max = point.max;
+        timestamp++;
+    }
+    return [min, max];
+}
+
+function _sort(set: ReadonlyArray<CandlestickEntry>): Array<CandlestickEntry> {
+    let result: Array<CandlestickEntry> = set.slice();
+    let len: number = result.length;
+    for (let i: number = 0; i < len; i++) {
+        for (let j = 0; j < len - i - 1; j++) {
+            if (result[j].timestamp > result[j + 1].timestamp) {
+                const temp = result[j];
+                result[j] = result[j + 1];
+                result[j + 1] = temp;
+            }
+        }
+    }
+    return result;
 }
 
 
