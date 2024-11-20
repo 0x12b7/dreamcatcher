@@ -1,0 +1,1 @@
+export type {ComponentPropsWithRef as ComponentProps} from "react";
