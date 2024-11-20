@@ -6,7 +6,6 @@ export type SizeProps = {
     h?: SizeUnit;
     p?: SizeUnit;
     m?: SizeUnit;
-    g?: SizeUnit;
     minW?: SizeUnit;
     maxW?: SizeUnit;
     minH?: SizeUnit;
@@ -17,7 +16,7 @@ export type SizeProps = {
     pl?: SizeUnit;
     mt?: SizeUnit;
     mr?: SizeUnit;
-    mb?: SizeProps;
-    ml?: SizeProps;
+    mb?: SizeUnit;
+    ml?: SizeUnit;
     aspectRatio?: AspectRatio;
 };

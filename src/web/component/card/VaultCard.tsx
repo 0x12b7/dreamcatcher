@@ -20,23 +20,33 @@ export type VaultCardProps = {
 };
 export function VaultCard(props: VaultCardProps): ReactNode {
     let {w, h, dataset} = props;
+    let now: bigint = dataset[dataset.length - 1].timestamp;
 
     return <>
-        <EdgedContainer
-            w={w}
-            h={h}
-            p={20}
-            withTopLeft
-            withBottomLeft
-            withBottomRight
-            withTopRight>
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 20,
+                width: 600,
+                height: 200
+            }}>
             <div
                 style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "start",
+                    alignItems: "center",
+                    width: "100%",
+                    flexGrow: 1,
                     fontSize: "1em",
                     fontWeight: "normal",
                     fontFamily: "electro-harmonix",
                     color: ColorPalette.TIMPERWOLD,
-                    padding: 10
+                    paddingTop: 10,
+                    paddingBottom: 10
                 }}>
                 Blue Sky Capital
             </div>
@@ -75,7 +85,7 @@ export function VaultCard(props: VaultCardProps): ReactNode {
                         dot={false}/>
                 </LineChart>
             </ResponsiveContainer>
-        </EdgedContainer>
+        </div>
     </>;
 }
 

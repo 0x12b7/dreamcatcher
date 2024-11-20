@@ -25437,6 +25437,9 @@ function useViewTransitionState(to, opts) {
   return matchPath(path.pathname, nextPath) != null || matchPath(path.pathname, currentPath) != null;
 }
 
+// src/web/page/DaoPage.tsx
+var import_react17 = __toESM(require_react(), 1);
+
 // src/web/component/module/silk/hook/observer/Device.ts
 var import_react = __toESM(require_react(), 1);
 var import_react2 = __toESM(require_react(), 1);
@@ -25462,8 +25465,6 @@ function useDevice() {
 
 // src/web/style/ColorPalette.ts
 var EEIRE_BLACK = "#121212";
-var ONYX = "#3D3D3D";
-var TIMPERWOLD = "#D7D6D5";
 
 // src/web/component/page/ResponsiveAnchorPage.tsx
 var jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
@@ -25528,7 +25529,321 @@ function ResponsiveAnchorPage({
     }, undefined, false, undefined, this)
   }, undefined, false, undefined, this);
 }
+// src/web/common/module/seal/util/Array.ts
+function toArray(item) {
+  if (Array.isArray(item))
+    return item;
+  else
+    return [item];
+}
+// node_modules/ts-results/esm/utils.js
+function toString(val) {
+  var value = String(val);
+  if (value === "[object Object]") {
+    try {
+      value = JSON.stringify(val);
+    } catch (_a) {
+    }
+  }
+  return value;
+}
 
+// node_modules/ts-results/esm/option.js
+var NoneImpl = function() {
+  function NoneImpl2() {
+    this.some = false;
+    this.none = true;
+  }
+  NoneImpl2.prototype[Symbol.iterator] = function() {
+    return {
+      next: function() {
+        return { done: true, value: undefined };
+      }
+    };
+  };
+  NoneImpl2.prototype.unwrapOr = function(val) {
+    return val;
+  };
+  NoneImpl2.prototype.expect = function(msg) {
+    throw new Error("" + msg);
+  };
+  NoneImpl2.prototype.unwrap = function() {
+    throw new Error("Tried to unwrap None");
+  };
+  NoneImpl2.prototype.map = function(_mapper) {
+    return this;
+  };
+  NoneImpl2.prototype.andThen = function(op) {
+    return this;
+  };
+  NoneImpl2.prototype.toResult = function(error) {
+    return Err(error);
+  };
+  NoneImpl2.prototype.toString = function() {
+    return "None";
+  };
+  return NoneImpl2;
+}();
+var None = new NoneImpl;
+Object.freeze(None);
+var SomeImpl = function() {
+  function SomeImpl2(val) {
+    if (!(this instanceof SomeImpl2)) {
+      return new SomeImpl2(val);
+    }
+    this.some = true;
+    this.none = false;
+    this.val = val;
+  }
+  SomeImpl2.prototype[Symbol.iterator] = function() {
+    var obj = Object(this.val);
+    return Symbol.iterator in obj ? obj[Symbol.iterator]() : {
+      next: function() {
+        return { done: true, value: undefined };
+      }
+    };
+  };
+  SomeImpl2.prototype.unwrapOr = function(_val) {
+    return this.val;
+  };
+  SomeImpl2.prototype.expect = function(_msg) {
+    return this.val;
+  };
+  SomeImpl2.prototype.unwrap = function() {
+    return this.val;
+  };
+  SomeImpl2.prototype.map = function(mapper) {
+    return Some(mapper(this.val));
+  };
+  SomeImpl2.prototype.andThen = function(mapper) {
+    return mapper(this.val);
+  };
+  SomeImpl2.prototype.toResult = function(error) {
+    return Ok(this.val);
+  };
+  SomeImpl2.prototype.safeUnwrap = function() {
+    return this.val;
+  };
+  SomeImpl2.prototype.toString = function() {
+    return "Some(" + toString(this.val) + ")";
+  };
+  SomeImpl2.EMPTY = new SomeImpl2(undefined);
+  return SomeImpl2;
+}();
+var Some = SomeImpl;
+var Option;
+(function(Option2) {
+  function all() {
+    var options = [];
+    for (var _i = 0;_i < arguments.length; _i++) {
+      options[_i] = arguments[_i];
+    }
+    var someOption = [];
+    for (var _a = 0, options_1 = options;_a < options_1.length; _a++) {
+      var option = options_1[_a];
+      if (option.some) {
+        someOption.push(option.val);
+      } else {
+        return option;
+      }
+    }
+    return Some(someOption);
+  }
+  Option2.all = all;
+  function any() {
+    var options = [];
+    for (var _i = 0;_i < arguments.length; _i++) {
+      options[_i] = arguments[_i];
+    }
+    for (var _a = 0, options_2 = options;_a < options_2.length; _a++) {
+      var option = options_2[_a];
+      if (option.some) {
+        return option;
+      } else {
+        return option;
+      }
+    }
+    return None;
+  }
+  Option2.any = any;
+  function isOption(value) {
+    return value instanceof Some || value === None;
+  }
+  Option2.isOption = isOption;
+})(Option || (Option = {}));
+
+// node_modules/ts-results/esm/result.js
+var ErrImpl = function() {
+  function ErrImpl2(val) {
+    if (!(this instanceof ErrImpl2)) {
+      return new ErrImpl2(val);
+    }
+    this.ok = false;
+    this.err = true;
+    this.val = val;
+    var stackLines = new Error().stack.split("\n").slice(2);
+    if (stackLines && stackLines.length > 0 && stackLines[0].includes("ErrImpl")) {
+      stackLines.shift();
+    }
+    this._stack = stackLines.join("\n");
+  }
+  ErrImpl2.prototype[Symbol.iterator] = function() {
+    return {
+      next: function() {
+        return { done: true, value: undefined };
+      }
+    };
+  };
+  ErrImpl2.prototype.else = function(val) {
+    return val;
+  };
+  ErrImpl2.prototype.unwrapOr = function(val) {
+    return val;
+  };
+  ErrImpl2.prototype.expect = function(msg) {
+    throw new Error(msg + " - Error: " + toString(this.val) + "\n" + this._stack);
+  };
+  ErrImpl2.prototype.unwrap = function() {
+    throw new Error("Tried to unwrap Error: " + toString(this.val) + "\n" + this._stack);
+  };
+  ErrImpl2.prototype.map = function(_mapper) {
+    return this;
+  };
+  ErrImpl2.prototype.andThen = function(op) {
+    return this;
+  };
+  ErrImpl2.prototype.mapErr = function(mapper) {
+    return new Err(mapper(this.val));
+  };
+  ErrImpl2.prototype.toOption = function() {
+    return None;
+  };
+  ErrImpl2.prototype.toString = function() {
+    return "Err(" + toString(this.val) + ")";
+  };
+  Object.defineProperty(ErrImpl2.prototype, "stack", {
+    get: function() {
+      return this + "\n" + this._stack;
+    },
+    enumerable: false,
+    configurable: true
+  });
+  ErrImpl2.EMPTY = new ErrImpl2(undefined);
+  return ErrImpl2;
+}();
+var Err = ErrImpl;
+var OkImpl = function() {
+  function OkImpl2(val) {
+    if (!(this instanceof OkImpl2)) {
+      return new OkImpl2(val);
+    }
+    this.ok = true;
+    this.err = false;
+    this.val = val;
+  }
+  OkImpl2.prototype[Symbol.iterator] = function() {
+    var obj = Object(this.val);
+    return Symbol.iterator in obj ? obj[Symbol.iterator]() : {
+      next: function() {
+        return { done: true, value: undefined };
+      }
+    };
+  };
+  OkImpl2.prototype.else = function(_val) {
+    return this.val;
+  };
+  OkImpl2.prototype.unwrapOr = function(_val) {
+    return this.val;
+  };
+  OkImpl2.prototype.expect = function(_msg) {
+    return this.val;
+  };
+  OkImpl2.prototype.unwrap = function() {
+    return this.val;
+  };
+  OkImpl2.prototype.map = function(mapper) {
+    return new Ok(mapper(this.val));
+  };
+  OkImpl2.prototype.andThen = function(mapper) {
+    return mapper(this.val);
+  };
+  OkImpl2.prototype.mapErr = function(_mapper) {
+    return this;
+  };
+  OkImpl2.prototype.toOption = function() {
+    return Some(this.val);
+  };
+  OkImpl2.prototype.safeUnwrap = function() {
+    return this.val;
+  };
+  OkImpl2.prototype.toString = function() {
+    return "Ok(" + toString(this.val) + ")";
+  };
+  OkImpl2.EMPTY = new OkImpl2(undefined);
+  return OkImpl2;
+}();
+var Ok = OkImpl;
+var Result;
+(function(Result2) {
+  function all() {
+    var results = [];
+    for (var _i = 0;_i < arguments.length; _i++) {
+      results[_i] = arguments[_i];
+    }
+    var okResult = [];
+    for (var _a = 0, results_1 = results;_a < results_1.length; _a++) {
+      var result = results_1[_a];
+      if (result.ok) {
+        okResult.push(result.val);
+      } else {
+        return result;
+      }
+    }
+    return new Ok(okResult);
+  }
+  Result2.all = all;
+  function any() {
+    var results = [];
+    for (var _i = 0;_i < arguments.length; _i++) {
+      results[_i] = arguments[_i];
+    }
+    var errResult = [];
+    for (var _a = 0, results_2 = results;_a < results_2.length; _a++) {
+      var result = results_2[_a];
+      if (result.ok) {
+        return result;
+      } else {
+        errResult.push(result.val);
+      }
+    }
+    return new Err(errResult);
+  }
+  Result2.any = any;
+  function wrap(op) {
+    try {
+      return new Ok(op());
+    } catch (e) {
+      return new Err(e);
+    }
+  }
+  Result2.wrap = wrap;
+  function wrapAsync(op) {
+    try {
+      return op().then(function(val) {
+        return new Ok(val);
+      }).catch(function(e) {
+        return new Err(e);
+      });
+    } catch (e) {
+      return Promise.resolve(new Err(e));
+    }
+  }
+  Result2.wrapAsync = wrapAsync;
+  function isResult(val) {
+    return val instanceof Err || val instanceof Ok;
+  }
+  Result2.isResult = isResult;
+})(Result || (Result = {}));
 // node_modules/@react-spring/rafz/dist/react-spring_rafz.modern.mjs
 var updateQueue = makeQueue();
 var raf = (fn) => schedule(fn, updateQueue);
@@ -25742,15 +26057,7 @@ function eachProp(obj, fn, ctx) {
     }
   }
 }
-var toArray = (a) => is.und(a) ? [] : is.arr(a) ? a : [a];
-function flush(queue, iterator) {
-  if (queue.size) {
-    const items = Array.from(queue);
-    queue.clear();
-    each(items, iterator);
-  }
-}
-var flushCalls = (queue, ...args) => flush(queue, (fn) => fn(...args));
+var toArray2 = (a) => is.und(a) ? [] : is.arr(a) ? a : [a];
 var isSSR = () => typeof window === "undefined" || !window.navigator || /ServerSideRendering|^Deno\//.test(window.navigator.userAgent);
 var createStringInterpolator;
 var to;
@@ -26130,37 +26437,37 @@ var createInterpolator = (range, output, extrapolate) => {
   };
 };
 function interpolate(input, inputMin, inputMax, outputMin, outputMax, easing, extrapolateLeft, extrapolateRight, map) {
-  let result = map ? map(input) : input;
-  if (result < inputMin) {
+  let result2 = map ? map(input) : input;
+  if (result2 < inputMin) {
     if (extrapolateLeft === "identity")
-      return result;
+      return result2;
     else if (extrapolateLeft === "clamp")
-      result = inputMin;
+      result2 = inputMin;
   }
-  if (result > inputMax) {
+  if (result2 > inputMax) {
     if (extrapolateRight === "identity")
-      return result;
+      return result2;
     else if (extrapolateRight === "clamp")
-      result = inputMax;
+      result2 = inputMax;
   }
   if (outputMin === outputMax)
     return outputMin;
   if (inputMin === inputMax)
     return input <= inputMin ? outputMin : outputMax;
   if (inputMin === -Infinity)
-    result = -result;
+    result2 = -result2;
   else if (inputMax === Infinity)
-    result = result - inputMin;
+    result2 = result2 - inputMin;
   else
-    result = (result - inputMin) / (inputMax - inputMin);
-  result = easing(result);
+    result2 = (result2 - inputMin) / (inputMax - inputMin);
+  result2 = easing(result2);
   if (outputMin === -Infinity)
-    result = -result;
+    result2 = -result2;
   else if (outputMax === Infinity)
-    result = result + outputMin;
+    result2 = result2 + outputMin;
   else
-    result = result * (outputMax - outputMin) + outputMin;
-  return result;
+    result2 = result2 * (outputMax - outputMin) + outputMin;
+  return result2;
 }
 function findRange(input, inputRange) {
   for (var i = 1;i < inputRange.length - 1; ++i)
@@ -26230,7 +26537,6 @@ var $get = Symbol.for("FluidValue.get");
 var $observers = Symbol.for("FluidValue.observers");
 var hasFluidValue = (arg) => Boolean(arg && arg[$get]);
 var getFluidValue = (arg) => arg && arg[$get] ? arg[$get]() : arg;
-var getFluidObservers = (target) => target[$observers] || null;
 function callFluidObserver(observer2, event) {
   if (observer2.eventObserved) {
     observer2.eventObserved(event);
@@ -26364,9 +26670,6 @@ function deprecateInterpolate() {
   warnInterpolate(`${prefix}The "interpolate" function is deprecated in v9 (use "to" instead)`);
 }
 var warnDirectCall = once(console.warn);
-function deprecateDirectCall() {
-  warnDirectCall(`${prefix}Directly calling start instead of using the api object is deprecated in v9 (use ".start" instead), this will be removed in later 0.X.0 versions`);
-}
 function isAnimatedString(value) {
   return is.str(value) && (value[0] == "#" || /\d/.test(value) || !isSSR() && cssVariableRegex.test(value) || (value in (colors || {})));
 }
@@ -26430,13 +26733,6 @@ function areInputsEqual(next, prev) {
 }
 var useOnce = (effect) => import_react8.useEffect(effect, emptyDeps);
 var emptyDeps = [];
-function usePrev(value) {
-  const prevRef = import_react9.useRef();
-  import_react9.useEffect(() => {
-    prevRef.current = value;
-  });
-  return prevRef.current;
-}
 
 // node_modules/@react-spring/core/dist/react-spring_core.modern.mjs
 var import_react12 = __toESM(require_react(), 1);
@@ -26729,119 +27025,6 @@ var import_react14 = __toESM(require_react(), 1);
 var React22 = __toESM(require_react(), 1);
 var import_react15 = __toESM(require_react(), 1);
 var import_react16 = __toESM(require_react(), 1);
-function callProp(value, ...args) {
-  return is.fun(value) ? value(...args) : value;
-}
-var matchProp = (value, key) => value === true || !!(key && value && (is.fun(value) ? value(key) : toArray(value).includes(key)));
-var resolveProp = (prop, key) => is.obj(prop) ? key && prop[key] : prop;
-var getDefaultProp = (props, key) => props.default === true ? props[key] : props.default ? props.default[key] : undefined;
-var noopTransform = (value) => value;
-var getDefaultProps = (props, transform = noopTransform) => {
-  let keys = DEFAULT_PROPS;
-  if (props.default && props.default !== true) {
-    props = props.default;
-    keys = Object.keys(props);
-  }
-  const defaults2 = {};
-  for (const key of keys) {
-    const value = transform(props[key], key);
-    if (!is.und(value)) {
-      defaults2[key] = value;
-    }
-  }
-  return defaults2;
-};
-var DEFAULT_PROPS = [
-  "config",
-  "onProps",
-  "onStart",
-  "onChange",
-  "onPause",
-  "onResume",
-  "onRest"
-];
-var RESERVED_PROPS = {
-  config: 1,
-  from: 1,
-  to: 1,
-  ref: 1,
-  loop: 1,
-  reset: 1,
-  pause: 1,
-  cancel: 1,
-  reverse: 1,
-  immediate: 1,
-  default: 1,
-  delay: 1,
-  onProps: 1,
-  onStart: 1,
-  onChange: 1,
-  onPause: 1,
-  onResume: 1,
-  onRest: 1,
-  onResolve: 1,
-  items: 1,
-  trail: 1,
-  sort: 1,
-  expires: 1,
-  initial: 1,
-  enter: 1,
-  update: 1,
-  leave: 1,
-  children: 1,
-  onDestroyed: 1,
-  keys: 1,
-  callId: 1,
-  parentId: 1
-};
-function getForwardProps(props) {
-  const forward = {};
-  let count = 0;
-  eachProp(props, (value, prop) => {
-    if (!RESERVED_PROPS[prop]) {
-      forward[prop] = value;
-      count++;
-    }
-  });
-  if (count) {
-    return forward;
-  }
-}
-function inferTo(props) {
-  const to2 = getForwardProps(props);
-  if (to2) {
-    const out = { to: to2 };
-    eachProp(props, (val, key) => (key in to2) || (out[key] = val));
-    return out;
-  }
-  return { ...props };
-}
-function computeGoal(value) {
-  value = getFluidValue(value);
-  return is.arr(value) ? value.map(computeGoal) : isAnimatedString(value) ? globals_exports.createStringInterpolator({
-    range: [0, 1],
-    output: [value, value]
-  })(1) : value;
-}
-function hasProps(props) {
-  for (const _ in props)
-    return true;
-  return false;
-}
-function isAsyncTo(to2) {
-  return is.fun(to2) || is.arr(to2) && is.obj(to2[0]);
-}
-function detachRefs(ctrl, ref) {
-  ctrl.ref?.delete(ctrl);
-  ref?.delete(ctrl);
-}
-function replaceRef(ctrl, ref) {
-  if (ref && ctrl.ref !== ref) {
-    ctrl.ref?.delete(ctrl);
-    ref.add(ctrl);
-    ctrl.ref = ref;
-  }
-}
 var config = {
   default: { tension: 170, friction: 26 },
   gentle: { tension: 120, friction: 14 },
@@ -26856,244 +27039,6 @@ var defaults = {
   damping: 1,
   easing: easings.linear,
   clamp: false
-};
-var AnimationConfig = class {
-  constructor() {
-    this.velocity = 0;
-    Object.assign(this, defaults);
-  }
-};
-function mergeConfig(config2, newConfig, defaultConfig) {
-  if (defaultConfig) {
-    defaultConfig = { ...defaultConfig };
-    sanitizeConfig(defaultConfig, newConfig);
-    newConfig = { ...defaultConfig, ...newConfig };
-  }
-  sanitizeConfig(config2, newConfig);
-  Object.assign(config2, newConfig);
-  for (const key in defaults) {
-    if (config2[key] == null) {
-      config2[key] = defaults[key];
-    }
-  }
-  let { frequency, damping } = config2;
-  const { mass } = config2;
-  if (!is.und(frequency)) {
-    if (frequency < 0.01)
-      frequency = 0.01;
-    if (damping < 0)
-      damping = 0;
-    config2.tension = Math.pow(2 * Math.PI / frequency, 2) * mass;
-    config2.friction = 4 * Math.PI * damping * mass / frequency;
-  }
-  return config2;
-}
-function sanitizeConfig(config2, props) {
-  if (!is.und(props.decay)) {
-    config2.duration = undefined;
-  } else {
-    const isTensionConfig = !is.und(props.tension) || !is.und(props.friction);
-    if (isTensionConfig || !is.und(props.frequency) || !is.und(props.damping) || !is.und(props.mass)) {
-      config2.duration = undefined;
-      config2.decay = undefined;
-    }
-    if (isTensionConfig) {
-      config2.frequency = undefined;
-    }
-  }
-}
-var emptyArray = [];
-var Animation = class {
-  constructor() {
-    this.changed = false;
-    this.values = emptyArray;
-    this.toValues = null;
-    this.fromValues = emptyArray;
-    this.config = new AnimationConfig;
-    this.immediate = false;
-  }
-};
-function scheduleProps(callId, { key, props, defaultProps, state, actions }) {
-  return new Promise((resolve, reject) => {
-    let delay;
-    let timeout;
-    let cancel = matchProp(props.cancel ?? defaultProps?.cancel, key);
-    if (cancel) {
-      onStart();
-    } else {
-      if (!is.und(props.pause)) {
-        state.paused = matchProp(props.pause, key);
-      }
-      let pause = defaultProps?.pause;
-      if (pause !== true) {
-        pause = state.paused || matchProp(pause, key);
-      }
-      delay = callProp(props.delay || 0, key);
-      if (pause) {
-        state.resumeQueue.add(onResume);
-        actions.pause();
-      } else {
-        actions.resume();
-        onResume();
-      }
-    }
-    function onPause() {
-      state.resumeQueue.add(onResume);
-      state.timeouts.delete(timeout);
-      timeout.cancel();
-      delay = timeout.time - raf.now();
-    }
-    function onResume() {
-      if (delay > 0 && !globals_exports.skipAnimation) {
-        state.delayed = true;
-        timeout = raf.setTimeout(onStart, delay);
-        state.pauseQueue.add(onPause);
-        state.timeouts.add(timeout);
-      } else {
-        onStart();
-      }
-    }
-    function onStart() {
-      if (state.delayed) {
-        state.delayed = false;
-      }
-      state.pauseQueue.delete(onPause);
-      state.timeouts.delete(timeout);
-      if (callId <= (state.cancelId || 0)) {
-        cancel = true;
-      }
-      try {
-        actions.start({ ...props, callId, cancel }, resolve);
-      } catch (err) {
-        reject(err);
-      }
-    }
-  });
-}
-var getCombinedResult = (target, results) => results.length == 1 ? results[0] : results.some((result) => result.cancelled) ? getCancelledResult(target.get()) : results.every((result) => result.noop) ? getNoopResult(target.get()) : getFinishedResult(target.get(), results.every((result) => result.finished));
-var getNoopResult = (value) => ({
-  value,
-  noop: true,
-  finished: true,
-  cancelled: false
-});
-var getFinishedResult = (value, finished, cancelled = false) => ({
-  value,
-  finished,
-  cancelled
-});
-var getCancelledResult = (value) => ({
-  value,
-  cancelled: true,
-  finished: false
-});
-function runAsync(to2, props, state, target) {
-  const { callId, parentId, onRest } = props;
-  const { asyncTo: prevTo, promise: prevPromise } = state;
-  if (!parentId && to2 === prevTo && !props.reset) {
-    return prevPromise;
-  }
-  return state.promise = (async () => {
-    state.asyncId = callId;
-    state.asyncTo = to2;
-    const defaultProps = getDefaultProps(props, (value, key) => key === "onRest" ? undefined : value);
-    let preventBail;
-    let bail;
-    const bailPromise = new Promise((resolve, reject) => (preventBail = resolve, bail = reject));
-    const bailIfEnded = (bailSignal) => {
-      const bailResult = callId <= (state.cancelId || 0) && getCancelledResult(target) || callId !== state.asyncId && getFinishedResult(target, false);
-      if (bailResult) {
-        bailSignal.result = bailResult;
-        bail(bailSignal);
-        throw bailSignal;
-      }
-    };
-    const animate = (arg1, arg2) => {
-      const bailSignal = new BailSignal;
-      const skipAnimationSignal = new SkipAnimationSignal;
-      return (async () => {
-        if (globals_exports.skipAnimation) {
-          stopAsync(state);
-          skipAnimationSignal.result = getFinishedResult(target, false);
-          bail(skipAnimationSignal);
-          throw skipAnimationSignal;
-        }
-        bailIfEnded(bailSignal);
-        const props2 = is.obj(arg1) ? { ...arg1 } : { ...arg2, to: arg1 };
-        props2.parentId = callId;
-        eachProp(defaultProps, (value, key) => {
-          if (is.und(props2[key])) {
-            props2[key] = value;
-          }
-        });
-        const result2 = await target.start(props2);
-        bailIfEnded(bailSignal);
-        if (state.paused) {
-          await new Promise((resume) => {
-            state.resumeQueue.add(resume);
-          });
-        }
-        return result2;
-      })();
-    };
-    let result;
-    if (globals_exports.skipAnimation) {
-      stopAsync(state);
-      return getFinishedResult(target, false);
-    }
-    try {
-      let animating;
-      if (is.arr(to2)) {
-        animating = (async (queue) => {
-          for (const props2 of queue) {
-            await animate(props2);
-          }
-        })(to2);
-      } else {
-        animating = Promise.resolve(to2(animate, target.stop.bind(target)));
-      }
-      await Promise.all([animating.then(preventBail), bailPromise]);
-      result = getFinishedResult(target.get(), true, false);
-    } catch (err) {
-      if (err instanceof BailSignal) {
-        result = err.result;
-      } else if (err instanceof SkipAnimationSignal) {
-        result = err.result;
-      } else {
-        throw err;
-      }
-    } finally {
-      if (callId == state.asyncId) {
-        state.asyncId = parentId;
-        state.asyncTo = parentId ? prevTo : undefined;
-        state.promise = parentId ? prevPromise : undefined;
-      }
-    }
-    if (is.fun(onRest)) {
-      raf.batchedUpdates(() => {
-        onRest(result, target, target.item);
-      });
-    }
-    return result;
-  })();
-}
-function stopAsync(state, cancelId) {
-  flush(state.timeouts, (t) => t.cancel());
-  state.pauseQueue.clear();
-  state.resumeQueue.clear();
-  state.asyncId = state.asyncTo = state.promise = undefined;
-  if (cancelId)
-    state.cancelId = cancelId;
-}
-var BailSignal = class extends Error {
-  constructor() {
-    super("An async animation has been interrupted. You see this error because you forgot to use `await` or `.catch(...)` on its returned promise.");
-  }
-};
-var SkipAnimationSignal = class extends Error {
-  constructor() {
-    super("SkipAnimationSignal");
-  }
 };
 var isFrameValue = (value) => value instanceof FrameValue;
 var nextId = 1;
@@ -27158,879 +27103,6 @@ var FrameValue = class extends FluidValue {
   }
 };
 var $P = Symbol.for("SpringPhase");
-var HAS_ANIMATED = 1;
-var IS_ANIMATING = 2;
-var IS_PAUSED = 4;
-var hasAnimated = (target) => (target[$P] & HAS_ANIMATED) > 0;
-var isAnimating = (target) => (target[$P] & IS_ANIMATING) > 0;
-var isPaused = (target) => (target[$P] & IS_PAUSED) > 0;
-var setActiveBit = (target, active) => active ? target[$P] |= IS_ANIMATING | HAS_ANIMATED : target[$P] &= ~IS_ANIMATING;
-var setPausedBit = (target, paused) => paused ? target[$P] |= IS_PAUSED : target[$P] &= ~IS_PAUSED;
-var SpringValue = class extends FrameValue {
-  constructor(arg1, arg2) {
-    super();
-    this.animation = new Animation;
-    this.defaultProps = {};
-    this._state = {
-      paused: false,
-      delayed: false,
-      pauseQueue: /* @__PURE__ */ new Set,
-      resumeQueue: /* @__PURE__ */ new Set,
-      timeouts: /* @__PURE__ */ new Set
-    };
-    this._pendingCalls = /* @__PURE__ */ new Set;
-    this._lastCallId = 0;
-    this._lastToId = 0;
-    this._memoizedDuration = 0;
-    if (!is.und(arg1) || !is.und(arg2)) {
-      const props = is.obj(arg1) ? { ...arg1 } : { ...arg2, from: arg1 };
-      if (is.und(props.default)) {
-        props.default = true;
-      }
-      this.start(props);
-    }
-  }
-  get idle() {
-    return !(isAnimating(this) || this._state.asyncTo) || isPaused(this);
-  }
-  get goal() {
-    return getFluidValue(this.animation.to);
-  }
-  get velocity() {
-    const node = getAnimated(this);
-    return node instanceof AnimatedValue ? node.lastVelocity || 0 : node.getPayload().map((node2) => node2.lastVelocity || 0);
-  }
-  get hasAnimated() {
-    return hasAnimated(this);
-  }
-  get isAnimating() {
-    return isAnimating(this);
-  }
-  get isPaused() {
-    return isPaused(this);
-  }
-  get isDelayed() {
-    return this._state.delayed;
-  }
-  advance(dt) {
-    let idle = true;
-    let changed = false;
-    const anim = this.animation;
-    let { toValues } = anim;
-    const { config: config2 } = anim;
-    const payload = getPayload(anim.to);
-    if (!payload && hasFluidValue(anim.to)) {
-      toValues = toArray(getFluidValue(anim.to));
-    }
-    anim.values.forEach((node2, i) => {
-      if (node2.done)
-        return;
-      const to2 = node2.constructor == AnimatedString ? 1 : payload ? payload[i].lastPosition : toValues[i];
-      let finished = anim.immediate;
-      let position = to2;
-      if (!finished) {
-        position = node2.lastPosition;
-        if (config2.tension <= 0) {
-          node2.done = true;
-          return;
-        }
-        let elapsed = node2.elapsedTime += dt;
-        const from = anim.fromValues[i];
-        const v0 = node2.v0 != null ? node2.v0 : node2.v0 = is.arr(config2.velocity) ? config2.velocity[i] : config2.velocity;
-        let velocity;
-        const precision = config2.precision || (from == to2 ? 0.005 : Math.min(1, Math.abs(to2 - from) * 0.001));
-        if (!is.und(config2.duration)) {
-          let p = 1;
-          if (config2.duration > 0) {
-            if (this._memoizedDuration !== config2.duration) {
-              this._memoizedDuration = config2.duration;
-              if (node2.durationProgress > 0) {
-                node2.elapsedTime = config2.duration * node2.durationProgress;
-                elapsed = node2.elapsedTime += dt;
-              }
-            }
-            p = (config2.progress || 0) + elapsed / this._memoizedDuration;
-            p = p > 1 ? 1 : p < 0 ? 0 : p;
-            node2.durationProgress = p;
-          }
-          position = from + config2.easing(p) * (to2 - from);
-          velocity = (position - node2.lastPosition) / dt;
-          finished = p == 1;
-        } else if (config2.decay) {
-          const decay = config2.decay === true ? 0.998 : config2.decay;
-          const e = Math.exp(-(1 - decay) * elapsed);
-          position = from + v0 / (1 - decay) * (1 - e);
-          finished = Math.abs(node2.lastPosition - position) <= precision;
-          velocity = v0 * e;
-        } else {
-          velocity = node2.lastVelocity == null ? v0 : node2.lastVelocity;
-          const restVelocity = config2.restVelocity || precision / 10;
-          const bounceFactor = config2.clamp ? 0 : config2.bounce;
-          const canBounce = !is.und(bounceFactor);
-          const isGrowing = from == to2 ? node2.v0 > 0 : from < to2;
-          let isMoving;
-          let isBouncing = false;
-          const step = 1;
-          const numSteps = Math.ceil(dt / step);
-          for (let n = 0;n < numSteps; ++n) {
-            isMoving = Math.abs(velocity) > restVelocity;
-            if (!isMoving) {
-              finished = Math.abs(to2 - position) <= precision;
-              if (finished) {
-                break;
-              }
-            }
-            if (canBounce) {
-              isBouncing = position == to2 || position > to2 == isGrowing;
-              if (isBouncing) {
-                velocity = -velocity * bounceFactor;
-                position = to2;
-              }
-            }
-            const springForce = -config2.tension * 0.000001 * (position - to2);
-            const dampingForce = -config2.friction * 0.001 * velocity;
-            const acceleration = (springForce + dampingForce) / config2.mass;
-            velocity = velocity + acceleration * step;
-            position = position + velocity * step;
-          }
-        }
-        node2.lastVelocity = velocity;
-        if (Number.isNaN(position)) {
-          console.warn(`Got NaN while animating:`, this);
-          finished = true;
-        }
-      }
-      if (payload && !payload[i].done) {
-        finished = false;
-      }
-      if (finished) {
-        node2.done = true;
-      } else {
-        idle = false;
-      }
-      if (node2.setValue(position, config2.round)) {
-        changed = true;
-      }
-    });
-    const node = getAnimated(this);
-    const currVal = node.getValue();
-    if (idle) {
-      const finalVal = getFluidValue(anim.to);
-      if ((currVal !== finalVal || changed) && !config2.decay) {
-        node.setValue(finalVal);
-        this._onChange(finalVal);
-      } else if (changed && config2.decay) {
-        this._onChange(currVal);
-      }
-      this._stop();
-    } else if (changed) {
-      this._onChange(currVal);
-    }
-  }
-  set(value) {
-    raf.batchedUpdates(() => {
-      this._stop();
-      this._focus(value);
-      this._set(value);
-    });
-    return this;
-  }
-  pause() {
-    this._update({ pause: true });
-  }
-  resume() {
-    this._update({ pause: false });
-  }
-  finish() {
-    if (isAnimating(this)) {
-      const { to: to2, config: config2 } = this.animation;
-      raf.batchedUpdates(() => {
-        this._onStart();
-        if (!config2.decay) {
-          this._set(to2, false);
-        }
-        this._stop();
-      });
-    }
-    return this;
-  }
-  update(props) {
-    const queue = this.queue || (this.queue = []);
-    queue.push(props);
-    return this;
-  }
-  start(to2, arg2) {
-    let queue;
-    if (!is.und(to2)) {
-      queue = [is.obj(to2) ? to2 : { ...arg2, to: to2 }];
-    } else {
-      queue = this.queue || [];
-      this.queue = [];
-    }
-    return Promise.all(queue.map((props) => {
-      const up = this._update(props);
-      return up;
-    })).then((results) => getCombinedResult(this, results));
-  }
-  stop(cancel) {
-    const { to: to2 } = this.animation;
-    this._focus(this.get());
-    stopAsync(this._state, cancel && this._lastCallId);
-    raf.batchedUpdates(() => this._stop(to2, cancel));
-    return this;
-  }
-  reset() {
-    this._update({ reset: true });
-  }
-  eventObserved(event) {
-    if (event.type == "change") {
-      this._start();
-    } else if (event.type == "priority") {
-      this.priority = event.priority + 1;
-    }
-  }
-  _prepareNode(props) {
-    const key = this.key || "";
-    let { to: to2, from } = props;
-    to2 = is.obj(to2) ? to2[key] : to2;
-    if (to2 == null || isAsyncTo(to2)) {
-      to2 = undefined;
-    }
-    from = is.obj(from) ? from[key] : from;
-    if (from == null) {
-      from = undefined;
-    }
-    const range = { to: to2, from };
-    if (!hasAnimated(this)) {
-      if (props.reverse)
-        [to2, from] = [from, to2];
-      from = getFluidValue(from);
-      if (!is.und(from)) {
-        this._set(from);
-      } else if (!getAnimated(this)) {
-        this._set(to2);
-      }
-    }
-    return range;
-  }
-  _update({ ...props }, isLoop) {
-    const { key, defaultProps } = this;
-    if (props.default)
-      Object.assign(defaultProps, getDefaultProps(props, (value, prop) => /^on/.test(prop) ? resolveProp(value, key) : value));
-    mergeActiveFn(this, props, "onProps");
-    sendEvent(this, "onProps", props, this);
-    const range = this._prepareNode(props);
-    if (Object.isFrozen(this)) {
-      throw Error("Cannot animate a `SpringValue` object that is frozen. Did you forget to pass your component to `animated(...)` before animating its props?");
-    }
-    const state = this._state;
-    return scheduleProps(++this._lastCallId, {
-      key,
-      props,
-      defaultProps,
-      state,
-      actions: {
-        pause: () => {
-          if (!isPaused(this)) {
-            setPausedBit(this, true);
-            flushCalls(state.pauseQueue);
-            sendEvent(this, "onPause", getFinishedResult(this, checkFinished(this, this.animation.to)), this);
-          }
-        },
-        resume: () => {
-          if (isPaused(this)) {
-            setPausedBit(this, false);
-            if (isAnimating(this)) {
-              this._resume();
-            }
-            flushCalls(state.resumeQueue);
-            sendEvent(this, "onResume", getFinishedResult(this, checkFinished(this, this.animation.to)), this);
-          }
-        },
-        start: this._merge.bind(this, range)
-      }
-    }).then((result) => {
-      if (props.loop && result.finished && !(isLoop && result.noop)) {
-        const nextProps = createLoopUpdate(props);
-        if (nextProps) {
-          return this._update(nextProps, true);
-        }
-      }
-      return result;
-    });
-  }
-  _merge(range, props, resolve) {
-    if (props.cancel) {
-      this.stop(true);
-      return resolve(getCancelledResult(this));
-    }
-    const hasToProp = !is.und(range.to);
-    const hasFromProp = !is.und(range.from);
-    if (hasToProp || hasFromProp) {
-      if (props.callId > this._lastToId) {
-        this._lastToId = props.callId;
-      } else {
-        return resolve(getCancelledResult(this));
-      }
-    }
-    const { key, defaultProps, animation: anim } = this;
-    const { to: prevTo, from: prevFrom } = anim;
-    let { to: to2 = prevTo, from = prevFrom } = range;
-    if (hasFromProp && !hasToProp && (!props.default || is.und(to2))) {
-      to2 = from;
-    }
-    if (props.reverse)
-      [to2, from] = [from, to2];
-    const hasFromChanged = !isEqual(from, prevFrom);
-    if (hasFromChanged) {
-      anim.from = from;
-    }
-    from = getFluidValue(from);
-    const hasToChanged = !isEqual(to2, prevTo);
-    if (hasToChanged) {
-      this._focus(to2);
-    }
-    const hasAsyncTo = isAsyncTo(props.to);
-    const { config: config2 } = anim;
-    const { decay, velocity } = config2;
-    if (hasToProp || hasFromProp) {
-      config2.velocity = 0;
-    }
-    if (props.config && !hasAsyncTo) {
-      mergeConfig(config2, callProp(props.config, key), props.config !== defaultProps.config ? callProp(defaultProps.config, key) : undefined);
-    }
-    let node = getAnimated(this);
-    if (!node || is.und(to2)) {
-      return resolve(getFinishedResult(this, true));
-    }
-    const reset = is.und(props.reset) ? hasFromProp && !props.default : !is.und(from) && matchProp(props.reset, key);
-    const value = reset ? from : this.get();
-    const goal = computeGoal(to2);
-    const isAnimatable = is.num(goal) || is.arr(goal) || isAnimatedString(goal);
-    const immediate = !hasAsyncTo && (!isAnimatable || matchProp(defaultProps.immediate || props.immediate, key));
-    if (hasToChanged) {
-      const nodeType = getAnimatedType(to2);
-      if (nodeType !== node.constructor) {
-        if (immediate) {
-          node = this._set(goal);
-        } else
-          throw Error(`Cannot animate between ${node.constructor.name} and ${nodeType.name}, as the "to" prop suggests`);
-      }
-    }
-    const goalType = node.constructor;
-    let started = hasFluidValue(to2);
-    let finished = false;
-    if (!started) {
-      const hasValueChanged = reset || !hasAnimated(this) && hasFromChanged;
-      if (hasToChanged || hasValueChanged) {
-        finished = isEqual(computeGoal(value), goal);
-        started = !finished;
-      }
-      if (!isEqual(anim.immediate, immediate) && !immediate || !isEqual(config2.decay, decay) || !isEqual(config2.velocity, velocity)) {
-        started = true;
-      }
-    }
-    if (finished && isAnimating(this)) {
-      if (anim.changed && !reset) {
-        started = true;
-      } else if (!started) {
-        this._stop(prevTo);
-      }
-    }
-    if (!hasAsyncTo) {
-      if (started || hasFluidValue(prevTo)) {
-        anim.values = node.getPayload();
-        anim.toValues = hasFluidValue(to2) ? null : goalType == AnimatedString ? [1] : toArray(goal);
-      }
-      if (anim.immediate != immediate) {
-        anim.immediate = immediate;
-        if (!immediate && !reset) {
-          this._set(prevTo);
-        }
-      }
-      if (started) {
-        const { onRest } = anim;
-        each(ACTIVE_EVENTS, (type) => mergeActiveFn(this, props, type));
-        const result = getFinishedResult(this, checkFinished(this, prevTo));
-        flushCalls(this._pendingCalls, result);
-        this._pendingCalls.add(resolve);
-        if (anim.changed)
-          raf.batchedUpdates(() => {
-            anim.changed = !reset;
-            onRest?.(result, this);
-            if (reset) {
-              callProp(defaultProps.onRest, result);
-            } else {
-              anim.onStart?.(result, this);
-            }
-          });
-      }
-    }
-    if (reset) {
-      this._set(value);
-    }
-    if (hasAsyncTo) {
-      resolve(runAsync(props.to, props, this._state, this));
-    } else if (started) {
-      this._start();
-    } else if (isAnimating(this) && !hasToChanged) {
-      this._pendingCalls.add(resolve);
-    } else {
-      resolve(getNoopResult(value));
-    }
-  }
-  _focus(value) {
-    const anim = this.animation;
-    if (value !== anim.to) {
-      if (getFluidObservers(this)) {
-        this._detach();
-      }
-      anim.to = value;
-      if (getFluidObservers(this)) {
-        this._attach();
-      }
-    }
-  }
-  _attach() {
-    let priority2 = 0;
-    const { to: to2 } = this.animation;
-    if (hasFluidValue(to2)) {
-      addFluidObserver(to2, this);
-      if (isFrameValue(to2)) {
-        priority2 = to2.priority + 1;
-      }
-    }
-    this.priority = priority2;
-  }
-  _detach() {
-    const { to: to2 } = this.animation;
-    if (hasFluidValue(to2)) {
-      removeFluidObserver(to2, this);
-    }
-  }
-  _set(arg, idle = true) {
-    const value = getFluidValue(arg);
-    if (!is.und(value)) {
-      const oldNode = getAnimated(this);
-      if (!oldNode || !isEqual(value, oldNode.getValue())) {
-        const nodeType = getAnimatedType(value);
-        if (!oldNode || oldNode.constructor != nodeType) {
-          setAnimated(this, nodeType.create(value));
-        } else {
-          oldNode.setValue(value);
-        }
-        if (oldNode) {
-          raf.batchedUpdates(() => {
-            this._onChange(value, idle);
-          });
-        }
-      }
-    }
-    return getAnimated(this);
-  }
-  _onStart() {
-    const anim = this.animation;
-    if (!anim.changed) {
-      anim.changed = true;
-      sendEvent(this, "onStart", getFinishedResult(this, checkFinished(this, anim.to)), this);
-    }
-  }
-  _onChange(value, idle) {
-    if (!idle) {
-      this._onStart();
-      callProp(this.animation.onChange, value, this);
-    }
-    callProp(this.defaultProps.onChange, value, this);
-    super._onChange(value, idle);
-  }
-  _start() {
-    const anim = this.animation;
-    getAnimated(this).reset(getFluidValue(anim.to));
-    if (!anim.immediate) {
-      anim.fromValues = anim.values.map((node) => node.lastPosition);
-    }
-    if (!isAnimating(this)) {
-      setActiveBit(this, true);
-      if (!isPaused(this)) {
-        this._resume();
-      }
-    }
-  }
-  _resume() {
-    if (globals_exports.skipAnimation) {
-      this.finish();
-    } else {
-      frameLoop.start(this);
-    }
-  }
-  _stop(goal, cancel) {
-    if (isAnimating(this)) {
-      setActiveBit(this, false);
-      const anim = this.animation;
-      each(anim.values, (node) => {
-        node.done = true;
-      });
-      if (anim.toValues) {
-        anim.onChange = anim.onPause = anim.onResume = undefined;
-      }
-      callFluidObservers(this, {
-        type: "idle",
-        parent: this
-      });
-      const result = cancel ? getCancelledResult(this.get()) : getFinishedResult(this.get(), checkFinished(this, goal ?? anim.to));
-      flushCalls(this._pendingCalls, result);
-      if (anim.changed) {
-        anim.changed = false;
-        sendEvent(this, "onRest", result, this);
-      }
-    }
-  }
-};
-function checkFinished(target, to2) {
-  const goal = computeGoal(to2);
-  const value = computeGoal(target.get());
-  return isEqual(value, goal);
-}
-function createLoopUpdate(props, loop2 = props.loop, to2 = props.to) {
-  const loopRet = callProp(loop2);
-  if (loopRet) {
-    const overrides = loopRet !== true && inferTo(loopRet);
-    const reverse = (overrides || props).reverse;
-    const reset = !overrides || overrides.reset;
-    return createUpdate({
-      ...props,
-      loop: loop2,
-      default: false,
-      pause: undefined,
-      to: !reverse || isAsyncTo(to2) ? to2 : undefined,
-      from: reset ? props.from : undefined,
-      reset,
-      ...overrides
-    });
-  }
-}
-function createUpdate(props) {
-  const { to: to2, from } = props = inferTo(props);
-  const keys = /* @__PURE__ */ new Set;
-  if (is.obj(to2))
-    findDefined(to2, keys);
-  if (is.obj(from))
-    findDefined(from, keys);
-  props.keys = keys.size ? Array.from(keys) : null;
-  return props;
-}
-function declareUpdate(props) {
-  const update2 = createUpdate(props);
-  if (is.und(update2.default)) {
-    update2.default = getDefaultProps(update2);
-  }
-  return update2;
-}
-function findDefined(values, keys) {
-  eachProp(values, (value, key) => value != null && keys.add(key));
-}
-var ACTIVE_EVENTS = [
-  "onStart",
-  "onRest",
-  "onChange",
-  "onPause",
-  "onResume"
-];
-function mergeActiveFn(target, props, type) {
-  target.animation[type] = props[type] !== getDefaultProp(props, type) ? resolveProp(props[type], target.key) : undefined;
-}
-function sendEvent(target, type, ...args) {
-  target.animation[type]?.(...args);
-  target.defaultProps[type]?.(...args);
-}
-var BATCHED_EVENTS = ["onStart", "onChange", "onRest"];
-var nextId2 = 1;
-var Controller = class {
-  constructor(props, flush3) {
-    this.id = nextId2++;
-    this.springs = {};
-    this.queue = [];
-    this._lastAsyncId = 0;
-    this._active = /* @__PURE__ */ new Set;
-    this._changed = /* @__PURE__ */ new Set;
-    this._started = false;
-    this._state = {
-      paused: false,
-      pauseQueue: /* @__PURE__ */ new Set,
-      resumeQueue: /* @__PURE__ */ new Set,
-      timeouts: /* @__PURE__ */ new Set
-    };
-    this._events = {
-      onStart: /* @__PURE__ */ new Map,
-      onChange: /* @__PURE__ */ new Map,
-      onRest: /* @__PURE__ */ new Map
-    };
-    this._onFrame = this._onFrame.bind(this);
-    if (flush3) {
-      this._flush = flush3;
-    }
-    if (props) {
-      this.start({ default: true, ...props });
-    }
-  }
-  get idle() {
-    return !this._state.asyncTo && Object.values(this.springs).every((spring) => {
-      return spring.idle && !spring.isDelayed && !spring.isPaused;
-    });
-  }
-  get item() {
-    return this._item;
-  }
-  set item(item) {
-    this._item = item;
-  }
-  get() {
-    const values = {};
-    this.each((spring, key) => values[key] = spring.get());
-    return values;
-  }
-  set(values) {
-    for (const key in values) {
-      const value = values[key];
-      if (!is.und(value)) {
-        this.springs[key].set(value);
-      }
-    }
-  }
-  update(props) {
-    if (props) {
-      this.queue.push(createUpdate(props));
-    }
-    return this;
-  }
-  start(props) {
-    let { queue } = this;
-    if (props) {
-      queue = toArray(props).map(createUpdate);
-    } else {
-      this.queue = [];
-    }
-    if (this._flush) {
-      return this._flush(this, queue);
-    }
-    prepareKeys(this, queue);
-    return flushUpdateQueue(this, queue);
-  }
-  stop(arg, keys) {
-    if (arg !== !!arg) {
-      keys = arg;
-    }
-    if (keys) {
-      const springs = this.springs;
-      each(toArray(keys), (key) => springs[key].stop(!!arg));
-    } else {
-      stopAsync(this._state, this._lastAsyncId);
-      this.each((spring) => spring.stop(!!arg));
-    }
-    return this;
-  }
-  pause(keys) {
-    if (is.und(keys)) {
-      this.start({ pause: true });
-    } else {
-      const springs = this.springs;
-      each(toArray(keys), (key) => springs[key].pause());
-    }
-    return this;
-  }
-  resume(keys) {
-    if (is.und(keys)) {
-      this.start({ pause: false });
-    } else {
-      const springs = this.springs;
-      each(toArray(keys), (key) => springs[key].resume());
-    }
-    return this;
-  }
-  each(iterator) {
-    eachProp(this.springs, iterator);
-  }
-  _onFrame() {
-    const { onStart, onChange, onRest } = this._events;
-    const active = this._active.size > 0;
-    const changed = this._changed.size > 0;
-    if (active && !this._started || changed && !this._started) {
-      this._started = true;
-      flush(onStart, ([onStart2, result]) => {
-        result.value = this.get();
-        onStart2(result, this, this._item);
-      });
-    }
-    const idle = !active && this._started;
-    const values = changed || idle && onRest.size ? this.get() : null;
-    if (changed && onChange.size) {
-      flush(onChange, ([onChange2, result]) => {
-        result.value = values;
-        onChange2(result, this, this._item);
-      });
-    }
-    if (idle) {
-      this._started = false;
-      flush(onRest, ([onRest2, result]) => {
-        result.value = values;
-        onRest2(result, this, this._item);
-      });
-    }
-  }
-  eventObserved(event) {
-    if (event.type == "change") {
-      this._changed.add(event.parent);
-      if (!event.idle) {
-        this._active.add(event.parent);
-      }
-    } else if (event.type == "idle") {
-      this._active.delete(event.parent);
-    } else
-      return;
-    raf.onFrame(this._onFrame);
-  }
-};
-function flushUpdateQueue(ctrl, queue) {
-  return Promise.all(queue.map((props) => flushUpdate(ctrl, props))).then((results) => getCombinedResult(ctrl, results));
-}
-async function flushUpdate(ctrl, props, isLoop) {
-  const { keys, to: to2, from, loop: loop2, onRest, onResolve } = props;
-  const defaults2 = is.obj(props.default) && props.default;
-  if (loop2) {
-    props.loop = false;
-  }
-  if (to2 === false)
-    props.to = null;
-  if (from === false)
-    props.from = null;
-  const asyncTo = is.arr(to2) || is.fun(to2) ? to2 : undefined;
-  if (asyncTo) {
-    props.to = undefined;
-    props.onRest = undefined;
-    if (defaults2) {
-      defaults2.onRest = undefined;
-    }
-  } else {
-    each(BATCHED_EVENTS, (key) => {
-      const handler = props[key];
-      if (is.fun(handler)) {
-        const queue = ctrl["_events"][key];
-        props[key] = ({ finished, cancelled }) => {
-          const result2 = queue.get(handler);
-          if (result2) {
-            if (!finished)
-              result2.finished = false;
-            if (cancelled)
-              result2.cancelled = true;
-          } else {
-            queue.set(handler, {
-              value: null,
-              finished: finished || false,
-              cancelled: cancelled || false
-            });
-          }
-        };
-        if (defaults2) {
-          defaults2[key] = props[key];
-        }
-      }
-    });
-  }
-  const state = ctrl["_state"];
-  if (props.pause === !state.paused) {
-    state.paused = props.pause;
-    flushCalls(props.pause ? state.pauseQueue : state.resumeQueue);
-  } else if (state.paused) {
-    props.pause = true;
-  }
-  const promises = (keys || Object.keys(ctrl.springs)).map((key) => ctrl.springs[key].start(props));
-  const cancel = props.cancel === true || getDefaultProp(props, "cancel") === true;
-  if (asyncTo || cancel && state.asyncId) {
-    promises.push(scheduleProps(++ctrl["_lastAsyncId"], {
-      props,
-      state,
-      actions: {
-        pause: noop,
-        resume: noop,
-        start(props2, resolve) {
-          if (cancel) {
-            stopAsync(state, ctrl["_lastAsyncId"]);
-            resolve(getCancelledResult(ctrl));
-          } else {
-            props2.onRest = onRest;
-            resolve(runAsync(asyncTo, props2, state, ctrl));
-          }
-        }
-      }
-    }));
-  }
-  if (state.paused) {
-    await new Promise((resume) => {
-      state.resumeQueue.add(resume);
-    });
-  }
-  const result = getCombinedResult(ctrl, await Promise.all(promises));
-  if (loop2 && result.finished && !(isLoop && result.noop)) {
-    const nextProps = createLoopUpdate(props, loop2, to2);
-    if (nextProps) {
-      prepareKeys(ctrl, [nextProps]);
-      return flushUpdate(ctrl, nextProps, true);
-    }
-  }
-  if (onResolve) {
-    raf.batchedUpdates(() => onResolve(result, ctrl, ctrl.item));
-  }
-  return result;
-}
-function getSprings(ctrl, props) {
-  const springs = { ...ctrl.springs };
-  if (props) {
-    each(toArray(props), (props2) => {
-      if (is.und(props2.keys)) {
-        props2 = createUpdate(props2);
-      }
-      if (!is.obj(props2.to)) {
-        props2 = { ...props2, to: undefined };
-      }
-      prepareSprings(springs, props2, (key) => {
-        return createSpring(key);
-      });
-    });
-  }
-  setSprings(ctrl, springs);
-  return springs;
-}
-function setSprings(ctrl, springs) {
-  eachProp(springs, (spring, key) => {
-    if (!ctrl.springs[key]) {
-      ctrl.springs[key] = spring;
-      addFluidObserver(spring, ctrl);
-    }
-  });
-}
-function createSpring(key, observer) {
-  const spring = new SpringValue;
-  spring.key = key;
-  if (observer) {
-    addFluidObserver(spring, observer);
-  }
-  return spring;
-}
-function prepareSprings(springs, props, create) {
-  if (props.keys) {
-    each(props.keys, (key) => {
-      const spring = springs[key] || (springs[key] = create(key));
-      spring["_prepareNode"](props);
-    });
-  }
-}
-function prepareKeys(ctrl, queue) {
-  each(queue, (props) => {
-    prepareSprings(ctrl.springs, props, (key) => {
-      return createSpring(key, ctrl);
-    });
-  });
-}
 var SpringContext = ({
   children,
   ...props
@@ -28049,162 +27121,6 @@ function makeContext(target, init) {
   target.Provider._context = target;
   target.Consumer._context = target;
   return target;
-}
-var SpringRef = () => {
-  const current = [];
-  const SpringRef2 = function(props) {
-    deprecateDirectCall();
-    const results = [];
-    each(current, (ctrl, i) => {
-      if (is.und(props)) {
-        results.push(ctrl.start());
-      } else {
-        const update2 = _getProps(props, ctrl, i);
-        if (update2) {
-          results.push(ctrl.start(update2));
-        }
-      }
-    });
-    return results;
-  };
-  SpringRef2.current = current;
-  SpringRef2.add = function(ctrl) {
-    if (!current.includes(ctrl)) {
-      current.push(ctrl);
-    }
-  };
-  SpringRef2.delete = function(ctrl) {
-    const i = current.indexOf(ctrl);
-    if (~i)
-      current.splice(i, 1);
-  };
-  SpringRef2.pause = function() {
-    each(current, (ctrl) => ctrl.pause(...arguments));
-    return this;
-  };
-  SpringRef2.resume = function() {
-    each(current, (ctrl) => ctrl.resume(...arguments));
-    return this;
-  };
-  SpringRef2.set = function(values) {
-    each(current, (ctrl, i) => {
-      const update2 = is.fun(values) ? values(i, ctrl) : values;
-      if (update2) {
-        ctrl.set(update2);
-      }
-    });
-  };
-  SpringRef2.start = function(props) {
-    const results = [];
-    each(current, (ctrl, i) => {
-      if (is.und(props)) {
-        results.push(ctrl.start());
-      } else {
-        const update2 = this._getProps(props, ctrl, i);
-        if (update2) {
-          results.push(ctrl.start(update2));
-        }
-      }
-    });
-    return results;
-  };
-  SpringRef2.stop = function() {
-    each(current, (ctrl) => ctrl.stop(...arguments));
-    return this;
-  };
-  SpringRef2.update = function(props) {
-    each(current, (ctrl, i) => ctrl.update(this._getProps(props, ctrl, i)));
-    return this;
-  };
-  const _getProps = function(arg, ctrl, index) {
-    return is.fun(arg) ? arg(index, ctrl) : arg;
-  };
-  SpringRef2._getProps = _getProps;
-  return SpringRef2;
-};
-function useSprings(length, props, deps) {
-  const propsFn = is.fun(props) && props;
-  if (propsFn && !deps)
-    deps = [];
-  const ref = import_react12.useMemo(() => propsFn || arguments.length == 3 ? SpringRef() : undefined, []);
-  const layoutId = import_react12.useRef(0);
-  const forceUpdate = useForceUpdate();
-  const state = import_react12.useMemo(() => ({
-    ctrls: [],
-    queue: [],
-    flush(ctrl, updates2) {
-      const springs2 = getSprings(ctrl, updates2);
-      const canFlushSync = layoutId.current > 0 && !state.queue.length && !Object.keys(springs2).some((key) => !ctrl.springs[key]);
-      return canFlushSync ? flushUpdateQueue(ctrl, updates2) : new Promise((resolve) => {
-        setSprings(ctrl, springs2);
-        state.queue.push(() => {
-          resolve(flushUpdateQueue(ctrl, updates2));
-        });
-        forceUpdate();
-      });
-    }
-  }), []);
-  const ctrls = import_react12.useRef([...state.ctrls]);
-  const updates = [];
-  const prevLength = usePrev(length) || 0;
-  import_react12.useMemo(() => {
-    each(ctrls.current.slice(length, prevLength), (ctrl) => {
-      detachRefs(ctrl, ref);
-      ctrl.stop(true);
-    });
-    ctrls.current.length = length;
-    declareUpdates(prevLength, length);
-  }, [length]);
-  import_react12.useMemo(() => {
-    declareUpdates(0, Math.min(prevLength, length));
-  }, deps);
-  function declareUpdates(startIndex, endIndex) {
-    for (let i = startIndex;i < endIndex; i++) {
-      const ctrl = ctrls.current[i] || (ctrls.current[i] = new Controller(null, state.flush));
-      const update2 = propsFn ? propsFn(i, ctrl) : props[i];
-      if (update2) {
-        updates[i] = declareUpdate(update2);
-      }
-    }
-  }
-  const springs = ctrls.current.map((ctrl, i) => getSprings(ctrl, updates[i]));
-  const context = import_react12.useContext(SpringContext);
-  const prevContext = usePrev(context);
-  const hasContext = context !== prevContext && hasProps(context);
-  useIsomorphicLayoutEffect2(() => {
-    layoutId.current++;
-    state.ctrls = ctrls.current;
-    const { queue } = state;
-    if (queue.length) {
-      state.queue = [];
-      each(queue, (cb) => cb());
-    }
-    each(ctrls.current, (ctrl, i) => {
-      ref?.add(ctrl);
-      if (hasContext) {
-        ctrl.start({ default: context });
-      }
-      const update2 = updates[i];
-      if (update2) {
-        replaceRef(ctrl, update2.ref);
-        if (ctrl.ref) {
-          ctrl.queue.push(update2);
-        } else {
-          ctrl.start(update2);
-        }
-      }
-    });
-  });
-  useOnce(() => () => {
-    each(state.ctrls, (ctrl) => ctrl.stop(true));
-  });
-  const values = springs.map((x) => ({ ...x }));
-  return ref ? [values, ref] : values;
-}
-function useSpring(props, deps) {
-  const isFn = is.fun(props);
-  const [[values], ref] = useSprings(1, isFn ? props : [props], isFn ? deps || [] : deps);
-  return isFn || arguments.length == 2 ? [values, ref] : values;
 }
 var Interpolation = class extends FrameValue {
   constructor(source, args) {
@@ -28229,7 +27145,7 @@ var Interpolation = class extends FrameValue {
     }
   }
   _get() {
-    const inputs = is.arr(this.source) ? this.source.map(getFluidValue) : toArray(getFluidValue(this.source));
+    const inputs = is.arr(this.source) ? this.source.map(getFluidValue) : toArray2(getFluidValue(this.source));
     return this.calc(...inputs);
   }
   _start() {
@@ -28248,7 +27164,7 @@ var Interpolation = class extends FrameValue {
   }
   _attach() {
     let priority2 = 1;
-    each(toArray(this.source), (source) => {
+    each(toArray2(this.source), (source) => {
       if (hasFluidValue(source)) {
         addFluidObserver(source, this);
       }
@@ -28263,7 +27179,7 @@ var Interpolation = class extends FrameValue {
     this._start();
   }
   _detach() {
-    each(toArray(this.source), (source) => {
+    each(toArray2(this.source), (source) => {
       if (hasFluidValue(source)) {
         removeFluidObserver(source, this);
       }
@@ -28282,7 +27198,7 @@ var Interpolation = class extends FrameValue {
     } else if (event.type == "idle") {
       this._active.delete(event.parent);
     } else if (event.type == "priority") {
-      this.priority = toArray(this.source).reduce((highest, parent) => Math.max(highest, (isFrameValue(parent) ? parent.priority : 0) + 1), 0);
+      this.priority = toArray2(this.source).reduce((highest, parent) => Math.max(highest, (isFrameValue(parent) ? parent.priority : 0) + 1), 0);
     }
   }
 };
@@ -28440,7 +27356,7 @@ var AnimatedStyle = class extends AnimatedObject {
         if (is.und(value))
           return;
         const unit = pxTransforms.test(key) ? "px" : degTransforms.test(key) ? "deg" : "";
-        inputs.push(toArray(value));
+        inputs.push(toArray2(value));
         transforms.push(key === "rotate3d" ? ([x2, y2, z2, deg]) => [
           `rotate3d(${x2},${y2},${z2},${addUnit(deg, unit)})`,
           isValueIdentity(deg, 0)
@@ -28638,406 +27554,84 @@ var host = createHost(primitives, {
   getComponentProps: ({ scrollTop, scrollLeft, ...props }) => props
 });
 var animated = host.animated;
-// src/web/component/window/Window.tsx
-var import_react17 = __toESM(require_react(), 1);
-var import_react18 = __toESM(require_react(), 1);
+// src/web/component/module/silk/container/HorizontalMultiModeContainer.tsx
 var jsx_dev_runtime2 = __toESM(require_jsx_dev_runtime(), 1);
-function Window(props) {
+function HorizontalMultiModeContainer(props) {
   let {
-    initW,
-    initH,
-    initX,
-    initY,
+    mode = 0,
+    w = 0,
+    h = 0,
     children
   } = props;
-  let [isDragging, setIsDragging] = import_react17.useState(false);
-  let [fromDragPosition, setFromDragPosition] = import_react17.useState({ x: 0, y: 0 });
-  let [drag, setDrag] = useSpring(() => ({
-    x: initX,
-    y: initY,
-    config: config.stiff
-  }));
-  function onMouseDown(e) {
-    setIsDragging(true);
-    setFromDragPosition({
-      x: e.clientX - drag.x.get(),
-      y: e.clientY - drag.y.get()
-    });
-    return;
-  }
-  function onMouseMove(e) {
-    if (isDragging)
-      setDrag.start({
-        x: e.clientX - fromDragPosition.x,
-        y: e.clientY - fromDragPosition.y
-      });
-    return;
-  }
-  function onMouseUp() {
-    setIsDragging(false);
-    return;
-  }
-  import_react18.useEffect(() => {
-    if (isDragging) {
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("mouseup", onMouseUp);
-    } else {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    }
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-      return;
-    };
-  }, [isDragging]);
   return /* @__PURE__ */ jsx_dev_runtime2.jsxDEV(jsx_dev_runtime2.Fragment, {
     children: /* @__PURE__ */ jsx_dev_runtime2.jsxDEV(animated.div, {
-      onMouseDown,
       style: {
-        position: "absolute",
-        width: initW,
-        height: 32,
-        background: TIMPERWOLD,
-        cursor: isDragging ? "grabbing" : "grab",
-        minWidth: 100,
-        ...drag
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        overflowX: "hidden",
+        overflowY: "hidden",
+        width: w,
+        height: h,
+        borderColor: "green",
+        borderWidth: 1,
+        borderStyle: "solid"
       },
-      children: /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("div", {
+      children: /* @__PURE__ */ jsx_dev_runtime2.jsxDEV(animated.div, {
         style: {
-          position: "relative",
-          color: TIMPERWOLD,
-          marginTop: 32,
-          background: ONYX
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "start",
+          alignItems: "center",
+          width: w * toArray(children).length,
+          height: h,
+          margin: 0,
+          padding: 0,
+          marginRight: mode * (w / 2)
         },
-        children: "Hello"
+        children: toArray(children).map((child) => /* @__PURE__ */ jsx_dev_runtime2.jsxDEV(animated.div, {
+          style: {
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: w,
+            height: h
+          },
+          children: child
+        }, undefined, false, undefined, this))
       }, undefined, false, undefined, this)
     }, undefined, false, undefined, this)
   }, undefined, false, undefined, this);
 }
 
-// src/web/page/TalismanPage.tsx
+// src/web/page/DaoPage.tsx
 var jsx_dev_runtime3 = __toESM(require_jsx_dev_runtime(), 1);
-function TalismanPage() {
+function DaoPage() {
+  let [mode, setMode] = import_react17.useState(0);
+  import_react17.useEffect(() => {
+    setTimeout(() => setMode(1), 2500);
+  }, []);
   return /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(jsx_dev_runtime3.Fragment, {
     children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(ResponsiveAnchorPage, {
-      children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(Window, {
-        initW: 200,
-        initH: 200,
-        initX: 0,
-        initY: 0
-      }, undefined, false, undefined, this)
+      children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(HorizontalMultiModeContainer, {
+        mode,
+        w: 800,
+        h: 400,
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(jsx_dev_runtime3.Fragment, {
+            children: "HELLO_WORLD"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(jsx_dev_runtime3.Fragment, {
+            children: "HI THERE"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
     }, undefined, false, undefined, this)
   }, undefined, false, undefined, this);
 }
-// node_modules/ts-results/esm/utils.js
-function toString(val) {
-  var value = String(val);
-  if (value === "[object Object]") {
-    try {
-      value = JSON.stringify(val);
-    } catch (_a) {
-    }
-  }
-  return value;
-}
 
-// node_modules/ts-results/esm/option.js
-var NoneImpl = function() {
-  function NoneImpl2() {
-    this.some = false;
-    this.none = true;
-  }
-  NoneImpl2.prototype[Symbol.iterator] = function() {
-    return {
-      next: function() {
-        return { done: true, value: undefined };
-      }
-    };
-  };
-  NoneImpl2.prototype.unwrapOr = function(val) {
-    return val;
-  };
-  NoneImpl2.prototype.expect = function(msg) {
-    throw new Error("" + msg);
-  };
-  NoneImpl2.prototype.unwrap = function() {
-    throw new Error("Tried to unwrap None");
-  };
-  NoneImpl2.prototype.map = function(_mapper) {
-    return this;
-  };
-  NoneImpl2.prototype.andThen = function(op) {
-    return this;
-  };
-  NoneImpl2.prototype.toResult = function(error) {
-    return Err(error);
-  };
-  NoneImpl2.prototype.toString = function() {
-    return "None";
-  };
-  return NoneImpl2;
-}();
-var None = new NoneImpl;
-Object.freeze(None);
-var SomeImpl = function() {
-  function SomeImpl2(val) {
-    if (!(this instanceof SomeImpl2)) {
-      return new SomeImpl2(val);
-    }
-    this.some = true;
-    this.none = false;
-    this.val = val;
-  }
-  SomeImpl2.prototype[Symbol.iterator] = function() {
-    var obj = Object(this.val);
-    return Symbol.iterator in obj ? obj[Symbol.iterator]() : {
-      next: function() {
-        return { done: true, value: undefined };
-      }
-    };
-  };
-  SomeImpl2.prototype.unwrapOr = function(_val) {
-    return this.val;
-  };
-  SomeImpl2.prototype.expect = function(_msg) {
-    return this.val;
-  };
-  SomeImpl2.prototype.unwrap = function() {
-    return this.val;
-  };
-  SomeImpl2.prototype.map = function(mapper) {
-    return Some(mapper(this.val));
-  };
-  SomeImpl2.prototype.andThen = function(mapper) {
-    return mapper(this.val);
-  };
-  SomeImpl2.prototype.toResult = function(error) {
-    return Ok(this.val);
-  };
-  SomeImpl2.prototype.safeUnwrap = function() {
-    return this.val;
-  };
-  SomeImpl2.prototype.toString = function() {
-    return "Some(" + toString(this.val) + ")";
-  };
-  SomeImpl2.EMPTY = new SomeImpl2(undefined);
-  return SomeImpl2;
-}();
-var Some = SomeImpl;
-var Option;
-(function(Option2) {
-  function all() {
-    var options = [];
-    for (var _i = 0;_i < arguments.length; _i++) {
-      options[_i] = arguments[_i];
-    }
-    var someOption = [];
-    for (var _a = 0, options_1 = options;_a < options_1.length; _a++) {
-      var option = options_1[_a];
-      if (option.some) {
-        someOption.push(option.val);
-      } else {
-        return option;
-      }
-    }
-    return Some(someOption);
-  }
-  Option2.all = all;
-  function any() {
-    var options = [];
-    for (var _i = 0;_i < arguments.length; _i++) {
-      options[_i] = arguments[_i];
-    }
-    for (var _a = 0, options_2 = options;_a < options_2.length; _a++) {
-      var option = options_2[_a];
-      if (option.some) {
-        return option;
-      } else {
-        return option;
-      }
-    }
-    return None;
-  }
-  Option2.any = any;
-  function isOption(value) {
-    return value instanceof Some || value === None;
-  }
-  Option2.isOption = isOption;
-})(Option || (Option = {}));
-
-// node_modules/ts-results/esm/result.js
-var ErrImpl = function() {
-  function ErrImpl2(val) {
-    if (!(this instanceof ErrImpl2)) {
-      return new ErrImpl2(val);
-    }
-    this.ok = false;
-    this.err = true;
-    this.val = val;
-    var stackLines = new Error().stack.split("\n").slice(2);
-    if (stackLines && stackLines.length > 0 && stackLines[0].includes("ErrImpl")) {
-      stackLines.shift();
-    }
-    this._stack = stackLines.join("\n");
-  }
-  ErrImpl2.prototype[Symbol.iterator] = function() {
-    return {
-      next: function() {
-        return { done: true, value: undefined };
-      }
-    };
-  };
-  ErrImpl2.prototype.else = function(val) {
-    return val;
-  };
-  ErrImpl2.prototype.unwrapOr = function(val) {
-    return val;
-  };
-  ErrImpl2.prototype.expect = function(msg) {
-    throw new Error(msg + " - Error: " + toString(this.val) + "\n" + this._stack);
-  };
-  ErrImpl2.prototype.unwrap = function() {
-    throw new Error("Tried to unwrap Error: " + toString(this.val) + "\n" + this._stack);
-  };
-  ErrImpl2.prototype.map = function(_mapper) {
-    return this;
-  };
-  ErrImpl2.prototype.andThen = function(op) {
-    return this;
-  };
-  ErrImpl2.prototype.mapErr = function(mapper) {
-    return new Err(mapper(this.val));
-  };
-  ErrImpl2.prototype.toOption = function() {
-    return None;
-  };
-  ErrImpl2.prototype.toString = function() {
-    return "Err(" + toString(this.val) + ")";
-  };
-  Object.defineProperty(ErrImpl2.prototype, "stack", {
-    get: function() {
-      return this + "\n" + this._stack;
-    },
-    enumerable: false,
-    configurable: true
-  });
-  ErrImpl2.EMPTY = new ErrImpl2(undefined);
-  return ErrImpl2;
-}();
-var Err = ErrImpl;
-var OkImpl = function() {
-  function OkImpl2(val) {
-    if (!(this instanceof OkImpl2)) {
-      return new OkImpl2(val);
-    }
-    this.ok = true;
-    this.err = false;
-    this.val = val;
-  }
-  OkImpl2.prototype[Symbol.iterator] = function() {
-    var obj = Object(this.val);
-    return Symbol.iterator in obj ? obj[Symbol.iterator]() : {
-      next: function() {
-        return { done: true, value: undefined };
-      }
-    };
-  };
-  OkImpl2.prototype.else = function(_val) {
-    return this.val;
-  };
-  OkImpl2.prototype.unwrapOr = function(_val) {
-    return this.val;
-  };
-  OkImpl2.prototype.expect = function(_msg) {
-    return this.val;
-  };
-  OkImpl2.prototype.unwrap = function() {
-    return this.val;
-  };
-  OkImpl2.prototype.map = function(mapper) {
-    return new Ok(mapper(this.val));
-  };
-  OkImpl2.prototype.andThen = function(mapper) {
-    return mapper(this.val);
-  };
-  OkImpl2.prototype.mapErr = function(_mapper) {
-    return this;
-  };
-  OkImpl2.prototype.toOption = function() {
-    return Some(this.val);
-  };
-  OkImpl2.prototype.safeUnwrap = function() {
-    return this.val;
-  };
-  OkImpl2.prototype.toString = function() {
-    return "Ok(" + toString(this.val) + ")";
-  };
-  OkImpl2.EMPTY = new OkImpl2(undefined);
-  return OkImpl2;
-}();
-var Ok = OkImpl;
-var Result;
-(function(Result2) {
-  function all() {
-    var results = [];
-    for (var _i = 0;_i < arguments.length; _i++) {
-      results[_i] = arguments[_i];
-    }
-    var okResult = [];
-    for (var _a = 0, results_1 = results;_a < results_1.length; _a++) {
-      var result = results_1[_a];
-      if (result.ok) {
-        okResult.push(result.val);
-      } else {
-        return result;
-      }
-    }
-    return new Ok(okResult);
-  }
-  Result2.all = all;
-  function any() {
-    var results = [];
-    for (var _i = 0;_i < arguments.length; _i++) {
-      results[_i] = arguments[_i];
-    }
-    var errResult = [];
-    for (var _a = 0, results_2 = results;_a < results_2.length; _a++) {
-      var result = results_2[_a];
-      if (result.ok) {
-        return result;
-      } else {
-        errResult.push(result.val);
-      }
-    }
-    return new Err(errResult);
-  }
-  Result2.any = any;
-  function wrap(op) {
-    try {
-      return new Ok(op());
-    } catch (e) {
-      return new Err(e);
-    }
-  }
-  Result2.wrap = wrap;
-  function wrapAsync(op) {
-    try {
-      return op().then(function(val) {
-        return new Ok(val);
-      }).catch(function(e) {
-        return new Err(e);
-      });
-    } catch (e) {
-      return Promise.resolve(new Err(e));
-    }
-  }
-  Result2.wrapAsync = wrapAsync;
-  function isResult(val) {
-    return val instanceof Err || val instanceof Ok;
-  }
-  Result2.isResult = isResult;
-})(Result || (Result = {}));
 // src/web/lib/react/Render.ts
 var import_client = __toESM(require_client(), 1);
 function render(app) {
@@ -29056,7 +27650,7 @@ function App() {
       children: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(Routes, {
         children: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(Route, {
           path: "/",
-          element: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(TalismanPage, {}, undefined, false, undefined, this)
+          element: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(DaoPage, {}, undefined, false, undefined, this)
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this)
     }, undefined, false, undefined, this)

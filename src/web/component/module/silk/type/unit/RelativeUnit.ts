@@ -1,6 +1,6 @@
 export type RelativeUnit =
-    | "%"
-    | "vh"
-    | "vw"
-    | "vmin"
-    | "vmax";
+    | `${number}%`
+    | `${number}vh`
+    | `${number}vw`
+    | `${number}vmin`
+    | `${number}vmax`;

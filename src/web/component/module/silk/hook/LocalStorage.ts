@@ -1,4 +1,4 @@
-import type {Maybe} from "@common/util/base/Maybe";
+import type {Maybe} from "@seal";
 
 export type GetLocalStorageSlotAction = () => Maybe<string>;
 

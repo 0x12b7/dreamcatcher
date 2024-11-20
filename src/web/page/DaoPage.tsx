@@ -1,4 +1,4 @@
-import type {ReactNode} from "react";
+import {useEffect, useState, type ReactNode} from "react";
 import type {CSSProperties as Style} from "react";
 import type {ComponentPropsWithRef as ReactProps} from "react";
 import {ResponsiveAnchorPage} from "@component/page/ResponsiveAnchorPage";
@@ -11,17 +11,27 @@ import { TableHeading } from "@component/table/TableHeading";
 import { TableItem } from "@component/table/TableItem";
 import { VaultCard } from "@component/card/VaultCard";
 import { Window } from "@component/window/Window";
+import { VStackCounterWithBottomLabel } from "@component/view/VStackCounterWithBottomLabel";
+import { easings } from "react-spring";
+import { HorizontalMultiModeContainer } from "@component/module/silk/container/HorizontalMultiModeContainer";
 
-export function TalismanPage(): ReactNode {
+export function DaoPage(): ReactNode {
+    let [mode, setMode] = useState<number>(0);
+
+    useEffect(() => {
+        setTimeout(() => setMode(1), 2500);
+    }, []);
+
     return <>
         <ResponsiveAnchorPage>
-            <Window
-                initW={200}
-                initH={200}
-                initX={0}
-                initY={0}>
+            <HorizontalMultiModeContainer
+                mode={mode}
+                w={800}
+                h={400}>
+                <>HELLO_WORLD</>
+                <>HI THERE</>
+            </HorizontalMultiModeContainer>
 
-            </Window>
         </ResponsiveAnchorPage>
     </>;
 }
