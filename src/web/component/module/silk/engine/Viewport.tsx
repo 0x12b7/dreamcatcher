@@ -2,17 +2,23 @@ import type {ReactNode} from "react";
 import type {PositionProps, SizeProps} from "@silk";
 import type {AnimationProps} from "@silk";
 import type {ParentProps} from "@silk";
+import type {Maybe} from "@seal";
 import {Option} from "@seal";
 import {Some} from "@seal";
 import {None} from "@seal";
 import {animated} from "react-spring";
-import {createContext as Context} from "react";
+import {createContext as Context, useState} from "react";
 import {useSpring} from "react-spring";
 import {useEffect} from "react";
 import {useContext} from "react";
+import {useSize} from "@silk";
 
 export type ViewportContextProps = {
-
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    goto: Option<string>;
 };
 export const ViewportContext = Context<Option<ViewportContextProps>>(None);
 
@@ -21,8 +27,11 @@ export type ViewportProps =
     & Omit<PositionProps, "z">
     & AnimationProps
     & ParentProps
-    & {};
+    & {
+    goto: Option<string>
+};
 export function Viewport(props: ViewportProps): ReactNode {
+    let [rf, w, h] = useSize();
     let [position, setPosition] = 
         useSpring(() => ({
             transform: `translate(${props.x}, ${props.y})`
@@ -33,10 +42,9 @@ export function Viewport(props: ViewportProps): ReactNode {
         return;
     }, [props.x, props.y]);
 
-    
-
     return <>
         <div
+            ref={(rf as any)}
             style={{
                 display: "flex",
                 flexDirection: "column",
@@ -64,7 +72,11 @@ export function Viewport(props: ViewportProps): ReactNode {
             }}>
             <ViewportContext.Provider
                 value={Some({
-
+                    x: props.x ?? 0,
+                    y: props.y ?? 0,
+                    w: w,
+                    h: h,
+                    goto: props.goto
                 })}>
                 <animated.div
                     style={{
@@ -104,10 +116,32 @@ export function ViewportGoto() {
  * 
  * @dev omit w or h to be the same size as the parent viewport.
  */
-export function ViewportRegion() {
+export type ViewportRegionProps = {
+    w: number;
+    h: number;
+    responsive?: boolean;
+};
+export function ViewportRegion(props: ViewportRegionProps) {
+    let [rf, w, h] = useSize();
+    let [viewportSize, setViewportSize] = 
+        useState({
+            w: 0,
+            h: 0
+        });
     let c: Option<ViewportContextProps> = useContext(ViewportContext);
 
+    useEffect(() => {
+        
+    }, [c]);
 
+    useEffect(() => {
+        <div
+            style={{
+
+            }}>
+
+        </div>
+    }, []);
 }
 
 

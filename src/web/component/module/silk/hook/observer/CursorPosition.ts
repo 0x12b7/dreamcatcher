@@ -6,7 +6,7 @@ export type CursorPosition = {
     y: number;
 };
 
-export function useCursorPosition() {
+export function useCursorPosition(): CursorPosition {
     let [position, setPosition] = 
         useState<CursorPosition>({
             x: 0, 

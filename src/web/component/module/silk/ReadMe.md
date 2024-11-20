@@ -1,3 +1,0 @@
-- [x] create a base component that inherits and processes all the base styling and props.
-- [x] update viewport in engine.
-- [x] clean up and resolve any linting errors.
