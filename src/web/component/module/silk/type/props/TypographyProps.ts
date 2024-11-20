@@ -6,10 +6,6 @@ export type TypographyProps =
     & Silk.LineProps
     & Silk.WordProps
     & Silk.LetterProps
+    & Silk.ColorProps
+    & Silk.ParentProps
     & {};
-export function Typography(props: TypographyProps): Silk.Component {
-
-    return <>
-    
-    </>;
-}

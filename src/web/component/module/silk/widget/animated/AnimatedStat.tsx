@@ -34,6 +34,11 @@ export function AnimatedStat(props: AnimatedStatProps): Silk.Component {
         });
 
     return <>
+        <Silk.Typography>
+            <Silk.animated.div>
+            {spring.number.to(x => `${props.prefix} ${Number(x.toFixed(2)).toLocaleString()} ${props.suffix}`)}
+            </Silk.animated.div>
+        </Silk.Typography>
         <Silk.animated.div
             style={{
                 display: "flex",
@@ -49,7 +54,7 @@ export function AnimatedStat(props: AnimatedStatProps): Silk.Component {
                 colorRendering: props.colorRendering,
                 colorScheme: props.colorScheme
             }}>
-            {spring.number.to(x => `${props.prefix} ${Number(x.toFixed(2)).toLocaleString()} ${props.suffix}`)}
+            
         </Silk.animated.div>
     </>;
 }
