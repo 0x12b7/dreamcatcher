@@ -1,0 +1,31 @@
+import * as Silk from "@silk";
+
+export type TextProps = {
+    textAlign?: Silk.CssProps["textAlign"];
+    textAlignLast?: Silk.CssProps["textAlignLast"];
+    textAnchor?: Silk.CssProps["textAnchor"];
+    textCombineUpright?: Silk.CssProps["textCombineUpright"];
+    textDecoration?: Silk.CssProps["textDecoration"];
+    textDecorationColor?: Silk.CssProps["textDecorationColor"];
+    textDecorationLine?: Silk.CssProps["textDecorationLine"];
+    textDecorationSkip?: Silk.CssProps["textDecorationSkip"];
+    textDecorationSkipInk?: Silk.CssProps["textDecorationSkipInk"];
+    textDecorationStyle?: Silk.CssProps["textDecorationStyle"];
+    textDecorationThickness?: Silk.CssProps["textDecorationThickness"];
+    textEmphasis?: Silk.CssProps["textEmphasis"];
+    textEmphasisColor?: Silk.CssProps["textEmphasisColor"];
+    textEmphasisPosition?: Silk.CssProps["textEmphasisPosition"];
+    textEmphasisStyle?: Silk.CssProps["textEmphasisStyle"];
+    textIndent?: Silk.CssProps["textIndent"];
+    textJustify?: Silk.CssProps["textJustify"];
+    textOrientation?: Silk.CssProps["textOrientation"];
+    textOverflow?: Silk.CssProps["textOverflow"];
+    textRendering?: Silk.CssProps["textRendering"];
+    textShadow?: Silk.CssProps["textShadow"];
+    textSizeAdjust?: Silk.CssProps["textSizeAdjust"];
+    textTransform?: Silk.CssProps["textTransform"];
+    textUnderlineOffset?: Silk.CssProps["textUnderlineOffset"];
+    textUnderlinePosition?: Silk.CssProps["textUnderlinePosition"];
+    textWrap?: Silk.CssProps["textWrap"];
+    verticalAlign?: Silk.CssProps["verticalAlign"];
+};
