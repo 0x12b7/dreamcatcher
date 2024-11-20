@@ -1,13 +1,10 @@
-import type {ReactNode} from "react";
-import type {AnimationProps} from "@silk";
-import type {FontProps} from "@silk";
-import {useSpring} from "react-spring";
-import {animated} from "react-spring";
+import * as Silk from "@silk";
 import {rho} from "@style/unit/Rho";
 
 export type StatProps =
-    & AnimationProps
-    & FontProps
+    & Silk.AnimationProps
+    & Silk.AnimationDelayProps
+    & Silk.FontProps
     & {
     initialCount?: number;
     count?: number;
@@ -15,7 +12,7 @@ export type StatProps =
     prefix?: string;
     suffix?: string;
 };
-export function Stat(props: StatProps): ReactNode {
+export function Stat(props: StatProps): Silk.Component {
     props.initialCount ??= 0;
     props.count ??= 0;
     props.precision ??= 0;
@@ -27,7 +24,7 @@ export function Stat(props: StatProps): ReactNode {
     props.animation ??= {};
     let {delay, ... rsAnimation} = props.animation;
     let spring = 
-        useSpring({
+        Silk.useSpring({
             to: {
                 number: props.count
             },
@@ -40,7 +37,7 @@ export function Stat(props: StatProps): ReactNode {
         });
 
     return <>
-        <animated.div
+        <Silk.animated.div
             style={{
                 display: "flex",
                 flexDirection: "row",
@@ -51,6 +48,6 @@ export function Stat(props: StatProps): ReactNode {
                 fontFamily: props.fontFamily
             }}>
             {spring.number.to(x => `${props.prefix} ${Number(x.toFixed(2)).toLocaleString()} ${props.suffix}`)}
-        </animated.div>
+        </Silk.animated.div>
     </>;
 }
