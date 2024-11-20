@@ -1,4 +1,6 @@
 export * from "./animation/ReactSpring";
+export * from "./animation/mod/Hide";
+export * from "./animation/mod/Reveal";
 export * from "./hook/LocalStorage";
 export * from "./hook/React";
 export * from "./hook/ReactSpring";
