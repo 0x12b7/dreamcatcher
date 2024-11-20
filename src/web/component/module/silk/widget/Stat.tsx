@@ -1,7 +1,6 @@
 import type {ReactNode} from "react";
 import type {AnimationProps} from "@silk";
 import type {FontProps} from "@silk";
-import {easings as Easings} from "react-spring";
 import {useSpring} from "react-spring";
 import {animated} from "react-spring";
 import {rho} from "@style/unit/Rho";
@@ -10,12 +9,14 @@ export type StatProps =
     & AnimationProps
     & FontProps
     & {
+    initialCount?: number;
     count?: number;
     precision?: number;
     prefix?: string;
     suffix?: string;
 };
 export function Stat(props: StatProps): ReactNode {
+    props.initialCount ??= 0;
     props.count ??= 0;
     props.precision ??= 0;
     props.prefix ??= "";
@@ -23,20 +24,19 @@ export function Stat(props: StatProps): ReactNode {
     props.fontSize ??= rho(2n);
     props.fontWeight ??= "normal";
     props.fontFamily ??= "monospace";
-    props.animation ??= {
-        duration: 2500,
-        easing: Easings.easeInOutExpo
-    };
+    props.animation ??= {};
+    let {delay, ... rsAnimation} = props.animation;
     let spring = 
         useSpring({
             to: {
                 number: props.count
             },
             from: {
-                number: 0
+                number: props.initialCount
             },
             reset: false,
-            config: (props.animation as any)
+            config: rsAnimation,
+            delay: delay
         });
 
     return <>
