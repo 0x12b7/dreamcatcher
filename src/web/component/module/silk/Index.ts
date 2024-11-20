@@ -1,6 +1,7 @@
 export * from "./animation/ReactSpring";
 export * from "./animation/mod/Hide";
 export * from "./animation/mod/Reveal";
+export * from "./asset/Image";
 export * from "./hook/LocalStorage";
 export * from "./hook/React";
 export * from "./hook/ReactSpring";
@@ -18,6 +19,7 @@ export * from "./type/prop/SizeProp";
 export * from "./type/props/AnimatedComponentProps";
 export * from "./type/props/AnimationDelayProps";
 export * from "./type/props/AnimationProps";
+export * from "./type/props/BackgroundProps";
 export * from "./type/props/ColorProps";
 export * from "./type/props/ComponentProps";
 export * from "./type/props/CssProps";
