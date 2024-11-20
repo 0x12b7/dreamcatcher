@@ -1,9 +1,9 @@
 import * as Silk from "@silk";
-import {rho} from "@style/unit/Rho";
 
-export type StatProps =
+export type AnimatedStatProps =
     & Silk.AnimationProps
     & Silk.AnimationDelayProps
+    & Silk.ColorProps
     & Silk.FontProps
     & {
     initialCount?: number;
@@ -12,15 +12,12 @@ export type StatProps =
     prefix?: string;
     suffix?: string;
 };
-export function Stat(props: StatProps): Silk.Component {
+export function AnimatedStat(props: AnimatedStatProps): Silk.Component {
     props.initialCount ??= 0;
     props.count ??= 0;
     props.precision ??= 0;
     props.prefix ??= "";
     props.suffix ??= "";
-    props.fontSize ??= rho(2n);
-    props.fontWeight ??= "normal";
-    props.fontFamily ??= "monospace";
     props.animation ??= {};
     let {delay, ... rsAnimation} = props.animation;
     let spring = 
@@ -45,7 +42,12 @@ export function Stat(props: StatProps): Silk.Component {
                 alignItems: "center",
                 fontSize: props.fontSize,
                 fontWeight: props.fontWeight,
-                fontFamily: props.fontFamily
+                fontFamily: props.fontFamily,
+                color: props.color,
+                colorAdjust: props.colorAdjust,
+                colorInterpolation: props.colorInterpolation,
+                colorRendering: props.colorRendering,
+                colorScheme: props.colorScheme
             }}>
             {spring.number.to(x => `${props.prefix} ${Number(x.toFixed(2)).toLocaleString()} ${props.suffix}`)}
         </Silk.animated.div>
