@@ -1,7 +1,7 @@
-import type {Global} from "@silk";
+import type {BaseProp} from "@silk";
 
-export type ClipPath =
-    | Global
+export type ClipPathProp =
+    | BaseProp
     | "none"
     | `inset(${string})`
     | `circle(${string})`

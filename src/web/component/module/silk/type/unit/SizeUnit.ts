@@ -1,5 +1,5 @@
-import type {AbsoluteUnit} from "@component/module/silk/Index";
-import type {RelativeUnit} from "@component/module/silk/Index";
+import type {AbsoluteUnit} from "@silk";
+import type {RelativeUnit} from "@silk";
 
 export type SizeUnit =
     | AbsoluteUnit

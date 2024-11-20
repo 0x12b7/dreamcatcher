@@ -1,4 +1,4 @@
-export type Global =
+export type BaseProp =
     | "initial"
     | "inherit"
     | "unset"
