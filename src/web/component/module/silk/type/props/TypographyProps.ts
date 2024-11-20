@@ -7,5 +7,4 @@ export type TypographyProps =
     & Silk.WordProps
     & Silk.LetterProps
     & Silk.ColorProps
-    & Silk.ParentProps
     & {};
