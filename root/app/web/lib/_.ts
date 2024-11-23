@@ -57,4 +57,5 @@ export * from "./type/unit/ResolutionUnit";
 export * from "./type/unit/SizeUnit";
 export * from "./type/unit/TimeUnit";
 export * from "./type/unit/Unit";
+export * from "./unit/Rho";
 export * from "./widget/animated/AnimatedStat";

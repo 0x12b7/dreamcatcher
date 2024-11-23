@@ -1,0 +1,16 @@
+export const EEIRE_BLACK = "#121212" as const;
+export const GHOST_BLACK = "#202020" as const;
+export const JET = "#333333" as const;
+export const ONYX = "#3D3D3D" as const;
+export const OUTER_SPACE = "#474747" as const;
+export const RISD_BLUE = "#7370FF" as const;
+export const NEON_PURPLE = "#5F5CFF" as const;
+export const MEDIUM_SLATE_BLUE = "#7370FF" as const;
+export const BITTER_SWEET = "#F15555" as const;
+export const IMPERIAL_RED = "#F04242" as const;
+export const WHITE_SMOKE = "#F5F5F5" as const;
+export const PLATINUM = "#E1E0E0" as const;
+export const TIMPERWOLD = "#D7D6D5" as const;
+export const SILVER = "#CDCCCB" as const;
+export const SPRING_GREEN = "#22FC8F" as const;
+export const AMBER = "#F3B700" as const;
