@@ -1,10 +1,10 @@
-import type {TranspileE} from "../action/Transpile";
-import type {TranspileR} from "../action/Transpile";
+import type {TranspileE} from "->action";
+import type {TranspileR} from "->action";
 import {Router} from "express";
 import {Result} from "->common";
 import {Ok} from "->common";
 import {Err} from "->common";
-import {transpile} from "../action/Transpile";
+import {transpile} from "->action";
 import {existsSync} from "fs";
 import {join} from "path";
 

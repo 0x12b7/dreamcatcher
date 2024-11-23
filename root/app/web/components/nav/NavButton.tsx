@@ -1,3 +1,4 @@
+import {easings as Easings} from "react-spring";
 import * as WebLib from "->web.lib";
 import * as ColorPalette from "->web.color-palette";
 
@@ -6,19 +7,28 @@ export type NavButtonProps = {
     children: [WebLib.Component, WebLib.Component];
 };
 export function NavButton(props: NavButtonProps): WebLib.Component {
+    let spacing: number = 5;
     let gap0: number = 10;
-    let gap1: number = 5;
+    let gap1: number = spacing;
+    let padding0: number = 0;
+    let padding1: number = spacing / 2;
     let [gap, setGap] = 
         WebLib.useSpring(() => ({
-            gap: gap0
+            gap: gap0,
+            paddingLeft: padding0,
+            paddingRight: padding0,
+            config: {
+                duration: 1000,
+                easing: Easings.easeInOutExpo
+            }
         }));
 
     return <>
         <WebLib.Link
             to={props.to}>
             <WebLib.animated.div
-                onMouseEnter={() => setGap.start({gap: gap1})}
-                onMouseLeave={() => setGap.start({gap: gap0})}
+                onMouseEnter={() => setGap.start({gap: gap1, paddingLeft: padding1, paddingRight: padding1})}
+                onMouseLeave={() => setGap.start({gap: gap0, paddingLeft: padding0, paddingRight: padding0})}
                 style={{
                     display: "flex",
                     flexDirection: "row",

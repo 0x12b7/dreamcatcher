@@ -19,6 +19,8 @@
 		"baseUrl": ".",
 		"paths": {
 			"->common": ["root/app/web/common/_.ts"],
+			"->action": ["root/app/action/_.ts"],
+			"->router": ["root/app/router/_.ts"],
 			"->web.lib": ["root/app/web/lib/_.ts"],
 			"->web.color-palette": ["root/app/web/module/ColorPalette.ts"],
 			"->web.page": ["root/app/web/page/_.ts"]

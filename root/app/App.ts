@@ -1,5 +1,5 @@
 import {default as Express} from "express";
-import {ReactRouter} from "./router/ReactRouter";
+import {ReactRouter} from "->router";
 import {join} from "path";
 
 let directory: string = join(__dirname, "web");

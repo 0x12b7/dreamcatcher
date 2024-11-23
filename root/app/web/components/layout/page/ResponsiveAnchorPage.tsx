@@ -4,10 +4,9 @@ import * as ColorPalette from "->web.color-palette";
 import * as WebLib from "->web.lib";
 
 export type ResponsiveAnchorPageProps = {
-    children?: [WebLib.Component, WebLib.Component];
+    children: [WebLib.Component, WebLib.Component];
 };
 export function ResponsiveAnchorPage(props: ResponsiveAnchorPageProps): WebLib.Component {
-    let {children = []} = props;
     let device: Device = useDevice();
 
     return <>
@@ -34,7 +33,7 @@ export function ResponsiveAnchorPage(props: ResponsiveAnchorPageProps): WebLib.C
                         undefined,
                     height: "100%" 
                 }}>
-                {children[0]}
+                {props.children[0]}
                 <div
                     style={{
                         display: "flex",
@@ -45,7 +44,7 @@ export function ResponsiveAnchorPage(props: ResponsiveAnchorPageProps): WebLib.C
                         height: "100%",
                         flexGrow: 1
                     }}>
-                    {children[1]}
+                    {props.children[1]}
                 </div>
             </div>
         </div>
