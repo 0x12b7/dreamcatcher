@@ -27600,18 +27600,23 @@ var encoder = new TextEncoder;
 var jsx_dev_runtime3 = __toESM(require_jsx_dev_runtime(), 1);
 // root/app/web/lib/widget/animated/AnimatedStat.tsx
 var jsx_dev_runtime4 = __toESM(require_jsx_dev_runtime(), 1);
-// root/app/web/App.tsx
+// root/app/web/page/Home.tsx
 var jsx_dev_runtime5 = __toESM(require_jsx_dev_runtime(), 1);
+function Home() {
+  return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(jsx_dev_runtime5.Fragment, {}, undefined, false, undefined, this);
+}
+// root/app/web/App.tsx
+var jsx_dev_runtime6 = __toESM(require_jsx_dev_runtime(), 1);
 function App() {
-  return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(jsx_dev_runtime5.Fragment, {
-    children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(BrowserRouter, {
-      children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(Routes, {
-        children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(Route, {
+  return /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(jsx_dev_runtime6.Fragment, {
+    children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(BrowserRouter, {
+      children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(Routes, {
+        children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(Route, {
           path: "/",
-          element: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(jsx_dev_runtime5.Fragment, {}, undefined, false, undefined, this)
+          element: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(Home, {}, undefined, false, undefined, this)
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this)
     }, undefined, false, undefined, this)
   }, undefined, false, undefined, this);
 }
-render(/* @__PURE__ */ jsx_dev_runtime5.jsxDEV(App, {}, undefined, false, undefined, this));
+render(/* @__PURE__ */ jsx_dev_runtime6.jsxDEV(App, {}, undefined, false, undefined, this));

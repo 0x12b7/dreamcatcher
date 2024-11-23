@@ -1,4 +1,5 @@
 import * as WebLib from "->web.lib";
+import * as WebPage from "->web.page";
 
 function App(): WebLib.Component {
     return <>
@@ -6,7 +7,7 @@ function App(): WebLib.Component {
             <WebLib.Routes>
                 <WebLib.Route 
                     path="/" 
-                    element={<></>}/>
+                    element={<WebPage.Home/>}/>
             </WebLib.Routes>
         </WebLib.BrowserRouter>
     </>;

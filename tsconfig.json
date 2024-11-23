@@ -20,7 +20,8 @@
 		"paths": {
 			"->common": ["root/app/web/common/_.ts"],
 			"->web.lib": ["root/app/web/lib/_.ts"],
-			"->web.color-palette": ["root/app/web/module/ColorPalette.ts"]
+			"->web.color-palette": ["root/app/web/module/ColorPalette.ts"],
+			"->web.page": ["root/app/web/page/_.ts"]
 		}
 	}
 }
