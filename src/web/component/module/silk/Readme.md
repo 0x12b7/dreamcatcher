@@ -1,1 +1,0 @@
-Silk module is a comprehensive toolkit for better typed react components. Keep all general use items here.

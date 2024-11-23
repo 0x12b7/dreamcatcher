@@ -1,1 +1,0 @@
-export {animated} from "react-spring";

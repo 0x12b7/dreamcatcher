@@ -18,16 +18,9 @@
 		"noPropertyAccessFromIndexSignature": false,
 		"baseUrl": ".",
 		"paths": {
-			/// common
-			"@seal": ["src/web/common/module/seal/Index.ts"],
-			"@common/*": ["src/web/common/*"],
-			
-			/// react
-			"@style/*": ["src/web/style/*"],
-			"@component/*": ["src/web/component/*"],
-			"@retro-minima": ["src/web/component/module/retro-minima_/Index.ts"],
-			"@chrt": ["src/web/component/module/chart/Index.ts"],
-			"@silk": ["src/web/component/module/silk/Index.ts"]
+			"->action": ["root/app/action/_.ts"],
+			"->router": ["root/app/router/_.ts"],
+			"->std": ["root/app/web/common/_.ts"],
 		}
 	}
 }

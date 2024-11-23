@@ -1,0 +1,1 @@
+export type {ComponentPropsWithRef as SpringComponentProps} from "react-spring";
