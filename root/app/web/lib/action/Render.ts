@@ -1,8 +1,8 @@
-import type {Maybe} from "@seal";
+import type {Maybe} from "->common";
 import type {ReactNode} from "react";
-import {Result} from "@seal";
-import {Ok} from "@seal";
-import {Err} from "@seal";
+import {Result} from "->common";
+import {Ok} from "->common";
+import {Err} from "->common";
 import {createRoot as Root} from "react-dom/client";
 
 export type RenderR = Result<RenderT, RenderE>;

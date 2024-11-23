@@ -1,8 +1,8 @@
-import type {Maybe} from "->std";
+import type {Maybe} from "->common";
 import type {ExecException} from "child_process";
-import {Result} from "->std";
-import {Ok} from "->std";
-import {Err} from "->std";
+import {Result} from "->common";
+import {Ok} from "->common";
+import {Err} from "->common";
 import {exec} from "child_process";
 
 export type TranspileR = Result<TranspileT, TranspileE>;
