@@ -1,0 +1,31 @@
+import * as WebLib from "->web.lib";
+
+export type TextProps = {
+    textAlign?: WebLib.CssProps["textAlign"];
+    textAlignLast?: WebLib.CssProps["textAlignLast"];
+    textAnchor?: WebLib.CssProps["textAnchor"];
+    textCombineUpright?: WebLib.CssProps["textCombineUpright"];
+    textDecoration?: WebLib.CssProps["textDecoration"];
+    textDecorationColor?: WebLib.CssProps["textDecorationColor"];
+    textDecorationLine?: WebLib.CssProps["textDecorationLine"];
+    textDecorationSkip?: WebLib.CssProps["textDecorationSkip"];
+    textDecorationSkipInk?: WebLib.CssProps["textDecorationSkipInk"];
+    textDecorationStyle?: WebLib.CssProps["textDecorationStyle"];
+    textDecorationThickness?: WebLib.CssProps["textDecorationThickness"];
+    textEmphasis?: WebLib.CssProps["textEmphasis"];
+    textEmphasisColor?: WebLib.CssProps["textEmphasisColor"];
+    textEmphasisPosition?: WebLib.CssProps["textEmphasisPosition"];
+    textEmphasisStyle?: WebLib.CssProps["textEmphasisStyle"];
+    textIndent?: WebLib.CssProps["textIndent"];
+    textJustify?: WebLib.CssProps["textJustify"];
+    textOrientation?: WebLib.CssProps["textOrientation"];
+    textOverflow?: WebLib.CssProps["textOverflow"];
+    textRendering?: WebLib.CssProps["textRendering"];
+    textShadow?: WebLib.CssProps["textShadow"];
+    textSizeAdjust?: WebLib.CssProps["textSizeAdjust"];
+    textTransform?: WebLib.CssProps["textTransform"];
+    textUnderlineOffset?: WebLib.CssProps["textUnderlineOffset"];
+    textUnderlinePosition?: WebLib.CssProps["textUnderlinePosition"];
+    textWrap?: WebLib.CssProps["textWrap"];
+    verticalAlign?: WebLib.CssProps["verticalAlign"];
+};

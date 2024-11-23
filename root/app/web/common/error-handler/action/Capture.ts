@@ -1,5 +1,5 @@
-import type {Function} from "->std";
-import type {Outcome} from "->std";
+import type {Function} from "->common";
+import type {Outcome} from "->common";
 
 export async function capture<T>(action: Function<void, T>): Promise<Outcome<T>> {
     try {

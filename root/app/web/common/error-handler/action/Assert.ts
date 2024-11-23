@@ -1,5 +1,5 @@
-import type {Maybe} from "->std";
-import type {Errcode} from "->std";
+import type {Maybe} from "->common";
+import type {Errcode} from "->common";
 
 export function assert(condition: boolean): asserts condition is true;
 export function assert<T extends Errcode>(condition: boolean, errcode: T): asserts condition is true;

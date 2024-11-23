@@ -1,0 +1,31 @@
+import * as WebLib from "->web.lib";
+
+export type FontProps = {
+    font?: WebLib.CssProps["font"];
+    fontFamily?: WebLib.CssProps["fontFamily"];
+    fontFeatureSettings?: WebLib.CssProps["fontFeatureSettings"];
+    fontKerning?: WebLib.CssProps["fontKerning"];
+    fontLanguageOverride?: WebLib.CssProps["fontLanguageOverride"];
+    fontOpticalSizing?: WebLib.CssProps["fontOpticalSizing"];
+    fontPalette?: WebLib.CssProps["fontPalette"];
+    fontSize?: WebLib.CssProps["fontSize"];
+    fontSizeAdjust?: WebLib.CssProps["fontSizeAdjust"];
+    fontSmooth?: WebLib.CssProps["fontSmooth"];
+    fontStretch?: WebLib.CssProps["fontStretch"];
+    fontStyle?: WebLib.CssProps["fontStyle"];
+    fontSynthesis?: WebLib.CssProps["fontSynthesis"];
+    fontSynthesisPosition?: WebLib.CssProps["fontSynthesisPosition"];
+    fontSynthesisSmallCaps?: WebLib.CssProps["fontSynthesisSmallCaps"];
+    fontSynthesisStyle?: WebLib.CssProps["fontSynthesisStyle"];    
+    fontSynthesisWeight?: WebLib.CssProps["fontSynthesisWeight"];
+    fontVariant?: WebLib.CssProps["fontVariant"];
+    fontVariantAlternates?: WebLib.CssProps["fontVariantAlternates"];
+    fontVariantCaps?: WebLib.CssProps["fontVariantCaps"];
+    fontVariantEastAsian?: WebLib.CssProps["fontVariantEastAsian"];
+    fontVariantEmoji?: WebLib.CssProps["fontVariantEmoji"];
+    fontVariantLigatures?: WebLib.CssProps["fontVariantLigatures"];
+    fontVariantNumeric?: WebLib.CssProps["fontVariantNumeric"];
+    fontVariantPosition?: WebLib.CssProps["fontVariantPosition"];
+    fontVariationSettings?: WebLib.CssProps["fontVariationSettings"];
+    fontWeight?: WebLib.CssProps["fontWeight"];
+};

@@ -18,9 +18,8 @@
 		"noPropertyAccessFromIndexSignature": false,
 		"baseUrl": ".",
 		"paths": {
-			"->action": ["root/app/action/_.ts"],
-			"->router": ["root/app/router/_.ts"],
-			"->std": ["root/app/web/common/_.ts"],
+			"->common": ["root/app/web/common/_.ts"],
+			"->web.lib": ["root/app/web/lib/_.ts"]
 		}
 	}
 }

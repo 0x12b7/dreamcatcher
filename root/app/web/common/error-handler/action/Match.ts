@@ -1,6 +1,6 @@
-import type {Function} from "->std";
-import type {MaybeAsync} from "->std";
-import type {Maybe} from "->std";
+import type {Function} from "->common";
+import type {MaybeAsync} from "->common";
+import type {Maybe} from "->common";
 
 export function match<T, X>(e: unknown, errcode: T | Array<T>, action: Function<unknown, X>): MaybeAsync<Maybe<X>> {
     if (!("cause" in (e as any)

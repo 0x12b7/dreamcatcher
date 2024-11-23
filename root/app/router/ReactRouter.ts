@@ -1,9 +1,9 @@
 import type {TranspileE} from "../action/Transpile";
 import type {TranspileR} from "../action/Transpile";
 import {Router} from "express";
-import {Result} from "->std";
-import {Ok} from "->std";
-import {Err} from "->std";
+import {Result} from "->common";
+import {Ok} from "->common";
+import {Err} from "->common";
 import {transpile} from "../action/Transpile";
 import {existsSync} from "fs";
 import {join} from "path";
