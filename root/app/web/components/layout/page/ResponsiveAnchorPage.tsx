@@ -4,7 +4,7 @@ import * as ColorPalette from "->web.color-palette";
 import * as WebLib from "->web.lib";
 
 export type ResponsiveAnchorPageProps = {
-    children: [WebLib.Component, WebLib.Component];
+    children: [nav: WebLib.Component, WebLib.Component];
 };
 export function ResponsiveAnchorPage(props: ResponsiveAnchorPageProps): WebLib.Component {
     let device: Device = useDevice();
