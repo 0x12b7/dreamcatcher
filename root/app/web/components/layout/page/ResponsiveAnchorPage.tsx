@@ -1,5 +1,3 @@
-import type {Device} from "->web.lib";
-import {useDevice} from "->web.lib";
 import * as ColorPalette from "->web.color-palette";
 import * as WebLib from "->web.lib";
 
@@ -7,7 +5,7 @@ export type ResponsiveAnchorPageProps = {
     children: [nav: WebLib.Component, WebLib.Component];
 };
 export function ResponsiveAnchorPage(props: ResponsiveAnchorPageProps): WebLib.Component {
-    let device: Device = useDevice();
+    let device: WebLib.Device = WebLib.useDevice();
 
     return <>
         <div
