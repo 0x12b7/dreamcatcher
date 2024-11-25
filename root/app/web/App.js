@@ -23,7 +23,7 @@ var require_react_development = __commonJS((exports, module) => {
       if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
         __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error);
       }
-      var ReactVersion = "18.3.1";
+      var ReactVersion = "18.0.0-fc46dba67-20220329";
       var REACT_ELEMENT_TYPE = Symbol.for("react.element");
       var REACT_PORTAL_TYPE = Symbol.for("react.portal");
       var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
@@ -692,7 +692,7 @@ var require_react_development = __commonJS((exports, module) => {
           forEachFunc.apply(this, arguments);
         }, forEachContext);
       }
-      function toArray(children) {
+      function toArray2(children) {
         return mapChildren(children, function(child) {
           return child;
         }) || [];
@@ -919,10 +919,7 @@ var require_react_development = __commonJS((exports, module) => {
         }
         return elementType;
       }
-      var REACT_MODULE_REFERENCE;
-      {
-        REACT_MODULE_REFERENCE = Symbol.for("react.module.reference");
-      }
+      var REACT_MODULE_REFERENCE = Symbol.for("react.module.reference");
       function isValidElementType(type) {
         if (typeof type === "string" || typeof type === "function") {
           return true;
@@ -1755,7 +1752,7 @@ var require_react_development = __commonJS((exports, module) => {
         map: mapChildren,
         forEach: forEachChildren,
         count: countChildren,
-        toArray,
+        toArray: toArray2,
         only: onlyChild
       };
       exports.Children = Children;
@@ -1766,7 +1763,6 @@ var require_react_development = __commonJS((exports, module) => {
       exports.StrictMode = REACT_STRICT_MODE_TYPE;
       exports.Suspense = REACT_SUSPENSE_TYPE;
       exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactSharedInternals;
-      exports.act = act;
       exports.cloneElement = cloneElement$1;
       exports.createContext = createContext;
       exports.createElement = createElement$1;
@@ -22705,10 +22701,7 @@ var require_react_jsx_dev_runtime_development = __commonJS((exports) => {
       var enableTransitionTracing = false;
       var enableLegacyHidden = false;
       var enableDebugTracing = false;
-      var REACT_MODULE_REFERENCE;
-      {
-        REACT_MODULE_REFERENCE = Symbol.for("react.module.reference");
-      }
+      var REACT_MODULE_REFERENCE = Symbol.for("react.module.reference");
       function isValidElementType(type) {
         if (typeof type === "string" || typeof type === "function") {
           return true;
@@ -23432,7 +23425,6 @@ var require_react_jsx_dev_runtime_development = __commonJS((exports) => {
           }
         }
       }
-      var didWarnAboutKeySpread = {};
       function jsxWithValidation(type, props, key, isStaticChildren, source, self) {
         {
           var validType = isValidElementType(type);
@@ -23480,20 +23472,6 @@ var require_react_jsx_dev_runtime_development = __commonJS((exports) => {
                 }
               } else {
                 validateChildKeys(children, type);
-              }
-            }
-          }
-          {
-            if (hasOwnProperty.call(props, "key")) {
-              var componentName = getComponentNameFromType(type);
-              var keys = Object.keys(props).filter(function(k) {
-                return k !== "key";
-              });
-              var beforeExample = keys.length > 0 ? "{key: someKey, " + keys.join(": ..., ") + ": ...}" : "{key: someKey}";
-              if (!didWarnAboutKeySpread[componentName + beforeExample]) {
-                var afterExample = keys.length > 0 ? "{" + keys.join(": ..., ") + ": ...}" : "{}";
-                error('A props object containing a "key" prop is being spread into JSX:\n' + "  let props = %s;\n" + "  <%s {...props} />\n" + "React keys must be passed directly to JSX without using spread:\n" + "  let props = %s;\n" + "  <%s key={someKey} {...props} />", beforeExample, componentName, afterExample, componentName);
-                didWarnAboutKeySpread[componentName + beforeExample] = true;
               }
             }
           }
@@ -23675,6 +23653,14 @@ var require_dist = __commonJS((exports) => {
     return __toString.call(val) === "[object Date]";
   }
 });
+
+// root/app/web/common/array/action/ToArray.ts
+function toArray(item) {
+  if (Array.isArray(item))
+    return item;
+  else
+    return [item];
+}
 // node_modules/ts-results/esm/utils.js
 function toString(val) {
   var value = String(val);
@@ -24205,7 +24191,7 @@ function eachProp(obj, fn, ctx) {
     }
   }
 }
-var toArray = (a) => is.und(a) ? [] : is.arr(a) ? a : [a];
+var toArray2 = (a) => is.und(a) ? [] : is.arr(a) ? a : [a];
 function flush(queue, iterator) {
   if (queue.size) {
     const items = Array.from(queue);
@@ -25195,7 +25181,7 @@ var import_react14 = __toESM(require_react(), 1);
 function callProp(value, ...args) {
   return is.fun(value) ? value(...args) : value;
 }
-var matchProp = (value, key) => value === true || !!(key && value && (is.fun(value) ? value(key) : toArray(value).includes(key)));
+var matchProp = (value, key) => value === true || !!(key && value && (is.fun(value) ? value(key) : toArray2(value).includes(key)));
 var resolveProp = (prop, key) => is.obj(prop) ? key && prop[key] : prop;
 var getDefaultProp = (props, key) => props.default === true ? props[key] : props.default ? props.default[key] : undefined;
 var noopTransform = (value) => value;
@@ -25683,7 +25669,7 @@ var SpringValue = class extends FrameValue {
     const { config: config2 } = anim;
     const payload = getPayload(anim.to);
     if (!payload && hasFluidValue(anim.to)) {
-      toValues = toArray(getFluidValue(anim.to));
+      toValues = toArray2(getFluidValue(anim.to));
     }
     anim.values.forEach((node2, i) => {
       if (node2.done)
@@ -26003,7 +25989,7 @@ var SpringValue = class extends FrameValue {
     if (!hasAsyncTo) {
       if (started || hasFluidValue(prevTo)) {
         anim.values = node.getPayload();
-        anim.toValues = hasFluidValue(to2) ? null : goalType == AnimatedString ? [1] : toArray(goal);
+        anim.toValues = hasFluidValue(to2) ? null : goalType == AnimatedString ? [1] : toArray2(goal);
       }
       if (anim.immediate != immediate) {
         anim.immediate = immediate;
@@ -26269,7 +26255,7 @@ var Controller = class {
   start(props) {
     let { queue } = this;
     if (props) {
-      queue = toArray(props).map(createUpdate);
+      queue = toArray2(props).map(createUpdate);
     } else {
       this.queue = [];
     }
@@ -26285,7 +26271,7 @@ var Controller = class {
     }
     if (keys) {
       const springs = this.springs;
-      each(toArray(keys), (key) => springs[key].stop(!!arg));
+      each(toArray2(keys), (key) => springs[key].stop(!!arg));
     } else {
       stopAsync(this._state, this._lastAsyncId);
       this.each((spring) => spring.stop(!!arg));
@@ -26297,7 +26283,7 @@ var Controller = class {
       this.start({ pause: true });
     } else {
       const springs = this.springs;
-      each(toArray(keys), (key) => springs[key].pause());
+      each(toArray2(keys), (key) => springs[key].pause());
     }
     return this;
   }
@@ -26306,7 +26292,7 @@ var Controller = class {
       this.start({ pause: false });
     } else {
       const springs = this.springs;
-      each(toArray(keys), (key) => springs[key].resume());
+      each(toArray2(keys), (key) => springs[key].resume());
     }
     return this;
   }
@@ -26448,7 +26434,7 @@ async function flushUpdate(ctrl, props, isLoop) {
 function getSprings(ctrl, props) {
   const springs = { ...ctrl.springs };
   if (props) {
-    each(toArray(props), (props2) => {
+    each(toArray2(props), (props2) => {
       if (is.und(props2.keys)) {
         props2 = createUpdate(props2);
       }
@@ -26692,7 +26678,7 @@ var Interpolation = class extends FrameValue {
     }
   }
   _get() {
-    const inputs = is.arr(this.source) ? this.source.map(getFluidValue) : toArray(getFluidValue(this.source));
+    const inputs = is.arr(this.source) ? this.source.map(getFluidValue) : toArray2(getFluidValue(this.source));
     return this.calc(...inputs);
   }
   _start() {
@@ -26711,7 +26697,7 @@ var Interpolation = class extends FrameValue {
   }
   _attach() {
     let priority2 = 1;
-    each(toArray(this.source), (source) => {
+    each(toArray2(this.source), (source) => {
       if (hasFluidValue(source)) {
         addFluidObserver(source, this);
       }
@@ -26726,7 +26712,7 @@ var Interpolation = class extends FrameValue {
     this._start();
   }
   _detach() {
-    each(toArray(this.source), (source) => {
+    each(toArray2(this.source), (source) => {
       if (hasFluidValue(source)) {
         removeFluidObserver(source, this);
       }
@@ -26745,7 +26731,7 @@ var Interpolation = class extends FrameValue {
     } else if (event.type == "idle") {
       this._active.delete(event.parent);
     } else if (event.type == "priority") {
-      this.priority = toArray(this.source).reduce((highest, parent) => Math.max(highest, (isFrameValue(parent) ? parent.priority : 0) + 1), 0);
+      this.priority = toArray2(this.source).reduce((highest, parent) => Math.max(highest, (isFrameValue(parent) ? parent.priority : 0) + 1), 0);
     }
   }
 };
@@ -26903,7 +26889,7 @@ var AnimatedStyle = class extends AnimatedObject {
         if (is.und(value))
           return;
         const unit = pxTransforms.test(key) ? "px" : degTransforms.test(key) ? "deg" : "";
-        inputs.push(toArray(value));
+        inputs.push(toArray2(value));
         transforms.push(key === "rotate3d" ? ([x2, y2, z2, deg]) => [
           `rotate3d(${x2},${y2},${z2},${addUnit(deg, unit)})`,
           isValueIdentity(deg, 0)
@@ -29038,56 +29024,58 @@ function rho(count) {
 }
 // root/app/web/lib/widget/animated/AnimatedStat.tsx
 var jsx_dev_runtime4 = __toESM(require_jsx_dev_runtime(), 1);
+// root/app/web/components/decoration/Blurdot.tsx
+var jsx_dev_runtime5 = __toESM(require_jsx_dev_runtime(), 1);
 // root/app/web/module/ColorPalette.ts
 var EEIRE_BLACK = "#121212";
 var NEON_PURPLE = "#5F5CFF";
 var TIMPERWOLD = "#D7D6D5";
 
 // root/app/web/components/layout/page/ResponsiveAnchorPage.tsx
-var jsx_dev_runtime5 = __toESM(require_jsx_dev_runtime(), 1);
-function ResponsiveAnchorPage(props) {
+var jsx_dev_runtime6 = __toESM(require_jsx_dev_runtime(), 1);
+// root/app/web/components/layout/page/ResponsivePage.tsx
+var jsx_dev_runtime7 = __toESM(require_jsx_dev_runtime(), 1);
+function ResponsivePage(props) {
   let device = useDevice();
-  return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(jsx_dev_runtime5.Fragment, {
-    children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
+    children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
       style: {
         display: "flex",
         flexDirection: "column",
-        justifyContent: "start",
+        justifyTracks: "start",
         alignItems: "center",
-        width: "100vm",
-        height: "100vh",
-        background: EEIRE_BLACK
+        width: "100%",
+        minHeight: "100vh",
+        overflowX: "hidden",
+        overflowY: "auto",
+        background: props.background ?? EEIRE_BLACK
       },
-      children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+      children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
         style: {
           display: "flex",
           flexDirection: "column",
           justifyContent: "start",
           alignItems: "center",
-          width: device === "laptop" ? 1024 : device === "tablet" ? 768 : device === "mobile" ? 320 : undefined,
-          height: "100%"
+          width: device === "laptop" ? 1024 : device === "tablet" ? 768 : device === "mobile" ? 320 : "100%",
+          minHeight: "100%"
         },
-        children: [
-          props.children[0],
-          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
-            style: {
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              height: "100%",
-              flexGrow: 1
-            },
-            children: props.children[1]
-          }, undefined, false, undefined, this)
-        ]
-      }, undefined, true, undefined, this)
+        children: toArray(props.children).map((child) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+          style: {
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "start",
+            alignItems: "center",
+            width: "100%",
+            height: "100vh"
+          },
+          children: child
+        }, undefined, false, undefined, this))
+      }, undefined, false, undefined, this)
     }, undefined, false, undefined, this)
   }, undefined, false, undefined, this);
 }
 // root/app/web/components/nav/NavButton.tsx
-var jsx_dev_runtime6 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime8 = __toESM(require_jsx_dev_runtime(), 1);
 function NavButton(props) {
   let spacing = 5;
   let gap0 = 10;
@@ -29099,14 +29087,14 @@ function NavButton(props) {
     paddingLeft: padding0,
     paddingRight: padding0,
     config: {
-      duration: 1000,
-      easing: easings.easeInOutExpo
+      duration: 500,
+      easing: easings.easeInOutElastic
     }
   }));
-  return /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(jsx_dev_runtime6.Fragment, {
-    children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(Link2, {
+  return /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(jsx_dev_runtime8.Fragment, {
+    children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Link2, {
       to: props.to,
-      children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(animated.div, {
+      children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(animated.div, {
         onMouseEnter: () => setGap.start({ gap: gap1, paddingLeft: padding1, paddingRight: padding1 }),
         onMouseLeave: () => setGap.start({ gap: gap0, paddingLeft: padding0, paddingRight: padding0 }),
         style: {
@@ -29114,7 +29102,7 @@ function NavButton(props) {
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",
-          fontSize: rho(2n),
+          fontSize: rho(5n),
           fontWeight: "normal",
           fontFamily: "departure-mono",
           color: TIMPERWOLD,
@@ -29123,13 +29111,13 @@ function NavButton(props) {
           ...gap
         },
         children: [
-          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
             style: {
               color: NEON_PURPLE
             },
             children: props.children[0]
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
             children: props.children[1]
           }, undefined, false, undefined, this)
         ]
@@ -29139,66 +29127,156 @@ function NavButton(props) {
 }
 
 // root/app/web/components/nav/Nav.tsx
-var jsx_dev_runtime7 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
 function Nav() {
-  return /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
-    children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
+    children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
       style: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
-        flexGrow: 1
+        paddingTop: 20,
+        paddingBottom: 20
       },
-      children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+      children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
         style: {
           display: "flex",
           flexDirection: "row",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
+          gap: 20
         },
-        children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(NavButton, {
-          to: "/",
-          children: [
-            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
-              children: "01"
-            }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
-              children: "HOME"
-            }, undefined, false, undefined, this)
-          ]
-        }, undefined, true, undefined, this)
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(NavButton, {
+            to: "/",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
+                children: "01"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
+                children: "HOME"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(NavButton, {
+            to: "/",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
+                children: "02"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
+                children: "TREASURY"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this)
+  }, undefined, false, undefined, this);
+}
+// root/app/web/components/user-interface/ProgressBar.tsx
+var jsx_dev_runtime10 = __toESM(require_jsx_dev_runtime(), 1);
+function ProgressBar(props) {
+  props.progress ??= 0;
+  let width = useSpring(() => ({ width: `${props.progress}%` }));
+  import_react17.useEffect(() => {
+    width[1].start({ width: `${props.progress}%`, ...props.animation });
+    return;
+  }, [props.progress]);
+  return /* @__PURE__ */ jsx_dev_runtime10.jsxDEV(jsx_dev_runtime10.Fragment, {
+    children: /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("div", {
+      style: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "start",
+        alignItems: "center",
+        width: props.w ?? props.width,
+        height: props.h ?? props.height,
+        aspectRatio: props.aspectRatio,
+        minWidth: props.minW ?? props.minWidth,
+        maxWidth: props.maxW ?? props.maxWidth,
+        minHeight: props.minH ?? props.minHeight,
+        maxHeight: props.maxH ?? props.maxHeight,
+        borderWidth: 1,
+        borderStyle: "solid",
+        borderColor: TIMPERWOLD,
+        position: "relative"
+      },
+      children: /* @__PURE__ */ jsx_dev_runtime10.jsxDEV(animated.div, {
+        style: {
+          position: "absolute",
+          background: stripe("red", "purple", undefined, undefined, undefined, "0 0"),
+          height: "100%",
+          ...width[0]
+        }
       }, undefined, false, undefined, this)
     }, undefined, false, undefined, this)
   }, undefined, false, undefined, this);
 }
+function stripe(color0, color1, width = 10, gap = 10, angle = 45, position = "0 0") {
+  return `repeating-linear-gradient(${angle}deg, ${color0}, ${color0} ${width}px, ${color1} ${width}px, ${color1} ${width + gap}px), ${position}`;
+}
 // root/app/web/page/Home.tsx
-var jsx_dev_runtime8 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime11 = __toESM(require_jsx_dev_runtime(), 1);
 function Home() {
-  return /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(jsx_dev_runtime8.Fragment, {
-    children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(ResponsiveAnchorPage, {
-      children: [
-        /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Nav, {}, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(jsx_dev_runtime8.Fragment, {
-          children: "HELLO_WORLD"
-        }, undefined, false, undefined, this)
-      ]
-    }, undefined, true, undefined, this)
+  let progress = import_react15.useState(0);
+  import_react17.useEffect(() => {
+    setTimeout(() => {
+      progress[1](75);
+    }, 2000);
+  }, []);
+  return /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(jsx_dev_runtime11.Fragment, {
+    children: /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(ResponsivePage, {
+      children: /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+        style: {
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "start",
+          alignItems: "center",
+          width: "100%",
+          height: "100%"
+        },
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(Nav, {}, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+            style: {
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "100%",
+              flexGrow: 1
+            },
+            children: /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(ProgressBar, {
+              progress: progress[0],
+              w: 200,
+              aspectRatio: 8 / 1,
+              animation: {
+                tension: 0,
+                friction: 0
+              }
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    }, undefined, false, undefined, this)
   }, undefined, false, undefined, this);
 }
 // root/app/web/App.tsx
-var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime12 = __toESM(require_jsx_dev_runtime(), 1);
 function App() {
-  return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
-    children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(BrowserRouter, {
-      children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Routes, {
-        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Route, {
+  return /* @__PURE__ */ jsx_dev_runtime12.jsxDEV(jsx_dev_runtime12.Fragment, {
+    children: /* @__PURE__ */ jsx_dev_runtime12.jsxDEV(BrowserRouter, {
+      children: /* @__PURE__ */ jsx_dev_runtime12.jsxDEV(Routes, {
+        children: /* @__PURE__ */ jsx_dev_runtime12.jsxDEV(Route, {
           path: "/",
-          element: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Home, {}, undefined, false, undefined, this)
+          element: /* @__PURE__ */ jsx_dev_runtime12.jsxDEV(Home, {}, undefined, false, undefined, this)
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this)
     }, undefined, false, undefined, this)
   }, undefined, false, undefined, this);
 }
-render(/* @__PURE__ */ jsx_dev_runtime9.jsxDEV(App, {}, undefined, false, undefined, this));
+render(/* @__PURE__ */ jsx_dev_runtime12.jsxDEV(App, {}, undefined, false, undefined, this)).unwrap();

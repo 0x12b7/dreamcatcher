@@ -13,4 +13,4 @@ function App(): WebLib.Component {
     </>;
 }
 
-WebLib.render(<App/>);
+WebLib.render(<App/>).unwrap();

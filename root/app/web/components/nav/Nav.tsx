@@ -11,19 +11,26 @@ export function Nav(): WebLib.Component {
                 justifyContent: "center",
                 alignItems: "center",
                 width: "100%",
-                flexGrow: 1
+                paddingTop: 20,
+                paddingBottom: 20
             }}>
             <div
                 style={{
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "center",
-                    alignItems: "center"
+                    alignItems: "center",
+                    gap: 20
                 }}>
                 <NavButton
                     to="/">
                     <>01</>
                     <>HOME</>
+                </NavButton>
+                <NavButton
+                    to="/">
+                    <>02</>
+                    <>TREASURY</>
                 </NavButton>
             </div>
         </div>

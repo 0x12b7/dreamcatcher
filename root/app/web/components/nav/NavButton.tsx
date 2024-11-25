@@ -18,8 +18,8 @@ export function NavButton(props: NavButtonProps): WebLib.Component {
             paddingLeft: padding0,
             paddingRight: padding0,
             config: {
-                duration: 1000,
-                easing: Easings.easeInOutExpo
+                duration: 500,
+                easing: Easings.easeInOutElastic
             }
         }));
 
@@ -34,7 +34,7 @@ export function NavButton(props: NavButtonProps): WebLib.Component {
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
-                    fontSize: WebLib.rho(2n),
+                    fontSize: WebLib.rho(5n),
                     fontWeight: "normal",
                     fontFamily: "departure-mono",
                     color: ColorPalette.TIMPERWOLD,
