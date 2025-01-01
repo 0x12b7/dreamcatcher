@@ -1,0 +1,14 @@
+{
+	"extends": "../../../tsconfig.json",
+	"compilerOptions": {
+		"declaration": true,
+		"declarationDir": "dist",
+		"declarationMap": true,
+		"baseUrl": ".",
+		"paths": {
+			"@$": ["src/$.ts"]
+		}
+	},
+	"include": ["."],
+	"exclude": ["node_modules", "target/**/*"]
+}

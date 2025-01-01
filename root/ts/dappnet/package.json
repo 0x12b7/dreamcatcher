@@ -1,0 +1,23 @@
+{
+	"name": "dappnet",
+	"version": "0.2.5",
+	"description": "TS Library for Building DApps on Multiple DVMs",
+	"license": "MIT",
+	"main": "target/tslib/$.js",
+	"types": "target/tslib/_.d.ts",
+	"type": "module",
+	"scripts": {
+		"build": "bun run script/BuildScript.ts"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"tsup": "8.3.5"
+	},
+	"peerDependencies": {
+		"typescript": "5.0.0"
+	},
+	"dependencies": {
+		"solion": "0.7.5",
+		"reliq": "0.7.5"
+	}
+}

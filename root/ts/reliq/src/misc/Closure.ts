@@ -1,0 +1,1 @@
+export type Closure<T extends Array<unknown>, X> = (... args: T) => X;

@@ -1,0 +1,1 @@
+export type EvmBase = "address" | "string" | "bool";

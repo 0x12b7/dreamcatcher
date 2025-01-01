@@ -1,0 +1,20 @@
+{
+	"name": "reliq",
+	"version": "0.9.4",
+	"main": "target/tslib/Module.cjs",
+	"devDependencies": {
+		"@types/bun": "1.1.14",
+		"tsup": "8.3.5"
+	},
+	"peerDependencies": {
+		"typescript": "5.7.2"
+	},
+	"description": "",
+	"license": "MIT",
+	"scripts": {
+		"build": "bun run script/BuildScript.ts",
+		"release": "bun run build && npm publish"
+	},
+	"type": "module",
+	"types": "target/tslib/Module.d.cts"
+}

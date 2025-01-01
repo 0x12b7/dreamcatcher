@@ -1,23 +1,12 @@
 {
 	"name": "dreamcatcher",
-	"module": "root/app/App.ts",
-	"type": "module",
+	"private": true,
 	"devDependencies": {
 		"@types/bun": "latest"
 	},
 	"peerDependencies": {
-		"typescript": "^5.0.0"
+		"typescript": "^5.6.3"
 	},
-	"dependencies": {
-		"@types/express": "^5.0.0",
-		"@types/react": "^18.3.12",
-		"@types/react-dom": "^18.3.1",
-		"express": "^4.21.1",
-		"react": "18.0.0",
-		"react-dom": "^18.3.1",
-		"react-router-dom": "^7.0.1",
-		"react-spring": "^9.7.4",
-		"styled-components": "^6.1.13",
-		"ts-results": "^3.3.0"
-	}
+	"dependencies": {},
+	"workspaces": ["root/**/package.json"]
 }

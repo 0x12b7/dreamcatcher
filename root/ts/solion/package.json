@@ -1,0 +1,24 @@
+{
+	"name": "solion",
+	"version": "0.7.5",
+	"description": "Wrapper for Solc with Enhanced Types & Utilities",
+	"license": "MIT",
+	"main": "target/tslib/$.js",
+	"types": "target/tslib/_.d.ts",
+	"type": "module",
+	"scripts": {
+		"build": "bun run script/BuildScript.ts"
+	},
+	"devDependencies": {
+		"@types/bun": "1.1.14",
+		"tsup": "8.3.5"
+	},
+	"peerDependencies": {
+		"typescript": "5.0.0"
+	},
+	"dependencies": {
+		"dappnet": "0.2.5",
+		"reliq": "0.7.5",
+		"solc": "0.8.28"
+	}
+}
