@@ -1,8 +1,18 @@
 declare function assert<T extends string>(condition: boolean, errcode: T): asserts condition;
 
+declare function mapErr<T extends string, X>(e: unknown, errcode: T, handler: Function<void, X>): Maybe<X>;
+
+declare function none<T>(v: undefined): true;
+declare function none<T>(v: null): true;
+declare function none<T>(v: Maybe<T>): v is null | undefined;
+
 declare function panic(msg: string): never;
 
 declare function require<T extends string>(condition: boolean, errcode: T): asserts condition;
+
+declare function some<T>(v: undefined): false;
+declare function some<T>(v: null): false;
+declare function some<T>(v: Maybe<T>): v is Exclude<Maybe<T>, null | undefined>;
 
 type AsyncClosure<T extends Array<unknown>, X> = Closure<T, X>;
 
@@ -118,13 +128,13 @@ type ResultHandler = {
     unwrapAny<T extends Array<Result<unknown, unknown>>>(...wrappers: T): Result<OkValOfAll<T>[number], ErrValOfAll<T>>;
 };
 
-declare function wrapAsyncO<T>(op: AsyncFunction<void, T>): Promise<Option<T>>;
+declare function wrapAsyncOption<T>(op: AsyncFunction<void, T>): Promise<Option<T>>;
 
-declare function wrapAsyncR<T, E = unknown>(op: AsyncFunction<void, T>): Promise<Result<T, E>>;
+declare function wrapAsyncResult<T, E = unknown>(op: AsyncFunction<void, T>): Promise<Result<T, E>>;
 
-declare function wrapO<T>(op: Function<void, T>): Option<T>;
+declare function wrapOption<T>(op: Function<void, T>): Option<T>;
 
-declare function wrapR<T, E = unknown>(op: Function<void, T>): Result<T, E>;
+declare function wrapResult<T, E = unknown>(op: Function<void, T>): Result<T, E>;
 
 type Some<T> = {
     some(): this is Some<T>;
@@ -153,4 +163,4 @@ type SomeValOfAll<T extends Array<Option<unknown>>> = {
     [k in keyof T]: T[k] extends Some<unknown> ? SomeValOf<T[k]> : never;
 };
 
-export { type AsyncClosure, type AsyncFunction, type Closure, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, type Function, type Maybe, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, Result, type ResultHandler, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, assert, panic, require, toString, wrapAsyncO, wrapAsyncR, wrapO, wrapR };
+export { type AsyncClosure, type AsyncFunction, type Closure, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, type Function, type Maybe, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, Result, type ResultHandler, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, assert, mapErr, none, panic, require, some, toString, wrapAsyncOption, wrapAsyncResult, wrapOption, wrapResult };
