@@ -1,3 +1,5 @@
 export function panic<T extends string>(msg: T): never {
-    throw Error(msg);
+    let e: Error = Error(msg);
+    Error.captureStackTrace(e, panic);
+    throw e;
 }

@@ -1,6 +1,6 @@
 {
 	"name": "reliq",
-	"version": "0.9.4",
+	"version": "1.0.0",
 	"main": "target/tslib/Module.cjs",
 	"devDependencies": {
 		"@types/bun": "1.1.14",
@@ -16,5 +16,6 @@
 		"release": "bun run build && npm publish"
 	},
 	"type": "module",
-	"types": "target/tslib/Module.d.cts"
+	"types": "target/tslib/Module.d.cts",
+	"dependencies": {}
 }

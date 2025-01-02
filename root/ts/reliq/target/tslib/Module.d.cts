@@ -6,9 +6,18 @@ declare function none<T>(v: undefined): true;
 declare function none<T>(v: null): true;
 declare function none<T>(v: Maybe<T>): v is null | undefined;
 
-declare function panic(msg: string): never;
+declare function panic<T extends string>(msg: T): never;
 
 declare function require<T extends string>(condition: boolean, errcode: T): asserts condition;
+
+type RestorableOperation<T> = Function<T, void>;
+type RestorableAsyncOperation<T> = AsyncFunction<T, void>;
+type Restorable<T> = {
+    get(): T;
+    mut(handler: RestorableOperation<T>): void;
+    mutAsync(handler: RestorableAsyncOperation<T>): Promise<void>;
+};
+declare function Restorable<T>(_v: T): Restorable<T>;
 
 declare function some<T>(v: undefined): false;
 declare function some<T>(v: null): false;
@@ -50,6 +59,8 @@ type ErrValOfAll<T extends Array<Result<unknown, unknown>>> = {
 type Maybe<T> = T | null | void | undefined;
 
 type MaybeAsync<T> = Promise<T> | T;
+
+declare function copy<T>(v: T): T;
 
 type Closure<T extends Array<unknown>, X> = (...args: T) => X;
 
@@ -163,4 +174,4 @@ type SomeValOfAll<T extends Array<Option<unknown>>> = {
     [k in keyof T]: T[k] extends Some<unknown> ? SomeValOf<T[k]> : never;
 };
 
-export { type AsyncClosure, type AsyncFunction, type Closure, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, type Function, type Maybe, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, Result, type ResultHandler, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, assert, mapErr, none, panic, require, some, toString, wrapAsyncOption, wrapAsyncResult, wrapOption, wrapResult };
+export { type AsyncClosure, type AsyncFunction, type Closure, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, type Function, type Maybe, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, Restorable, type RestorableAsyncOperation, type RestorableOperation, Result, type ResultHandler, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, assert, copy, mapErr, none, panic, require, some, toString, wrapAsyncOption, wrapAsyncResult, wrapOption, wrapResult };

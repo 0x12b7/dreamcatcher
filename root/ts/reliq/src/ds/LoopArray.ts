@@ -9,24 +9,38 @@ export type LoopArrayError =
 
 export type LoopArray<T> = {
     cursor(): bigint;
+    length(): bigint;
+    startPosition(): bigint;
+    finalPosition(): bigint;
+    last(): T;
     get(): T;
     next(): T;
     prev(): T;
     move(position: bigint): T;
     moveByAmount(amount: bigint): T;
+    insert(v: T): void;
+    remove(): void;
+    removeByPosition(position: bigint): void;
 };
 
-export function LoopArray<T>(_v: ReadonlyArray<T>): LoopArray<T> {
+export function LoopArray<T>(_v: Array<T>): LoopArray<T> {
     let _cursor: bigint = 0n;
     
     /** @constructor */ {
         return {
             cursor,
+            length,
+            startPosition,
+            finalPosition,
+            last,
             get,
             next,
             prev,
             move,
-            moveByAmount
+            moveByAmount,
+            insert,
+            remove,
+            removeByPosition
         };
     }
 
@@ -34,6 +48,24 @@ export function LoopArray<T>(_v: ReadonlyArray<T>): LoopArray<T> {
         return _cursor;
     }
     
+    function length(): bigint {
+        let n: number = _v.length;
+        return BigInt(n);
+    }
+
+    function startPosition(): bigint {
+        return 0n;
+    }
+
+    function finalPosition(): bigint {
+        let n: number = _v.length - 1;
+        return BigInt(n);
+    }
+
+    function last(): T {
+        return move(finalPosition());
+    }
+
     function get(): T {
         let v: Maybe<T> = _v.at(Number(_cursor))!;
         assert<LoopArrayError>(some(v), "LOOP_ARRAY.ERR_NO_VALUE");
@@ -41,26 +73,25 @@ export function LoopArray<T>(_v: ReadonlyArray<T>): LoopArray<T> {
     }
 
     function next(): T {
-        let over: boolean = _cursor + 1n === _final() + 1n;
+        let over: boolean = _cursor + 1n === finalPosition() + 1n;
         if (over) {
-            _cursor = _start();
+            _cursor = startPosition();
         }
         else _cursor += 1n;
         return get();
     }
 
     function prev(): T {
-        let undr: boolean = _cursor - 1n === _start() - 1n;
+        let undr: boolean = _cursor - 1n === startPosition() - 1n;
         if (undr) {
-            _cursor = _final();
+            _cursor = finalPosition();
         }
         else _cursor -= 1n;
         return get();
     }
 
     function move(position: bigint): T {
-        require<LoopArrayError>(position >= _start(), "LOOP_ARRAY.ERR_INVALID_POSITION");
-        require<LoopArrayError>(position <= _final(), "LOOP_ARRAY.ERR_INVALID_POSITION");
+        _checkPosition(position);
         _cursor = position;
         return get();
     }
@@ -86,12 +117,25 @@ export function LoopArray<T>(_v: ReadonlyArray<T>): LoopArray<T> {
         }
     }
 
-    function _start(): bigint {
-        return 0n;
+    function insert(v: T): void {
+        _v.push(v);
+        return;
     }
 
-    function _final(): bigint {
-        let n: number = _v.length - 1;
-        return BigInt(n);
+    function remove(): void {
+        _v.pop();
+        return;
+    }
+
+    function removeByPosition(position: bigint): void {
+        _checkPosition(position);
+        _v.splice(Number(position), 1);
+        return;
+    }
+
+    function _checkPosition(position: bigint): void {
+        require<LoopArrayError>(position >= startPosition(), "LOOP_ARRAY.ERR_INVALID_POSITION");
+        require<LoopArrayError>(position <= finalPosition(), "LOOP_ARRAY.ERR_INVALID_POSITION");
+        return;
     }
 }

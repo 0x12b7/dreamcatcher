@@ -1,14 +1,9 @@
 # Reliq
-## Overview
-Reliq is a TypeScript error-handling library inspired by Rust's robust error-handling mechanisms. Borrowing much of its foundational implementation from ts-results, Reliq goes further by striving to introduce highly safe and expressive tools like the Rust-like ? operator. The goal is to provide airtight type safety and make error handling in TypeScript seamless and intuitive.
-## Features
-- Rust-inspired Result and Option types: Reliq enables powerful and type-safe error handling.
-- Planned Macro-like Utilities: Advanced utilities like the ? operator for short-circuiting errors in the works.
-- Type Safety First: Reliq is designed to reduce runtime errors through TypeScript’s type system.
-- Browser Compatibility: Fully compatible with browser environments.
-- Assertion Utilities: Includes functions for assertion-based error handling.
+Reliq is a TypeScript error-handling library that draws inspiration from Rust's rigorous error-handling paradigms and the Ethereum Virtual Machine's (EVM) state management mechanisms. The library implements two principal approaches to error management: a Rust-inspired Result style, rooted in the design of ts-results, and an assertion-based approach.
 
-## Rust Style
+
+## Resut Style
+
 ```typescript
     import { Option } from "reliq";
     import { Result } from "reliq";
@@ -24,13 +19,25 @@ Reliq is a TypeScript error-handling library inspired by Rust's robust error-han
     };
 
     function Car(engine: Option<string>, tire: Option<string>): Result<Car, CarError> {
-        
+        /** @constructor */ {
+            if (engine.none()) return Err("CAR.ERR_MISSING_ENGINE");
+            if (tire.none()) return Err("CAR.ERR_MISSING_TIRE");
+            return Ok({
+                drive
+            });
+        }
+
+        function drive(): void {
+            /// ...
+            return;
+        }
     }
 ```
 
 
 ## Assertion Style
-Assertion style programming unlike the Result style, is much cleaner however is less explicit. The core issue with typescript and javascript is how messy error handling can be, Reliq has some tools and guidelines to enabling better error management.
+
+Assertion-style programming, in contrast to the Result style, offers a cleaner and more straightforward approach to error handling. However, it tends to be less explicit in how errors are managed. One of the core challenges with error handling in TypeScript and JavaScript is their inherently messy and inconsistent practices. Reliq addresses this problem by providing a set of tools and guidelines designed to streamline and improve error management, making it more intuitive and maintainable.
 
 ```typescript
     import type { Maybe } from "reliq";
@@ -57,7 +64,7 @@ Assertion style programming unlike the Result style, is much cleaner however is 
             require<CarError>(some(engine), "CAR.ERR_MISSING_ENGINE");
             require<CarError>(some(engine), "CAR.ERR_MISSING_TIRE");
 
-            /// NOTE `assert` assertions typically come after and at the end of a block of code.
+            /// NOTE `assert` assertions typically come after the end of a block of code.
             assert<CarError>(5 === 5, "CAR.ERR_THIS_SHOULD_NEVER_HAPPEN");
 
             return {
@@ -86,6 +93,33 @@ Assertion style programming unlike the Result style, is much cleaner however is 
     }
 ```
 
-License
-Reliq is licensed under the MIT License.
+Inspired by the EVM and Solidity's reversion mechanism, csreating restorable state can help build stronger and more robust code.
+```typescript
+    import { Restorable } from "reliq";
+    import { panic } from "reliq";
 
+    type RestorablePerson = 
+        Restorable<{
+            name: string;
+            age: bigint;
+        }>;
+
+    let person: RestorabePerson = Restorable({ name: "Steve", age: 40n });
+
+    /// NOTE when an error is thrown within the mut block it will revert the data
+    ///      back to the state it was in before the block. the error will keep on
+    ///      propagating after restoring its state.
+    try {
+        person.mut(person => {
+            person.age += 1n;
+            panic("ERR_ITS_NOT_YOUR_BIRTHDAY_YET");
+        });
+    }
+    catch {}
+
+    person.get(); /// person.age > 40n
+```
+
+
+## License
+Reliq is licensed under the MIT License.
