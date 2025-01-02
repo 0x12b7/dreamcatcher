@@ -2,7 +2,7 @@
 Reliq is a TypeScript error-handling library that draws inspiration from Rust's rigorous error-handling paradigms and the Ethereum Virtual Machine's (EVM) state management mechanisms. The library implements two principal approaches to error management: a Rust-inspired Result style, rooted in the design of ts-results, and an assertion-based approach.
 
 
-## Resut Style
+## Result Style
 
 ```typescript
     import { Option } from "reliq";
