@@ -2,13 +2,10 @@ import type { Function } from "@root";
 import type { AsyncFunction } from "@root";
 import { copy } from "@root";
 
-export type RestorableOperation<T> = Function<T, void>;
-export type RestorableAsyncOperation<T> = AsyncFunction<T, void>;
-
 export type Restorable<T> = {
     get(): T;
-    mut(handler: RestorableOperation<T>): void;
-    mutAsync(handler: RestorableAsyncOperation<T>): Promise<void>;
+    mut(handler: Function<T, void>): void;
+    mutAsync(handler: AsyncFunction<T, void>): Promise<void>;
 };
 
 export function Restorable<T>(_v: T): Restorable<T> {
@@ -24,7 +21,7 @@ export function Restorable<T>(_v: T): Restorable<T> {
         return _v;
     }
 
-    function mut(op: RestorableOperation<T>): void {
+    function mut(op: Function<T, void>): void {
         let snapshot: T = copy(_v);
         try {
             op(get());
@@ -35,7 +32,7 @@ export function Restorable<T>(_v: T): Restorable<T> {
         }
     }
 
-    async function mutAsync(op: RestorableAsyncOperation<T>): Promise<void> {
+    async function mutAsync(op: AsyncFunction<T, void>): Promise<void> {
         let snapshot: T = copy(_v);
         try {
             await op(get());

@@ -1,31 +1,42 @@
-declare function assert<T extends string>(condition: boolean, errcode: T): asserts condition;
-
-declare function mapErr<T extends string, X>(e: unknown, errcode: T, handler: Function<void, X>): Maybe<X>;
+type Restorable<T> = {
+    get(): T;
+    mut(handler: Function<T, void>): void;
+    mutAsync(handler: AsyncFunction<T, void>): Promise<void>;
+};
+declare function Restorable<T>(_v: T): Restorable<T>;
 
 declare function none<T>(v: undefined): true;
 declare function none<T>(v: null): true;
 declare function none<T>(v: Maybe<T>): v is null | undefined;
 
-declare function panic<T extends string>(msg: T): never;
-
-declare function require<T extends string>(condition: boolean, errcode: T): asserts condition;
-
-type RestorableOperation<T> = Function<T, void>;
-type RestorableAsyncOperation<T> = AsyncFunction<T, void>;
-type Restorable<T> = {
-    get(): T;
-    mut(handler: RestorableOperation<T>): void;
-    mutAsync(handler: RestorableAsyncOperation<T>): Promise<void>;
-};
-declare function Restorable<T>(_v: T): Restorable<T>;
-
 declare function some<T>(v: undefined): false;
 declare function some<T>(v: null): false;
 declare function some<T>(v: Maybe<T>): v is Exclude<Maybe<T>, null | undefined>;
 
-type AsyncClosure<T extends Array<unknown>, X> = Closure<T, X>;
+declare function mapErr<T extends string, X>(e: unknown, errcode: T, handler: Function<void, X>): Maybe<X>;
 
-type AsyncFunction<T, X> = Function<T, Promise<X>>;
+declare function retry<T>(op: Function<void, T>, attempts: bigint, delay?: number): T;
+
+declare function retryAsync<T>(op: AsyncFunction<void, T>, attempts: bigint, delay: number): Promise<T>;
+
+declare function assert<T extends string>(condition: boolean, errcode: T): asserts condition;
+
+declare function panic<T extends string>(msg: T): never;
+
+declare function require<T extends string>(condition: boolean, errcode: T): asserts condition;
+
+type Result<T, E> = Ok<T> | Err<E>;
+declare const Result: ResultHandler;
+
+type ResultHandler = {
+    isResult(unknown: unknown): unknown is Result<unknown, unknown>;
+    isOk(unknown: unknown): unknown is Ok<unknown>;
+    isErr(unknown: unknown): unknown is Err<unknown>;
+    wrap<T, E = unknown>(op: Function<void, T>): Result<T, E>;
+    wrapAsync<T, E = unknown>(op: AsyncFunction<void, T>): Promise<Result<T, E>>;
+    unwrapAll<T extends Array<Result<unknown, unknown>>>(...wrappers: T): Result<OkValOfAll<T>, ErrValOfAll<T>[number]>;
+    unwrapAny<T extends Array<Result<unknown, unknown>>>(...wrappers: T): Result<OkValOfAll<T>[number], ErrValOfAll<T>>;
+};
 
 type Err<E> = {
     ok(): this is Ok<unknown>;
@@ -55,18 +66,6 @@ type ErrValOf<T extends Result<unknown, unknown>> = T extends Err<infer X> ? X :
 type ErrValOfAll<T extends Array<Result<unknown, unknown>>> = {
     [k in keyof T]: T[k] extends Err<unknown> ? ErrValOf<T[k]> : never;
 };
-
-type Maybe<T> = T | null | void | undefined;
-
-type MaybeAsync<T> = Promise<T> | T;
-
-declare function copy<T>(v: T): T;
-
-type Closure<T extends Array<unknown>, X> = (...args: T) => X;
-
-type Function<T, X> = (args: T) => X;
-
-declare function toString(v: unknown): string;
 
 type None = {
     some(): this is Some<unknown>;
@@ -126,19 +125,6 @@ type OptionHandler = {
     unwrapAny<T extends Array<Option<unknown>>>(...wrappers: T): Option<SomeValOfAll<T>[number]>;
 };
 
-type Result<T, E> = Ok<T> | Err<E>;
-declare const Result: ResultHandler;
-
-type ResultHandler = {
-    isResult(unknown: unknown): unknown is Result<unknown, unknown>;
-    isOk(unknown: unknown): unknown is Ok<unknown>;
-    isErr(unknown: unknown): unknown is Err<unknown>;
-    wrap<T, E = unknown>(op: Function<void, T>): Result<T, E>;
-    wrapAsync<T, E = unknown>(op: AsyncFunction<void, T>): Promise<Result<T, E>>;
-    unwrapAll<T extends Array<Result<unknown, unknown>>>(...wrappers: T): Result<OkValOfAll<T>, ErrValOfAll<T>[number]>;
-    unwrapAny<T extends Array<Result<unknown, unknown>>>(...wrappers: T): Result<OkValOfAll<T>[number], ErrValOfAll<T>>;
-};
-
 declare function wrapAsyncOption<T>(op: AsyncFunction<void, T>): Promise<Option<T>>;
 
 declare function wrapAsyncResult<T, E = unknown>(op: AsyncFunction<void, T>): Promise<Result<T, E>>;
@@ -174,4 +160,20 @@ type SomeValOfAll<T extends Array<Option<unknown>>> = {
     [k in keyof T]: T[k] extends Some<unknown> ? SomeValOf<T[k]> : never;
 };
 
-export { type AsyncClosure, type AsyncFunction, type Closure, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, type Function, type Maybe, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, Restorable, type RestorableAsyncOperation, type RestorableOperation, Result, type ResultHandler, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, assert, copy, mapErr, none, panic, require, some, toString, wrapAsyncOption, wrapAsyncResult, wrapOption, wrapResult };
+type AsyncClosure<T extends Array<unknown>, X> = Closure<T, X>;
+
+type AsyncFunction<T, X> = Function<T, Promise<X>>;
+
+type Closure<T extends Array<unknown>, X> = (...args: T) => X;
+
+type Function<T, X> = (args: T) => X;
+
+type Maybe<T> = T | null | void | undefined;
+
+type MaybeAsync<T> = Promise<T> | T;
+
+declare function copy<T>(v: T): T;
+
+declare function toString(v: unknown): string;
+
+export { type AsyncClosure, type AsyncFunction, type Closure, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, type Function, type Maybe, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, Restorable, Result, type ResultHandler, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, assert, copy, mapErr, none, panic, require, retry, retryAsync, some, toString, wrapAsyncOption, wrapAsyncResult, wrapOption, wrapResult };
