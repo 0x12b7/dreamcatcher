@@ -1,19 +1,20 @@
+import { Result } from "@root";
+import { Unsafe } from "@root";
 import { build } from "tsup";
+import { wrapAsync } from "@root";
 
 export type BuildScript = {
-    run(): Promise<void>;
+    run(): Promise<Result<void, Unsafe>>;
 };
 
 export function BuildScript(): BuildScript {
     /** @constructor */ {
-        return {
-            run
-        };
+        return { run };
     }
 
     async function run(): ReturnType<BuildScript["run"]> {
-        return await build({
-            entry: ["src/Module.ts"],
+        return await wrapAsync(build, {
+            entry: ["src/mod.ts"],
             outDir: "target/tslib",
             format: ["cjs"],
             bundle: true,
@@ -27,4 +28,6 @@ export function BuildScript(): BuildScript {
 }
 
 /** @script */
-await BuildScript().run();
+(await BuildScript()
+    .run())
+    .unwrap();

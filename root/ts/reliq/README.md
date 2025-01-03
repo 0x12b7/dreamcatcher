@@ -1,8 +1,74 @@
 # Reliq
-Reliq is a TypeScript error-handling library that draws inspiration from Rust's rigorous error-handling paradigms and the Ethereum Virtual Machine's (EVM) state management mechanisms. The library implements two principal approaches to error management: a Rust-inspired Result style, rooted in the design of ts-results, and an assertion-based approach.
+Reliq is a TypeScript error-handling library inspired by Rust's error paradigms and the Ethereum Virtual Machine's (EVM) state management mechanisms. It combines a Rust-style `Result` approach with assertion-based programming to simplify and strengthen error handling in TypeScript.
 
 
-## Result Style
+## Features
+- Resut-Style Error Handling.
+- Assertion-Based Approach.
+- Restorable State.
+
+
+## Installation
+```
+npm install reliq
+```
+
+
+## API Overview
+
+#### Utility Functions
+`copy`
+`toString`
+
+#### General Types
+`Closure`
+`AsyncClosure`
+`Function`
+`AsyncFunction`
+`Maybe`
+`MaybeAsync`
+
+#### Result
+`ResultHandler`
+`Result`
+`ErrOfAll`
+`ErrOf`
+`ErrValOfAll`
+`ErrValOf`
+`Err`
+`None`
+`OkOfAll`
+`OkOf`
+`OkValOfAll`
+`OkValOf`
+`Ok`
+`OptionHandler`
+`Option`
+`SomeOfAll`
+`SomeOf`
+`SomeValOfAll`
+`SomeValOf`
+`Some`
+`Unsafe`
+`ok`
+`err`
+`wrap`
+`wrapAsync`
+`flag`
+`flagAsync`
+`some`
+`none`
+
+#### Assertion
+`Assert`
+`assert`
+`panic`
+`require`
+`Restorable`
+`mapErr`
+
+
+#### Result Style
 
 ```typescript
     import { Option } from "reliq";
@@ -32,12 +98,13 @@ Reliq is a TypeScript error-handling library that draws inspiration from Rust's 
             return;
         }
     }
+
+    
 ```
 
 
 ## Assertion Style
-
-Assertion-style programming, in contrast to the Result style, offers a cleaner and more straightforward approach to error handling. However, it tends to be less explicit in how errors are managed. One of the core challenges with error handling in TypeScript and JavaScript is their inherently messy and inconsistent practices. Reliq addresses this problem by providing a set of tools and guidelines designed to streamline and improve error management, making it more intuitive and maintainable.
+Assertion-style programming provides a cleaner syntax for handling predictable and critical errors.
 
 ```typescript
     import type { Maybe } from "reliq";
@@ -93,7 +160,8 @@ Assertion-style programming, in contrast to the Result style, offers a cleaner a
     }
 ```
 
-Inspired by the EVM and Solidity's reversion mechanism, csreating restorable state can help build stronger and more robust code.
+## Restorable State
+Inspired by Solidity's reversion mechanism, Reliq offers Restorable to manage rollback-safe objects.
 ```typescript
     import { Restorable } from "reliq";
     import { panic } from "reliq";
@@ -123,3 +191,7 @@ Inspired by the EVM and Solidity's reversion mechanism, csreating restorable sta
 
 ## License
 Reliq is licensed under the MIT License.
+
+
+## Aknowledgements
+The `Result` mechanism was taken from `ts-results`.

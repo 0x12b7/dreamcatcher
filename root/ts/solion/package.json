@@ -1,6 +1,6 @@
 {
 	"name": "solion",
-	"version": "0.7.5",
+	"version": "1.0.0",
 	"description": "Wrapper for Solc with Enhanced Types & Utilities",
 	"license": "MIT",
 	"main": "target/tslib/$.js",

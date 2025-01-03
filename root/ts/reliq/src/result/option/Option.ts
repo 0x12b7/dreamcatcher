@@ -1,6 +1,6 @@
 import type { OptionHandler } from "@root";
-import type { Function } from "@root";
-import type { AsyncFunction } from "@root";
+import type { Closure } from "@root";
+import type { AsyncClosure } from "@root";
 import type { SomeValOfAll } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
@@ -10,21 +10,21 @@ export type Option<T> = Some<T> | None;
 export const Option: OptionHandler = (() => {
     /***/ {
         return {
-            isOption,
-            isSome,
-            isNone,
+            match,
+            some,
+            none,
+            all,
+            any,
             wrap,
-            wrapAsync,
-            unwrapAll,
-            unwrapAny
+            wrapAsync
         };
     }
 
-    function isOption(unknown: unknown): unknown is Option<unknown> {
-        return isSome(unknown) || isNone(unknown);
+    function match(unknown: unknown): unknown is Option<unknown> {
+        return some(unknown) || none(unknown);
     }
 
-    function isSome(unknown: unknown): unknown is Some<unknown> {
+    function some(unknown: unknown): unknown is Some<unknown> {
         let match: boolean =
             unknown !== undefined
             && unknown !== null
@@ -59,7 +59,7 @@ export const Option: OptionHandler = (() => {
         return match;
     }
 
-    function isNone(unknown: unknown): unknown is None {
+    function none(unknown: unknown): unknown is None {
         let match: boolean =
             unknown !== undefined
             && unknown !== null
@@ -94,43 +94,43 @@ export const Option: OptionHandler = (() => {
         return match;
     }
 
-    function wrap<T>(op: Function<void, T>): Option<T> {
-        try {
-            return Some(op());
-        }
-        catch {
-            return None;
-        }
-    }
-
-    async function wrapAsync<T>(op: AsyncFunction<void, T>): Promise<Option<T>> {
-        try {
-            return Some(await op());
-        }
-        catch {
-            return None;
-        }
-    }
-
-    function unwrapAll<T extends Array<Option<unknown>>>(...wrappers: T): Option<SomeValOfAll<T>> {
-        let r: Array<unknown> = [];
+    function all<T1 extends Array<Option<unknown>>>(... options: T1): Option<SomeValOfAll<T1>> {
+        let out: Array<unknown> = [];
         let i: bigint = 0n;
-        while (i < wrappers.length) {
-            let wrapper: Option<unknown> = wrappers[Number(i)];
-            if (wrapper.some()) r.push(wrapper.val());
-            else return wrapper as None;
+        while (i < options.length) {
+            let option: Option<unknown> = options[Number(i)];
+            if (option.some()) out.push(option.val());
+            else return option as None;
             i++;
         }
-        return Some(r as SomeValOfAll<T>);
+        return Some((out as SomeValOfAll<T1>));
     }
 
-    function unwrapAny<T extends Array<Option<unknown>>>(...wrappers: T): Option<SomeValOfAll<T>[number]> {
+    function any<T1 extends Array<Option<unknown>>>(... options: T1): Option<SomeValOfAll<T1>[number]> {
         let i: bigint = 0n;
-        while (i < wrappers.length) {
-            let wrapper: Option<unknown> = wrappers[Number(i)];
-            if (wrapper.some()) return wrapper as Some<SomeValOfAll<T>[number]>;
-            else return wrapper as None;
+        while (i < options.length) {
+            let option: Option<unknown> = options[Number(i)];
+            if (option.some()) return (option as Some<SomeValOfAll<T1>[number]>);
+            else return (option as None);
         }
         return None;
+    }
+
+    function wrap<T1, T2, T3 extends Array<T2>>(op: Closure<T3, T1>, ... args: T3): Option<T1> {
+        try {
+            return Some(op(... args));
+        }
+        catch {
+            return None;
+        }
+    }
+
+    async function wrapAsync<T1, T2, T3 extends Array<T2>>(op: AsyncClosure<T3, T1>, ... args: T3): Promise<Option<T1>> {
+        try {
+            return Some((await op(... args)));
+        }
+        catch {
+            return None;
+        }
     }
 })();

@@ -1,31 +1,32 @@
-import type { Function } from "@root";
-import type { AsyncFunction } from "@root";
+import type { Closure } from "@root";
+import type { AsyncClosure } from "@root";
 import type { OkValOfAll } from "@root";
 import type { ErrValOfAll } from "@root";
 import type { ResultHandler } from "@root";
 import { Ok } from "@root";
 import { Err } from "@root";
+import { Unsafe } from "@root";
 
-export type Result<T, E> = Ok<T> | Err<E>;
+export type Result<T1, T2> = Ok<T1> | Err<T2>;
 
 export const Result: ResultHandler = (() => {
     /***/ {
         return {
-            isResult,
-            isOk,
-            isErr,
+            match,
+            ok,
+            err,
+            all,
+            any,
             wrap,
-            wrapAsync,
-            unwrapAll,
-            unwrapAny
+            wrapAsync
         };
     }
 
-    function isResult(unknown: unknown): unknown is Result<unknown, unknown> {
-        return isOk(unknown) || isErr(unknown);
+    function match(unknown: unknown): unknown is Result<unknown, unknown> {
+        return ok(unknown) || err(unknown);
     }
 
-    function isOk(unknown: unknown): unknown is Ok<unknown> {
+    function ok(unknown: unknown): unknown is Ok<unknown> {
         let match: boolean =
             unknown !== undefined
             && unknown !== null
@@ -64,7 +65,7 @@ export const Result: ResultHandler = (() => {
         return match;
     }
 
-    function isErr(unknown: unknown): unknown is Err<unknown> {
+    function err(unknown: unknown): unknown is Err<unknown> {
         let match: boolean =
             unknown !== undefined
             && unknown !== null
@@ -103,45 +104,45 @@ export const Result: ResultHandler = (() => {
         return match;
     }
 
-    function wrap<T, E = unknown>(op: Function<void, T>): Result<T, E> {
-        try {
-            return Ok(op());
-        }
-        catch (e) {
-            return Err<E>(e as E);
-        }
-    }
-
-    async function wrapAsync<T, E = unknown>(op: AsyncFunction<void, T>): Promise<Result<T, E>> {
-        try {
-            return Ok(await op());
-        }
-        catch (e) {
-            return Err(e as E);
-        }
-    }
-
-    function unwrapAll<T extends Array<Result<unknown, unknown>>>(...wrappers: T): Result<OkValOfAll<T>, ErrValOfAll<T>[number]> {
-        let r: Array<unknown> = [];
+    function all<T1 extends Array<Result<unknown, unknown>>>(... results: T1): Result<OkValOfAll<T1>, ErrValOfAll<T1>[number]> {
+        let out: Array<unknown> = [];
         let i: bigint = 0n;
-        while (i < wrappers.length) {
-            let wrapper: Result<unknown, unknown> = wrappers[Number(i)];
-            if (wrapper.ok()) r.push(wrapper.val());
-            else return wrapper as Err<ErrValOfAll<T>[number]>;
+        while (i < results.length) {
+            let result: Result<unknown, unknown> = results[Number(i)];
+            if (result.ok()) out.push(result.val());
+            else return result as Err<ErrValOfAll<T1>[number]>;
             i++;
         }
-        return Ok(r as OkValOfAll<T>);
+        return Ok(out as OkValOfAll<T1>);
     }
 
-    function unwrapAny<T extends Array<Result<unknown, unknown>>>(...wrappers: T): Result<OkValOfAll<T>[number], ErrValOfAll<T>> {
-        let r: Array<unknown> = [];
+    function any<T1 extends Array<Result<unknown, unknown>>>(... results: T1): Result<OkValOfAll<T1>[number], ErrValOfAll<T1>> {
+        let out: Array<unknown> = [];
         let i: bigint = 0n;
-        while (i < wrappers.length) {
-            let wrapper: Result<unknown, unknown> = wrappers[Number(i)];
-            if (wrapper.ok()) return wrapper as Ok<OkValOfAll<T>[number]>;
-            else r.push(wrapper.val());
+        while (i < results.length) {
+            let result: Result<unknown, unknown> = results[Number(i)];
+            if (result.ok()) return result as Ok<OkValOfAll<T1>[number]>;
+            else out.push(result.val());
             i++;
         }
-        return Err(r as ErrValOfAll<T>);
+        return Err(out as ErrValOfAll<T1>);
+    }
+
+    function wrap<T1, T2, T3 extends Array<T2>>(op: Closure<T3, T1>, ... args: T3): Result<T1, Unsafe<unknown>> {
+        try {
+            return Ok(op(... args));
+        }
+        catch (e) {
+            return Err(Unsafe(e));
+        }
+    }
+
+    async function wrapAsync<T1 extends Promise<unknown>, T2, T3 extends Array<T2>>(op: AsyncClosure<T3, T1>, ... args: T3): Promise<Result<Awaited<T1>, Unsafe<unknown>>> {
+        try {
+            return Ok((await op(... args)));
+        }
+        catch (e) {
+            return Err(Unsafe(e));
+        }
     }
 })();

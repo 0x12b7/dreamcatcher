@@ -4,24 +4,24 @@ import { None } from "@root";
 import { Ok } from "@root";
 import { toString as toString_ } from "@root";
 
-export type Err<E> = {
+export type Err<T1> = {
     ok(): this is Ok<unknown>;
-    err(): this is Err<E>;
-    val(): E;
+    err(): this is Err<T1>;
+    val(): T1;
     stack(): string;
     expect(msg: string): never;
-    expectErr(__: unknown): E;
+    expectErr(__: unknown): T1;
     unwrap(): never;
-    unwrapOr<X>(v: X): X;
-    andThen(__: unknown): Err<E>;
-    map(__: unknown): Err<E>;
-    mapErr<X>(op: Function<E, X>): Err<X>;
+    unwrapOr<T2>(v: T2): T2;
+    andThen(__: unknown): Err<T1>;
+    map(__: unknown): Err<T1>;
+    mapErr<T2>(op: Function<T1, T2>): Err<T2>;
     toOption(): Option<never>;
     toString(): string;
 };
 
-export function Err<E>(_v: E): Err<E> {
-    let _instance: Err<E>;
+export function Err<T1>(_v: T1): Err<T1> {
+    let _instance: Err<T1>;
     let _stack: string;
 
     /** @constructor */ {
@@ -54,11 +54,11 @@ export function Err<E>(_v: E): Err<E> {
         return false;
     }
 
-    function err(): this is Err<E> {
+    function err(): this is Err<T1> {
         return true;
     }
 
-    function val(): E {
+    function val(): T1 {
         return _v;
     }
 
@@ -70,7 +70,7 @@ export function Err<E>(_v: E): Err<E> {
         throw `${ msg }\n${ stack() }`;
     }
 
-    function expectErr(__: unknown): E {
+    function expectErr(__: unknown): T1 {
         return val();
     }
 
@@ -78,19 +78,19 @@ export function Err<E>(_v: E): Err<E> {
         throw `${ val() }\n${ stack() }`;
     }
 
-    function unwrapOr<X>(v: X): X {
+    function unwrapOr<T2>(v: T2): T2 {
         return v;
     }
 
-    function andThen(__: unknown): Err<E> {
+    function andThen(__: unknown): Err<T1> {
         return _instance;
     }
 
-    function map(__: unknown): Err<E> {
+    function map(__: unknown): Err<T1> {
         return _instance;
     }
 
-    function mapErr<X>(op: Function<E, X>): Err<X> {
+    function mapErr<T2>(op: Function<T1, T2>): Err<T2> {
         return Err(op(val()));
     }
 

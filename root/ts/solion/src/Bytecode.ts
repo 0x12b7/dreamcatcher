@@ -11,8 +11,9 @@ export type Bytecode = {
         };
     };
 };
-export function Bytecode($: Bytecode): Bytecode {
+
+export function Bytecode(_instance: Bytecode): Bytecode {
     /***/ {
-        return $;
+        return _instance;
     }
 }
