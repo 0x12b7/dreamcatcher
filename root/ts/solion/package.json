@@ -3,11 +3,12 @@
 	"version": "1.0.0",
 	"description": "Wrapper for Solc with Enhanced Types & Utilities",
 	"license": "MIT",
-	"main": "target/tslib/$.js",
-	"types": "target/tslib/_.d.ts",
+	"main": "target/tslib/mod.cjs",
+	"types": "target/tslib/mod.d.ts",
 	"type": "module",
 	"scripts": {
-		"build": "bun run script/BuildScript.ts"
+		"build": "bun run script/build_script.ts",
+		"release": "bun run build && npm publish"
 	},
 	"devDependencies": {
 		"@types/bun": "1.1.14",
@@ -18,7 +19,7 @@
 	},
 	"dependencies": {
 		"dappnet": "0.2.5",
-		"reliq": "0.7.5",
+		"reliq": "1.2.2",
 		"solc": "0.8.28"
 	}
 }

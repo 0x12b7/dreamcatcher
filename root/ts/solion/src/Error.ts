@@ -1,16 +1,17 @@
-import type { CompilerE } from "@$";
-import { SourceLocation } from "@$";
+import type { CompilerError } from "@root";
+import { SourceLocation } from "@root";
 
 export type Error = {
     sourceLocation?: SourceLocation;
-    type: CompilerE;
+    type: CompilerError;
     component: string;
     severity: "error" | "warning";
     message: string;
     formattedMessage?: string;
 };
-export function Error($: Error): Error {
+
+export function Error(_instance: Error): Error {
     /***/ {
-        return $;
+        return _instance;
     }
 }

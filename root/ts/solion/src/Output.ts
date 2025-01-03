@@ -1,6 +1,6 @@
-import { SourceOutput } from "@$";
-import { ContractOutput } from "@$";
-import { Error } from "@$";
+import { SourceOutput } from "@root";
+import { ContractOutput } from "@root";
+import { Error } from "@root";
 
 export type Output = {
     errors?: Array<Error>;
@@ -13,8 +13,9 @@ export type Output = {
         }
     };
 };
-export function Output($: Output): Output {
-    /***/ {
-        return $;
+
+export function Output(_instance: Output): Output {
+    /** @constructor */ {
+        return _instance;
     }
 }

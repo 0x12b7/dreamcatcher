@@ -5,7 +5,7 @@
 		"inlineSources": true,
 		"baseUrl": ".",
 		"paths": {
-			"@root": ["src/Module.ts"]
+			"@root": ["src/mod.ts"]
 		}
 	},
 	"include": ["."]

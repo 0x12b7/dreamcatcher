@@ -13,7 +13,7 @@ export type Bytecode = {
 };
 
 export function Bytecode(_instance: Bytecode): Bytecode {
-    /***/ {
+    /** @constructor */ {
         return _instance;
     }
 }

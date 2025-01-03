@@ -1,4 +1,4 @@
-export type Configuration = {
+export type Config = {
     language: "Solidity" | "Vyper" | "lll" | "assembly";
     sources: {
         [contract: string]: {
@@ -55,8 +55,9 @@ export type Configuration = {
         }
     }
 };
-export function Configuration($: Configuration): Configuration {
-    /***/ {
-        return $;
+
+export function Config(_instance: Config): Config {
+    /** @constructor */ {
+        return _instance;
     }
 }

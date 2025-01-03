@@ -1,4 +1,4 @@
-export type CompilerE =
+export type CompilerError =
     | "JSONError"
     | "IOError"
     | "ParserError"

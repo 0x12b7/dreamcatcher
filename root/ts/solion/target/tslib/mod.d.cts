@@ -1,4 +1,4 @@
-import { Result } from 'reliq';
+import { Result, Unsafe } from 'reliq';
 
 type Bytecode = {
     object?: string;
@@ -13,16 +13,16 @@ type Bytecode = {
         };
     };
 };
-declare function Bytecode($: Bytecode): Bytecode;
+declare function Bytecode(_instance: Bytecode): Bytecode;
+
+type CompilerError = "JSONError" | "IOError" | "ParserError" | "DocstringParsingError" | "SyntaxError" | "DeclarationError" | "TypeError" | "UnimplementedFeatureError" | "InternalCompilerError" | "Exception" | "CompilerError" | "FatalError" | "Warning";
 
 type Compiler = {
-    compile(configuration: Configuration): Result<Output, unknown>;
+    compile(config: Config): Result<Output, Unsafe>;
 };
 declare const Compiler: Compiler;
 
-type CompilerE = "JSONError" | "IOError" | "ParserError" | "DocstringParsingError" | "SyntaxError" | "DeclarationError" | "TypeError" | "UnimplementedFeatureError" | "InternalCompilerError" | "Exception" | "CompilerError" | "FatalError" | "Warning";
-
-type Configuration = {
+type Config = {
     language: "Solidity" | "Vyper" | "lll" | "assembly";
     sources: {
         [contract: string]: {
@@ -53,7 +53,7 @@ type Configuration = {
         };
     };
 };
-declare function Configuration($: Configuration): Configuration;
+declare function Config(_instance: Config): Config;
 
 type ContractOutput = {
     abi?: Array<object>;
@@ -67,17 +67,17 @@ type ContractOutput = {
         wasm?: string;
     };
 };
-declare function ContractOutput($: ContractOutput): ContractOutput;
+declare function ContractOutput(_instance: ContractOutput): ContractOutput;
 
 type Error = {
     sourceLocation?: SourceLocation;
-    type: CompilerE;
+    type: CompilerError;
     component: string;
     severity: "error" | "warning";
     message: string;
     formattedMessage?: string;
 };
-declare function Error($: Error): Error;
+declare function Error(_instance: Error): Error;
 
 type EvmOutput = {
     assembly?: string;
@@ -101,7 +101,7 @@ type EvmOutput = {
         };
     };
 };
-declare function EvmOutput($: EvmOutput): EvmOutput;
+declare function EvmOutput(_instance: EvmOutput): EvmOutput;
 
 type Output = {
     errors?: Array<Error>;
@@ -114,20 +114,20 @@ type Output = {
         };
     };
 };
-declare function Output($: Output): Output;
+declare function Output(_instance: Output): Output;
 
 type SourceLocation = {
     file: string;
     start: number;
     end: number;
 };
-declare function SourceLocation($: SourceLocation): SourceLocation;
+declare function SourceLocation(_instance: SourceLocation): SourceLocation;
 
 type SourceOutput = {
     id: number;
     ast: object;
     legacyAST?: object;
 };
-declare function SourceOutput($: SourceOutput): SourceOutput;
+declare function SourceOutput(_instance: SourceOutput): SourceOutput;
 
-export { Bytecode, Compiler, type CompilerE, Configuration, ContractOutput, Error, EvmOutput, Output, SourceLocation, SourceOutput };
+export { Bytecode, Compiler, type CompilerError, Config, ContractOutput, Error, EvmOutput, Output, SourceLocation, SourceOutput };

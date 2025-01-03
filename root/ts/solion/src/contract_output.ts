@@ -1,4 +1,4 @@
-import { EvmOutput } from "@$";
+import { EvmOutput } from "@root";
 
 export type ContractOutput = {
     abi?: Array<object>;
@@ -12,8 +12,9 @@ export type ContractOutput = {
         wasm?: string;
     };
 };
-export function ContractOutput($: ContractOutput): ContractOutput {
+
+export function ContractOutput(_instance: ContractOutput): ContractOutput {
     /***/ {
-        return $;
+        return _instance;
     }
 }

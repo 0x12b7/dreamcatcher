@@ -1,5 +1,5 @@
 import { EvmSelector } from "dappnet";
-import { Bytecode } from "@$";
+import { Bytecode } from "@root";
 
 export type EvmOutput = {
     assembly?: string;
@@ -23,8 +23,9 @@ export type EvmOutput = {
         };
     };
 };
-export function EvmOutput($: EvmOutput): EvmOutput {
-    /***/ {
-        return $;
+
+export function EvmOutput(_instance: EvmOutput): EvmOutput {
+    /** @constructor */ {
+        return _instance;
     }
 }
