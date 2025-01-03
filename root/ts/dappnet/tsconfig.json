@@ -6,7 +6,7 @@
 		"declarationMap": true,
 		"baseUrl": ".",
 		"paths": {
-			"@$": ["src/$.ts"]
+			"@root": ["src/mod.ts"]
 		}
 	},
 	"include": ["."],
