@@ -1,1 +1,1 @@
-export type Closure<T extends Array<unknown>, X> = (... args: T) => X;
+export type Closure<T1 extends Array<unknown>, T2> = (... args: T1) => T2;

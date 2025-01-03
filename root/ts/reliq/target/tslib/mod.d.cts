@@ -38,17 +38,17 @@ type ResultHandler = {
 type Result<T1, T2> = Ok<T1> | Err<T2>;
 declare const Result: ResultHandler;
 
-type ErrOfAll<T extends Array<Result<unknown, unknown>>> = {
-    [k in keyof T]: T[k] extends Err<unknown> ? ErrOf<T[k]> : never;
+type ErrOfAll<T1 extends Array<Result<unknown, unknown>>> = {
+    [T2 in keyof T1]: T1[T2] extends Err<unknown> ? ErrOf<T1[T2]> : never;
 };
 
 type ErrOf<T1 extends Result<unknown, unknown>> = T1 extends Err<infer T2> ? Err<T2> : never;
 
-type ErrValOfAll<T extends Array<Result<unknown, unknown>>> = {
-    [k in keyof T]: T[k] extends Err<unknown> ? ErrValOf<T[k]> : never;
+type ErrValOfAll<T1 extends Array<Result<unknown, unknown>>> = {
+    [T2 in keyof T1]: T1[T2] extends Err<unknown> ? ErrValOf<T1[T2]> : never;
 };
 
-type ErrValOf<T extends Result<unknown, unknown>> = T extends Err<infer X> ? X : never;
+type ErrValOf<T1 extends Result<unknown, unknown>> = T1 extends Err<infer T2> ? T2 : never;
 
 type Err<T1> = {
     ok(): this is Ok<unknown>;
@@ -72,45 +72,45 @@ type None = {
     none(): this is None;
     expect(msg: string): never;
     unwrap(): never;
-    unwrapOr<X>(v: X): X;
+    unwrapOr<T1>(v: T1): T1;
     andThen(__: unknown): None;
     map(__: unknown): None;
-    toResult<E>(e: E): Err<E>;
+    toResult<T1>(e: T1): Err<T1>;
     toString(): string;
 };
 declare const None: None;
 
-type OkOfAll<T extends Array<Result<unknown, unknown>>> = {
-    [k in keyof T]: T[k] extends Ok<unknown> ? OkOf<T[k]> : never;
+type OkOfAll<T1 extends Array<Result<unknown, unknown>>> = {
+    [T2 in keyof T1]: T1[T2] extends Ok<unknown> ? OkOf<T1[T2]> : never;
 };
 
-type OkOf<T extends Result<unknown, unknown>> = T extends Ok<infer X> ? Ok<X> : never;
+type OkOf<T1 extends Result<unknown, unknown>> = T1 extends Ok<infer T2> ? Ok<T2> : never;
 
-type OkValOfAll<T extends Array<Result<unknown, unknown>>> = {
-    [k in keyof T]: T[k] extends Ok<unknown> ? OkValOf<T[k]> : never;
+type OkValOfAll<T1 extends Array<Result<unknown, unknown>>> = {
+    [T2 in keyof T1]: T1[T2] extends Ok<unknown> ? OkValOf<T1[T2]> : never;
 };
 
-type OkValOf<T extends Result<unknown, unknown>> = T extends Ok<infer X> ? X : never;
+type OkValOf<T1 extends Result<unknown, unknown>> = T1 extends Ok<infer T2> ? T2 : never;
 
-type Ok<T> = {
-    ok(): this is Ok<T>;
+type Ok<T1> = {
+    ok(): this is Ok<T1>;
     err(): this is Err<unknown>;
-    val(): T;
-    expect(__: unknown): T;
+    val(): T1;
+    expect(__: unknown): T1;
     expectErr(msg: string): never;
-    unwrap(): T;
-    unwrapOr(__: unknown): T;
-    unwrapSafely(): T;
-    andThen<X>(op: Function<T, Ok<X>>): Ok<X>;
-    andThen<X>(op: Function<T, Err<X>>): Result<T, X>;
-    andThen<X, Y>(op: Function<T, Result<X, Y>>): Result<X, Y>;
-    andThen<X, Y>(op: Function<T, Result<X, Y>>): Result<X, Y>;
-    map<X>(op: Function<T, X>): Ok<X>;
-    mapErr(__: unknown): Ok<T>;
-    toOption(): Option<T>;
+    unwrap(): T1;
+    unwrapOr(__: unknown): T1;
+    unwrapSafely(): T1;
+    andThen<T2>(op: Function<T1, Ok<T2>>): Ok<T2>;
+    andThen<T2>(op: Function<T1, Err<T2>>): Result<T1, T2>;
+    andThen<T2, T3>(op: Function<T1, Result<T2, T3>>): Result<T2, T3>;
+    andThen<T2, T3>(op: Function<T1, Result<T2, T3>>): Result<T2, T3>;
+    map<T2>(op: Function<T1, T2>): Ok<T2>;
+    mapErr(__: unknown): Ok<T1>;
+    toOption(): Option<T1>;
     toString(): string;
 };
-declare function Ok<T>(_v: T): Ok<T>;
+declare function Ok<T1>(_v: T1): Ok<T1>;
 
 type OptionHandler = {
     match(unknown: unknown): unknown is Option<unknown>;
@@ -122,54 +122,54 @@ type OptionHandler = {
     wrapAsync<T1, T2, T3 extends Array<T2>>(op: AsyncClosure<T3, T1>, ...args: T3): Promise<Option<T1>>;
 };
 
-type Option<T> = Some<T> | None;
+type Option<T1> = Some<T1> | None;
 declare const Option: OptionHandler;
 
-type SomeOfAll<T extends Array<Option<unknown>>> = {
-    [k in keyof T]: T[k] extends Some<unknown> ? SomeOf<T[k]> : never;
+type SomeOfAll<T1 extends Array<Option<unknown>>> = {
+    [T2 in keyof T1]: T1[T2] extends Some<unknown> ? SomeOf<T1[T2]> : never;
 };
 
-type SomeOf<T extends Option<unknown>> = T extends Some<infer X> ? Some<X> : never;
+type SomeOf<T1 extends Option<unknown>> = T1 extends Some<infer T2> ? Some<T2> : never;
 
-type SomeValOfAll<T extends Array<Option<unknown>>> = {
-    [k in keyof T]: T[k] extends Some<unknown> ? SomeValOf<T[k]> : never;
+type SomeValOfAll<T1 extends Array<Option<unknown>>> = {
+    [T2 in keyof T1]: T1[T2] extends Some<unknown> ? SomeValOf<T1[T2]> : never;
 };
 
-type SomeValOf<T extends Option<unknown>> = T extends Some<infer X> ? X : never;
+type SomeValOf<T1 extends Option<unknown>> = T1 extends Some<infer T2> ? T2 : never;
 
-type Some<T> = {
-    some(): this is Some<T>;
+type Some<T1> = {
+    some(): this is Some<T1>;
     none(): this is None;
-    val(): T;
-    expect(__: unknown): T;
-    unwrap(): T;
-    unwrapOr(__: unknown): T;
-    unwrapSafely(): T;
-    andThen<X>(op: Function<T, Option<X>>): Option<X>;
-    map<X>(op: Function<T, X>): Some<X>;
-    toResult<E>(e: E): Ok<T>;
+    val(): T1;
+    expect(__: unknown): T1;
+    unwrap(): T1;
+    unwrapOr(__: unknown): T1;
+    unwrapSafely(): T1;
+    andThen<T2>(op: Function<T1, Option<T2>>): Option<T2>;
+    map<T2>(op: Function<T1, T2>): Some<T2>;
+    toResult<T2>(__: T2): Ok<T1>;
     toString(): string;
 };
-declare function Some<T>(_v: T): Some<T>;
+declare function Some<T1>(_v: T1): Some<T1>;
 
-type Unsafe<T = unknown> = {
-    unwrap(): T;
+type Unsafe<T1 = unknown> = {
+    unwrap(): T1;
 };
-declare function Unsafe<T = unknown>(_v: T): Unsafe<T>;
+declare function Unsafe<T1 = unknown>(_v: T1): Unsafe<T1>;
 
-type AsyncClosure<T extends Array<unknown>, X> = Closure<T, X>;
+type AsyncClosure<T1 extends Array<unknown>, T2> = Closure<T1, T2>;
 
-type AsyncFunction<T, X> = Function<T, Promise<X>>;
+type AsyncFunction<T1, T2> = Function<T1, Promise<T2>>;
 
-type Closure<T extends Array<unknown>, X> = (...args: T) => X;
+type Closure<T1 extends Array<unknown>, T2> = (...args: T1) => T2;
 
-type Function<T, X> = (args: T) => X;
+type Function<T1, T2> = (args: T1) => T2;
 
-type MaybeAsync<T> = Promise<T> | T;
+type MaybeAsync<T1> = Promise<T1> | T1;
 
-type Maybe<T> = T | null | void | undefined;
+type Maybe<T1> = T1 | null | void | undefined;
 
-declare function copy<T>(v: T): T;
+declare function copy<T1>(v: T1): T1;
 
 declare function toString(v: unknown): string;
 

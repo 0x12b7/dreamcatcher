@@ -1,1 +1,1 @@
-export type Function<T, X> = (args: T) => X;
+export type Function<T1, T2> = (args: T1) => T2;

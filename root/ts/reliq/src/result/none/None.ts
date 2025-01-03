@@ -6,10 +6,10 @@ export type None = {
     none(): this is None;
     expect(msg: string): never;
     unwrap(): never;
-    unwrapOr<X>(v: X): X;
+    unwrapOr<T1>(v: T1): T1;
     andThen(__: unknown): None;
     map(__: unknown): None;
-    toResult<E>(e: E): Err<E>;
+    toResult<T1>(e: T1): Err<T1>;
     toString(): string;
 };
 
@@ -47,7 +47,7 @@ export const None: None = (() => {
         throw `${ "NONE" }\n${ Error().stack }`;
     }
 
-    function unwrapOr<X>(v: X): X {
+    function unwrapOr<T1>(v: T1): T1 {
         return v;
     }
 
@@ -59,11 +59,11 @@ export const None: None = (() => {
         return _instance;
     }
 
-    function toResult<E>(e: E): Err<E> {
+    function toResult<T1>(e: T1): Err<T1> {
         return Err(e);
     }
 
     function toString(): string {
-        return "NONE";
+        return "None";
     }
 })();

@@ -6,27 +6,27 @@ import { Some } from "@root";
 import { panic } from "@root";
 import { toString as toString_ } from "@root";
 
-export type Ok<T> = {
-    ok(): this is Ok<T>;
+export type Ok<T1> = {
+    ok(): this is Ok<T1>;
     err(): this is Err<unknown>;
-    val(): T;
-    expect(__: unknown): T;
+    val(): T1;
+    expect(__: unknown): T1;
     expectErr(msg: string): never;
-    unwrap(): T;
-    unwrapOr(__: unknown): T;
-    unwrapSafely(): T;
-    andThen<X>(op: Function<T, Ok<X>>): Ok<X>;
-    andThen<X>(op: Function<T, Err<X>>): Result<T, X>;
-    andThen<X, Y>(op: Function<T, Result<X, Y>>): Result<X, Y>;
-    andThen<X, Y>(op: Function<T, Result<X, Y>>): Result<X, Y>;
-    map<X>(op: Function<T, X>): Ok<X>;
-    mapErr(__: unknown): Ok<T>;
-    toOption(): Option<T>;
+    unwrap(): T1;
+    unwrapOr(__: unknown): T1;
+    unwrapSafely(): T1;
+    andThen<T2>(op: Function<T1, Ok<T2>>): Ok<T2>;
+    andThen<T2>(op: Function<T1, Err<T2>>): Result<T1, T2>;
+    andThen<T2, T3>(op: Function<T1, Result<T2, T3>>): Result<T2, T3>;
+    andThen<T2, T3>(op: Function<T1, Result<T2, T3>>): Result<T2, T3>;
+    map<T2>(op: Function<T1, T2>): Ok<T2>;
+    mapErr(__: unknown): Ok<T1>;
+    toOption(): Option<T1>;
     toString(): string;
 };
 
-export function Ok<T>(_v: T): Ok<T> {
-    let _instance: Ok<T>;
+export function Ok<T1>(_v: T1): Ok<T1> {
+    let _instance: Ok<T1>;
 
     /** @constructor */ {
         _instance = {
@@ -47,7 +47,7 @@ export function Ok<T>(_v: T): Ok<T> {
         return _instance;
     }
 
-    function ok(): this is Ok<T> {
+    function ok(): this is Ok<T1> {
         return true;
     }
 
@@ -55,11 +55,11 @@ export function Ok<T>(_v: T): Ok<T> {
         return false;
     }
 
-    function val(): T {
+    function val(): T1 {
         return _v;
     }
 
-    function expect(__: unknown): T {
+    function expect(__: unknown): T1 {
         return val();
     }
 
@@ -67,34 +67,34 @@ export function Ok<T>(_v: T): Ok<T> {
         return panic(msg);
     }
 
-    function unwrap(): T {
+    function unwrap(): T1 {
         return val();
     }
 
-    function unwrapOr(__: unknown): T {
+    function unwrapOr(__: unknown): T1 {
         return val();
     }
 
-    function unwrapSafely(): T {
+    function unwrapSafely(): T1 {
         return val();
     }
 
-    function andThen<X>(op: Function<T, Ok<X>>): Ok<X>;
-    function andThen<X>(op: Function<T, Err<X>>): Result<T, X>;
-    function andThen<X, Y>(op: Function<T, Result<X, Y>>): Result<X, Y>;
-    function andThen<X, Y>(op: Function<T, Result<X, Y>>): Result<X, Y> {
+    function andThen<T2>(op: Function<T1, Ok<T2>>): Ok<T2>;
+    function andThen<T2>(op: Function<T1, Err<T2>>): Result<T1, T2>;
+    function andThen<T2, T3>(op: Function<T1, Result<T2, T3>>): Result<T2, T3>;
+    function andThen<T2, T3>(op: Function<T1, Result<T2, T3>>): Result<T2, T3> {
         return op(val());
     }
 
-    function map<X>(op: Function<T, X>): Ok<X> {
+    function map<T2>(op: Function<T1, T2>): Ok<T2> {
         return Ok(op(val()));
     }
 
-    function mapErr(__: unknown): Ok<T> {
+    function mapErr(__: unknown): Ok<T1> {
         return _instance;
     }
 
-    function toOption(): Option<T> {
+    function toOption(): Option<T1> {
         return Some(val());
     }
 

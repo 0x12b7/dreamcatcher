@@ -2,6 +2,6 @@ import type { SomeOf } from "@root";
 import type { Option } from "@root";
 import { Some } from "@root";
 
-export type SomeOfAll<T extends Array<Option<unknown>>> = {
-    [k in keyof T]: T[k] extends Some<unknown> ? SomeOf<T[k]> : never
+export type SomeOfAll<T1 extends Array<Option<unknown>>> = {
+    [T2 in keyof T1]: T1[T2] extends Some<unknown> ? SomeOf<T1[T2]> : never
 };

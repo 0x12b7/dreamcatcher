@@ -1,4 +1,4 @@
 import type { Result } from "@root";
 import { Err } from "@root";
 
-export type ErrValOf<T extends Result<unknown, unknown>> = T extends Err<infer X> ? X : never;
+export type ErrValOf<T1 extends Result<unknown, unknown>> = T1 extends Err<infer T2> ? T2 : never;

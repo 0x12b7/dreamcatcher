@@ -5,7 +5,7 @@ import type { SomeValOfAll } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
 
-export type Option<T> = Some<T> | None;
+export type Option<T1> = Some<T1> | None;
 
 export const Option: OptionHandler = (() => {
     /***/ {

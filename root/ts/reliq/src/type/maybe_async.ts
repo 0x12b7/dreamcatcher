@@ -1,1 +1,1 @@
-export type MaybeAsync<T> = Promise<T> | T;
+export type MaybeAsync<T1> = Promise<T1> | T1;
