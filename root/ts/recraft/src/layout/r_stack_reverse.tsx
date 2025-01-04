@@ -6,7 +6,9 @@ export type RStackReverseProps =
     & RStackProps
     & {};
 
-export function RStackReverse({ style, children, ... more }: RStackReverseProps): ReactNode {
+export function RStackReverse(props: RStackReverseProps): ReactNode {
+    let { style, children, ... more } = props;
+    
     return <>
         <RStack
             style={{

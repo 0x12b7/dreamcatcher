@@ -6,7 +6,9 @@ export type CProps =
     & CenterProps
     & {};
 
-export function C({ style, children, ... more }: CProps): ReactNode {
+export function C(props: CProps): ReactNode {
+    let { style, children, ... more } = props;
+    
     return <>
         <Center
             style={{

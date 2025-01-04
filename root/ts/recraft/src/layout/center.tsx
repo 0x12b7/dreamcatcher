@@ -5,7 +5,9 @@ export type CenterProps =
     & ComponentPropsWithRef<"div">
     & {};
 
-export function Center({ style, children, ... more }: CenterProps): ReactNode {
+export function Center(props: CenterProps): ReactNode {
+    let { style, children, ... more } = props;
+    
     return <>
         <div
             style={{

@@ -6,7 +6,9 @@ export type CStackProps =
     & CProps
     & {};
 
-export function CStack({ style, children, ... more }: CStackProps): ReactNode {
+export function CStack(props: CStackProps): ReactNode {
+    let { style, children, ... more } = props;
+    
     return <>
         <C
             style={{

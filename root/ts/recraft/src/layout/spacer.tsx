@@ -5,7 +5,9 @@ export type SpacerProps =
     & ComponentPropsWithRef<"div">
     & {};
 
-export function Spacer({ style, children, ... more }: SpacerProps): ReactNode {
+export function Spacer(props: SpacerProps): ReactNode {
+    let { style, children, ... more } = props;
+    
     return <>
         <div
             style={{

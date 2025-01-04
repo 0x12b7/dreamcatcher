@@ -6,7 +6,9 @@ export type ZLayerProps =
     & CenterProps
     & {};
 
-export function ZLayer({ style, children, ... more }: ZLayerProps): ReactNode {
+export function ZLayer(props: ZLayerProps): ReactNode {
+    let { style, children, ... more } = props;
+    
     return <>
         <Center
             style={{

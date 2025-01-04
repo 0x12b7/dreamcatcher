@@ -8,7 +8,8 @@ export type ResponsivePageProps =
     & CStackProps
     & {};
 
-export function ResponsivePage({ style, children, ... more }: ResponsivePageProps): ReactNode {
+export function ResponsivePage(props: ResponsivePageProps): ReactNode {
+    let { style, children, ... more } = props;
     let device: Device = useDevice();
 
     return <>

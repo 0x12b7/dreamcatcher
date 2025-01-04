@@ -6,7 +6,9 @@ export type RStackProps =
     & RProps
     & {};
 
-export function RStack({ style, children, ... more }: RStackProps): ReactNode {
+export function RStack(props: RStackProps): ReactNode {
+    let { style, children, ... more } = props;
+    
     return <>
         <R
             style={{

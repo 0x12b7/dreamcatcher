@@ -6,7 +6,9 @@ export type ZProps =
     & CenterProps
     & {};
 
-export function Z({ style, children, ... more }: ZProps): ReactNode {
+export function Z(props: ZProps): ReactNode {
+    let { style, children, ... more } = props;
+    
     return <>
         <Center
             style={{

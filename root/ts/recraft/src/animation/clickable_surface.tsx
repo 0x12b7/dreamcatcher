@@ -4,24 +4,28 @@ import type { ComponentPropsWithRef } from "react-spring";
 import { animated } from "react-spring";
 import { useSpring } from "react-spring";
 
-export type ClickableSurfaceProps = 
-    & ComponentPropsWithRef<"div">
-    & {
+export type ClickableSurfaceNativeProps = {
     onEnterColor: string;
     onLeaveColor: string;
     onMouseEnterAnimation?: SpringConfig;
     onMouseLeaveAnimation?: SpringConfig;
 };
 
-export function ClickableSurface({
-    onEnterColor,
-    onLeaveColor,
-    onMouseEnterAnimation,
-    onMouseLeaveAnimation,
-    style,
-    children,
-    ... more
-}: ClickableSurfaceProps): ReactNode {
+export type ClickableSurfaceProps = 
+    & ComponentPropsWithRef<"div">
+    & ClickableSurfaceNativeProps
+    & {};
+
+export function ClickableSurface(props: ClickableSurfaceProps): ReactNode {
+    let {
+        onEnterColor,
+        onLeaveColor,
+        onMouseEnterAnimation,
+        onMouseLeaveAnimation,
+        style,
+        children,
+        ... more
+    } = props;
     let spring = useSpring(() => ({ background: onLeaveColor }));
     
     return <>
