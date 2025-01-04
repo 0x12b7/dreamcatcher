@@ -6,7 +6,8 @@
 	"types": "target/tslib/mod.d.ts",
 	"type": "module",
 	"scripts": {
-		"build": "bun run script/build_script.ts"
+		"build": "bun run script/build_script.ts",
+		"release": "bun run build && npm publish"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",

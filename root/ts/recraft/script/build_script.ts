@@ -20,7 +20,8 @@ export function BuildScript(): BuildScript {
             dts: true,
             minify: false,
             tsconfig: "tsconfig",
-            platform: "browser" 
+            platform: "browser",
+            sourcemap: "inline"
         });
     }
 }
