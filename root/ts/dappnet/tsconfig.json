@@ -6,7 +6,7 @@
 		"declarationMap": true,
 		"baseUrl": ".",
 		"paths": {
-			"@root": ["src/mod.ts"]
+			"@core.vm.ethereum": ["src/core/vm/ethereum/mod.ts"]
 		}
 	},
 	"include": ["."],

@@ -1,4 +1,4 @@
-export type EvmArithmeticBitSize = 
+export type ArithmeticBitSize = 
     | "8" 
     | "16" | "24" | "32" 
     | "40" | "48" | "56" 

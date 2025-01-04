@@ -1,17 +1,20 @@
 {
-  "name": "dappnet-node",
-  "module": "target/tslib/$.js",
-  "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "5.0.0"
-  },
-  "dependencies": {
-    "dappnet": "0.2.5",
-    "ethers": "6.13.4",
-    "reliq": "0.7.5",
-    "validator": "^13.12.0"
-  }
+	"name": "dappnet-node",
+	"version": "1.0.0",
+	"main": "target/tslib/mod.cjs",
+	"module": "target/tslib/mod.cjs",
+	"types": "target/tslib/mod.d.ts",
+	"type": "module",
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "5.0.0"
+	},
+	"dependencies": {
+		"dappnet": "0.4.5",
+		"ethers": "6.13.4",
+		"reliq": "1.2.2",
+		"validator": "13.12.0"
+	}
 }
