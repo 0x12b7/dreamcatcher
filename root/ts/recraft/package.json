@@ -1,0 +1,22 @@
+{
+	"name": "recraft",
+	"version": "0.1.0",
+	"main": "target/tslib/mod.cjs",
+	"module": "target/tslib/mod/cjs",
+	"types": "target/tslib/mod.d.ts",
+	"type": "module",
+	"scripts": {
+		"build": "bun run script/build_script.ts"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"tsup": "8.3.5"
+	},
+	"peerDependencies": {
+		"typescript": "5.0.0"
+	},
+	"dependencies": {
+		"react-spring": "9.7.5",
+		"reliq": "1.2.2"
+	}
+}
