@@ -15,3 +15,6 @@ export * from "./signature/ext";
 export * from "./signature/selector";
 export * from "./signature/signature";
 export * from "./signature/util/data_to_string";
+export * from "./transaction/deployment_transaction";
+export * from "./transaction/query_transaction";
+export * from "./transaction/transaction";

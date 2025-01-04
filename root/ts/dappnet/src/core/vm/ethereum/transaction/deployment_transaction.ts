@@ -2,7 +2,7 @@ import type { AbstractBinaryInterface } from "@core.vm.ethereum";
 import type { Bytecode } from "@core.vm.ethereum";
 
 export type DeploymentTransaction<T1 extends Array<unknown>> = {
-    type: "TX.DEPLOYMENT";
+    type: "TX.DEPLOYMENT_TRANSACTION";
     bytecode: Bytecode;
     abstractBinaryInterface: AbstractBinaryInterface;
     args?: T1;
@@ -19,13 +19,13 @@ export function DeploymentTransaction<T1 extends Array<unknown>>({
     args,
     gasPrice,
     gasLimit,
-    amount,
+    amount = 0n,
     chainId,
-    confirmations
+    confirmations = 1n
 }: Omit<DeploymentTransaction<T1>, "type">): DeploymentTransaction<T1> {
     /** @constructor */ {
         return {
-            type: "TX.DEPLOYMENT",
+            type: "TX.DEPLOYMENT_TRANSACTION",
             bytecode,
             abstractBinaryInterface,
             args,
