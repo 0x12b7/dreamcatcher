@@ -19,7 +19,8 @@
 		"typescript": "5.0.0"
 	},
 	"dependencies": {
-		"solion": "1.0.0",
-		"reliq": "1.2.2"
+		"ethers": "^6.13.4",
+		"reliq": "1.2.2",
+		"solion": "1.0.0"
 	}
 }
