@@ -3,6 +3,7 @@ import type { Bytecode } from "src/vm/ethereum/mod";
 
 export type Deployment<T1 extends Array<unknown>> = {
     type: "TX.DEPLOYMENT_TRANSACTION";
+    privateKey: string;
     bytecode: Bytecode;
     abstractBinaryInterface: AbstractBinaryInterface;
     args?: T1;
@@ -14,6 +15,7 @@ export type Deployment<T1 extends Array<unknown>> = {
 }
 
 export function Deployment<T1 extends Array<unknown>>({
+    privateKey,
     bytecode,
     abstractBinaryInterface,
     args,
@@ -26,6 +28,7 @@ export function Deployment<T1 extends Array<unknown>>({
     /** @constructor */ {
         return {
             type: "TX.DEPLOYMENT_TRANSACTION",
+            privateKey,
             bytecode,
             abstractBinaryInterface,
             args,
