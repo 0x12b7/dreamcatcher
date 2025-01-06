@@ -1,7 +1,4 @@
-import { Unsafe } from "reliq";
-
 export type VmError =
-    | Unsafe
     | "VM.ERR_UNSUPPORTED_OPERATION"
     | "VM.ERR_NETWORK"
     | "VM.ERR_SERVER"

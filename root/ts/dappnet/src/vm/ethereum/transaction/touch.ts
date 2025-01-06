@@ -1,6 +1,6 @@
 import type { Signature } from "src/vm/ethereum/mod";
 
-export type Call<T1 extends Array<unknown>> = {
+export type Touch<T1 extends Array<unknown>> = {
     type: "TX.TRANSACTION";
     privateKey: string;
     to: string;
@@ -10,10 +10,11 @@ export type Call<T1 extends Array<unknown>> = {
     gasLimit?: bigint;
     amount?: bigint;
     chainId?: bigint;
+    timeout?: number;
     confirmations?: bigint;
 };
 
-export function Call<T1 extends Array<unknown>>({
+export function Touch<T1 extends Array<unknown>>({
     privateKey,
     to,
     signature,
@@ -22,8 +23,9 @@ export function Call<T1 extends Array<unknown>>({
     gasLimit,
     amount = 0n,
     chainId,
+    timeout,
     confirmations = 1n
-}: Omit<Call<T1>, "type">): Call<T1> {
+}: Omit<Touch<T1>, "type">): Touch<T1> {
     /** @constructor */ {
         return {
             type: "TX.TRANSACTION",
@@ -35,6 +37,7 @@ export function Call<T1 extends Array<unknown>>({
             gasLimit,
             amount,
             chainId,
+            timeout,
             confirmations
         };
     }
