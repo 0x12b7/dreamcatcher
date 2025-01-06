@@ -8,6 +8,7 @@ export * from "./data/bytes_bit_size";
 export * from "./data/bytes";
 export * from "./data/data";
 export * from "./data/struct";
+export * from "./machine/vm_error_code";
 export * from "./machine/vm_error";
 export * from "./signature/event_signature";
 export * from "./signature/external_pure_signature";

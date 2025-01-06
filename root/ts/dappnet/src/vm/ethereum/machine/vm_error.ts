@@ -1,34 +1,16 @@
-export type VmError =
-    | "VM.ERR_UNSUPPORTED_OPERATION"
-    | "VM.ERR_NETWORK"
-    | "VM.ERR_SERVER"
-    | "VM.ERR_TIMEOUT"
-    | "VM.ERR_BAD_DATA"
-    | "VM.ERR_BUFFER_OVERRUN"
-    | "VM.ERR_UNEXPECTED_ARGUMENT"
-    | "VM.ERR_NUMERIC_FAULT"
-    | "VM.ERR_CANCELLED"
-    | "VM.ERR_OFFCHAIN_FAULT"
-    | "VM.ERR_INVALID_ARGUMENT"
-    | "VM.ERR_MISSING_ARGUMENT"
-    | "VM.ERR_CALL_EXCEPTION"
-    | "VM.ERR_INSUFFICIENT_FUNDS"
-    | "VM.ERR_INVALID_DATA"
-    | "VM.ERR_BAD_NUMBER"
-    | "VM.ERR_INVALID_SIGNATURE"
-    | "VM.ERR_MISSING_SIGNER"
-    | "VM.ERR_NOT_IMPLEMENTED"
-    | "VM.ERR_REPLACEMENT_UNDERPRICED"
-    | "VM.ERR_TRANSACTION_REPLACED"
-    | "VM.ERR_NONCE_EXPIRED"
-    | "VM.ERR_MAX_PRIORITY_FEE_PER_GAS_TOO_LOW"
-    | "VM.ERR_INSUFFICIENT_GAS"
-    | "VM.ERR_INVALID_FRAGMENT"
-    | "VM.ERR_INVALID_FORMAT"
-    | "VM.ERR_UNSUPPORTED_ABSTRACT_BINARY_INTERFACE"
-    | "VM.ERR_UNKNOWN"
-    | "VM.ERR_PARSER"
-    | "VM.ERR_MISSING_EVENT"
-    | "VM.ERR_ENS_RESOLUTION_FAILED"
-    | "VM.ERR_INVALID_CHECKSUM_ADDRESS"
-    | "VM.ERR_INVALID_RESPONSE";
+import type { VmErrorCode } from "@core.vm.ethereum";
+import { Option } from "reliq";
+
+export type VmError = {
+    code: VmErrorCode;
+    data: Option<unknown>;
+    message: Option<unknown>;
+    transaction: Option<unknown>;
+    reason: Option<unknown>;
+};
+
+export function VmError(_instance: VmError): VmError {
+    /** @constructor */ {
+        return _instance;
+    }
+}
