@@ -48,6 +48,23 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
         };
     }
 
+    // #region Wrapper Impl
+
+    function unwrap(): Array<T1> {
+        return _v;
+    }
+
+
+    // #region Polymorph Impl
+
+    
+
+
+    // #region Mutable Collection Impl
+
+    
+
+
     function length(): bigint {
         return _length(_v);
     }

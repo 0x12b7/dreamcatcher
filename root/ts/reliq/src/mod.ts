@@ -27,6 +27,7 @@ export * from "./result/some/some_val_of_all";
 export * from "./result/some/some_val_of";
 export * from "./result/some/some";
 export * from "./result/unsafe/unsafe";
+export * from "./type/array_like";
 export * from "./type/async_closure";
 export * from "./type/async_function";
 export * from "./type/closure";
