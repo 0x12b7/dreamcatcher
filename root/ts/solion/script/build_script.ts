@@ -20,10 +20,7 @@ export function BuildScript(): BuildScript {
             dts: true,
             sourcemap: "inline",
             clean: true,
-            minify: true,
-            minifyIdentifiers: true,
-            minifySyntax: true,
-            minifyWhitespace: true,
+            minify: false,
             config: "tsconfig.json"
         });
     }

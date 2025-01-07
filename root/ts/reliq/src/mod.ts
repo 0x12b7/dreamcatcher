@@ -3,6 +3,9 @@ export * from "./assertion/panic";
 export * from "./assertion/require";
 export * from "./assertion/restorable";
 export * from "./assertion/shorthand";
+export * from "./compatible/file-system/file_system_error_code";
+export * from "./compatible/file-system/file_system_error";
+
 export * from "./result/result_handler";
 export * from "./result/result";
 export * from "./result/err/err_of_all";

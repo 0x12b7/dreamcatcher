@@ -149,8 +149,8 @@ export function Vm(_nodeUrl: string): Result<Vm, VmError> {
         return Ok(contractAddress);
     }
 
-    function _mapUnsafe(unsafe: Unsafe): VmError {
-        let e: unknown = unsafe.unwrap();
+    function _mapUnsafe(u: Unsafe): VmError {
+        let e: unknown = u.unwrap();
         if (!(
             e !== null
             && e !== undefined

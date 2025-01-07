@@ -1,0 +1,18 @@
+export type FileSystemErrorCode =
+    | "ENOENT"
+    | "EACCES"
+    | "EISDIR"
+    | "ENOTDIR"
+    | "EEXIST"
+    | "EMFILE"
+    | "ENOSPC"
+    | "EROFS"
+    | "ENOTEMPTY"
+    | "EBADF"
+    | "EINVAL"
+    | "EPERM"
+    | "ELOOP"
+    | "ENAMETOOLONG"
+    | "EXDEV"
+    | "ENOMEM"
+    | "UNKNOWN";

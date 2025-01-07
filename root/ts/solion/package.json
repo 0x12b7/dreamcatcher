@@ -1,10 +1,10 @@
 {
 	"name": "solion",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Wrapper for Solc with Enhanced Types & Utilities",
 	"license": "MIT",
 	"main": "target/tslib/mod.cjs",
-	"types": "target/tslib/mod.d.ts",
+	"types": "target/tslib/mod.d.cts",
 	"type": "module",
 	"scripts": {
 		"build": "bun run script/build_script.ts",
