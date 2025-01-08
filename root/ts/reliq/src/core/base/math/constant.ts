@@ -1,0 +1,14 @@
+export const MAX_256: bigint = 2n ** 256n - 1n;
+export const MAX_128: bigint = 2n ** 128n - 1n;
+export const MAX_64: bigint = 2n ** 64n - 1n;
+export const MAX_32: bigint = 2n ** 32n - 1n;
+export const MAX_16: bigint = 2n ** 16n - 1n;
+export const MAX_8: bigint = 2n ** 8n - 1n;
+export const MIN_256: bigint = - MAX_256;
+export const MIN_128: bigint = - MAX_128;
+export const MIN_64: bigint = - MAX_64;
+export const MIN_32: bigint = - MAX_32;
+export const MIN_16: bigint = - MAX_16;
+export const MIN_8: bigint = - MAX_8;
+export const MAX_SAFE_FLOAT: number = Number.MAX_SAFE_INTEGER;
+export const MIN_SAFE_FLOAT: number = Number.MIN_SAFE_INTEGER;

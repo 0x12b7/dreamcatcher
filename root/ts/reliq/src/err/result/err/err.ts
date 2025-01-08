@@ -1,10 +1,13 @@
 import type { Function } from "@root";
 import type { Option } from "@root";
+import type { Branded } from "@root";
 import { None } from "@root";
 import { Ok } from "@root";
 import { toString as toString_ } from "@root";
 
-export type Err<T1> = {
+export type Err<T1> = 
+    & Branded<"ERR"> 
+    & {
     ok(): this is Ok<unknown>;
     err(): this is Err<T1>;
     val(): T1;
@@ -26,6 +29,7 @@ export function Err<T1>(_v: T1): Err<T1> {
 
     /** @constructor */ {
         _instance = {
+            type,
             ok,
             err,
             val,
@@ -48,6 +52,10 @@ export function Err<T1>(_v: T1): Err<T1> {
         if (match) content.shift();
         _stack = content.join("\n");
         return _instance;
+    }
+
+    function type(): "ERR" {
+        return "ERR";
     }
 
     function ok(): this is Ok<unknown> {

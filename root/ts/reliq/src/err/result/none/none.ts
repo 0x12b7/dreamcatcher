@@ -1,7 +1,10 @@
+import type { Branded } from "@root";
 import { Some } from "@root";
 import { Err } from "@root";
 
-export type None = {
+export type None = 
+    & Branded<"NONE">
+    & {
     some(): this is Some<unknown>;
     none(): this is None;
     expect(msg: string): never;
@@ -18,6 +21,7 @@ export const None: None = (() => {
 
     /** @constructor */ {
         _instance = {
+            type,
             some,
             none,
             expect,
@@ -29,6 +33,10 @@ export const None: None = (() => {
             toString
         };
         return _instance;
+    }
+
+    function type(): "NONE" {
+        return "NONE";
     }
 
     function some(): this is Some<unknown> {

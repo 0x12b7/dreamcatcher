@@ -1,12 +1,15 @@
 import type { Function } from "@root";
 import type { Result } from "@root";
 import type { Option } from "@root";
+import type { Branded } from "@root";
 import { Err } from "@root";
 import { Some } from "@root";
 import { panic } from "@root";
 import { toString as toString_ } from "@root";
 
-export type Ok<T1> = {
+export type Ok<T1> = 
+    & Branded<"OK">
+    & {
     ok(): this is Ok<T1>;
     err(): this is Err<unknown>;
     val(): T1;
@@ -30,6 +33,7 @@ export function Ok<T1>(_v: T1): Ok<T1> {
 
     /** @constructor */ {
         _instance = {
+            type,
             ok,
             err,
             val,
@@ -45,6 +49,10 @@ export function Ok<T1>(_v: T1): Ok<T1> {
             toString
         };
         return _instance;
+    }
+
+    function type(): "OK" {
+        return "OK";
     }
 
     function ok(): this is Ok<T1> {

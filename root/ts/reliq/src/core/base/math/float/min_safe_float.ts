@@ -1,1 +1,0 @@
-export const MIN_SAFE_FLOAT: number = Number.MIN_SAFE_INTEGER;
