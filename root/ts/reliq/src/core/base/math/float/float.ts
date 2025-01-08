@@ -34,10 +34,7 @@ export function Float(_v: number): Result<Float, MathError> {
         let x: number = v.unwrap();
         let checkR: Result<void, MathError> = _check(x);
         if (checkR.err()) return checkR;
-        let resultR: Result<Float, MathError> = Float(_v + x);
-        if (resultR.err()) return resultR;
-        let result: Float = resultR.unwrapSafely();
-        return Ok(result);
+        return Float(_v + x);
     }
 
     function _check(v: number): Result<void, MathError> {
