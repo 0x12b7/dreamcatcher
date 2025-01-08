@@ -1,7 +1,8 @@
 import type { Wrapper } from "@root";
+import type { Branded } from "@root";
 import type { WrappedCalculator } from "@root";
 import type { NumberLike } from "@root";
-import type { Branded } from "@root";
+
 import { Result } from "@root";
 import { Ok } from "@root";
 import { Err } from "@root";
@@ -43,28 +44,28 @@ export function I(_number: NumberLike): I {
         return _v;
     }
 
-    function add(v: I): Result<I, MathError> {
+    function add(v: NumberLike): Result<I, MathError> {
         let n: bigint = v.unwrap();
         return Ok(I(_v + n));
     }
 
-    function sub(v: I): Result<I, MathError> {
+    function sub(v: NumberLike): Result<I, MathError> {
         let n: bigint = v.unwrap();
         return Ok(I(_v - n));
     }
 
-    function mul(v: I): Result<I, MathError> {
+    function mul(v: NumberLike): Result<I, MathError> {
         let n: bigint = v.unwrap();
         return Ok(I(_v * n));
     }
 
-    function div(v: I): Result<I, MathError> {
+    function div(v: NumberLike): Result<I, MathError> {
         let n: bigint = v.unwrap();
         if (n === 0n) return Err(MathError({ code: "MATH.ERR_DIVISION_BY_ZERO", message: None }));
         return Ok(I(_v / n));
     }
 
-    function pow(v: I): Result<I, MathError> {
+    function pow(v: NumberLike): Result<I, MathError> {
         let n: bigint = v.unwrap();
         return Ok(I(_v ** n));
     }

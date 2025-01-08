@@ -2,9 +2,11 @@
 
 export * from "./core/base/ds/collection/is_vec";
 export * from "./core/base/ds/collection/vec";
+export * from "./core/base/math/arithmetic";
 export * from "./core/base/math/constant";
 export * from "./core/base/math/math_error_code";
 export * from "./core/base/math/math_error";
+export * from "./core/base/math/math_rounding_mode";
 export * from "./core/base/math/number_like";
 export * from "./core/base/math/wrapped_calculator";
 export * from "./core/base/math/float/float_like";
@@ -16,6 +18,7 @@ export * from "./core/base/math/signed/i_64";
 export * from "./core/base/math/signed/i_128";
 export * from "./core/base/math/signed/i_256";
 export * from "./core/base/math/signed/i";
+export * from "./core/base/math/signed/i_like";
 export * from "./core/base/math/unsigned/u_8";
 export * from "./core/base/math/unsigned/u_16";
 export * from "./core/base/math/unsigned/u_32";
@@ -23,6 +26,7 @@ export * from "./core/base/math/unsigned/u_64";
 export * from "./core/base/math/unsigned/u_128";
 export * from "./core/base/math/unsigned/u_256";
 export * from "./core/base/math/unsigned/u";
+export * from "./core/base/math/unsigned/u_like";
 export * from "./core/base/misc/index";
 export * from "./core/base/misc/is_index";
 export * from "./core/base/misc/is_mutable_collection";

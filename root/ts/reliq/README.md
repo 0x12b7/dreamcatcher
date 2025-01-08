@@ -189,6 +189,22 @@ Inspired by Solidity's reversion mechanism, Reliq offers Restorable to manage ro
 ```
 
 
+## Math
+```typescript
+
+U8(500n)
+    .andThen(count => count.add(200n))
+    .andThen(count => count.div(U8(50n)))
+    .map(result => console.log(result) /** */)
+    .mapErr(e => {
+
+    });
+
+
+
+```
+
+
 ## License
 Reliq is licensed under the MIT License.
 

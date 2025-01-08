@@ -1,17 +1,19 @@
 import type { Wrapper } from "@root";
-import type { WrappedCalculator } from "@root";
 import type { Branded } from "@root";
+import type { Arithmetic } from "@root";
+import type { NumberLike } from "@root";
 import { MathError } from "@root";
 import { Result } from "@root";
 import { Ok } from "@root";
 import { Err } from "@root";
 import { MAX_SAFE_FLOAT } from "@root";
 import { MIN_SAFE_FLOAT } from "@root";
+import { isBranded } from "@root";
 
 export type Float =
     & Branded<"FLOAT">
     & Wrapper<number>
-    & WrappedCalculator<number>;
+    & Arithmetic<number>;
 
 export function Float(_v: number): Result<Float, MathError> {
     /** @constructor */ {
@@ -34,6 +36,33 @@ export function Float(_v: number): Result<Float, MathError> {
 
     function unwrap(): number {
         return _v;
+    }
+
+    function eq(v: NumberLike): boolean {
+        if (isBranded(v, "I")) return _v === Number(v.unwrap());
+        if (isBranded(v, "U")) return _v === Number(v.unwrap());
+        if (isBranded(v, "FLOAT")) return _v === Number(v.unwrap());
+        if (typeof v === "number") return _v === v;
+        if (typeof v === "bigint") return _v === Number(v);
+        return false;
+    }
+
+    function lt(v: NumberLike): boolean {
+        if (isBranded(v, "I")) return _v < Number(v.unwrap());
+        if (isBranded(v, "U")) return _v < Number(v.unwrap());
+        if (isBranded(v, "FLOAT")) return _v < Number(v.unwrap());
+        if (typeof v === "number") return _v < v;
+        if (typeof v === "bigint") return _v < Number(v);
+        return false;
+    }
+
+    function gt(v: NumberLike): boolean {
+        if (isBranded(v, "I")) return _v > Number(v.unwrap());
+        if (isBranded(v, "U")) return _v > Number(v.unwrap());
+        if (isBranded(v, "FLOAT")) return _v > Number(v.unwrap());
+        if (typeof v === "number") return _v > v;
+        if (typeof v === "bigint") return _v > Number(v);
+        return false;
     }
 
     function add(v: Float): Result<Float, MathError> {
