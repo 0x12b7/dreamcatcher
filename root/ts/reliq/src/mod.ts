@@ -1,11 +1,17 @@
 
 
 export * from "./core/base/ds/collection/is_vec";
-export * from "./core/base/ds/collection/vec_like";
 export * from "./core/base/ds/collection/vec";
+export * from "./core/base/math/math_error_code";
+export * from "./core/base/math/math_error";
+export * from "./core/base/math/float/float_like";
+export * from "./core/base/math/float/float";
+export * from "./core/base/math/float/max_safe_float";
+export * from "./core/base/math/float/min_safe_float";
 export * from "./core/base/misc/index";
 export * from "./core/base/misc/is_index";
 export * from "./core/base/misc/is_mutable_collection";
+export * from "./core/base/misc/is_polymorph";
 export * from "./core/base/misc/is_sequence";
 export * from "./core/base/misc/is_span";
 export * from "./core/base/misc/mutable_collection";

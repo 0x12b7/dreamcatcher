@@ -1,0 +1,1 @@
+export const MAX_SAFE_FLOAT: number = Number.MAX_SAFE_INTEGER;

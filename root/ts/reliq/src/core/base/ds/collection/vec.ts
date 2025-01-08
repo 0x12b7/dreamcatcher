@@ -69,7 +69,10 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
     }
 
     function pop(): Option<T1> {
-        let item: T1 | undefined = _v.pop();
+        let item: 
+            | T1 
+            | undefined 
+            = _v.pop();
         if (item) return Some(item);
         return None;
     }
@@ -138,7 +141,7 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
         v: T1,
         fromPosition?: bigint
     ): Option<bigint> {
-        let n: number = _v.indexOf(v,);
+        let n: number = _v.indexOf(v, fromPosition ? Number(fromPosition) : undefined);
         if (n === -1) return None;
         return Some(BigInt(n));
     }
