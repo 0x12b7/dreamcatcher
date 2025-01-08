@@ -1,10 +1,13 @@
 import type { Function } from "@root";
 import type { Option } from "@root";
+import type { Branded } from "@root";
 import { None } from "@root";
 import { Ok } from "@root";
 import { toString as toString_ } from "@root";
 
-export type Some<T1> = {
+export type Some<T1> = 
+    & Branded<"SOME">
+    & {
     some(): this is Some<T1>;
     none(): this is None;
     val(): T1;
@@ -21,6 +24,7 @@ export type Some<T1> = {
 export function Some<T1>(_v: T1): Some<T1> {
     /** @constructor */ {
         return { 
+            type,
             some, 
             none, 
             val, 
@@ -33,6 +37,10 @@ export function Some<T1>(_v: T1): Some<T1> {
             toResult,
             toString
         };
+    }
+
+    function type(): "SOME" {
+        return "SOME";
     }
 
     function some(): this is Some<T1> {

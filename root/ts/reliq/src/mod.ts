@@ -9,7 +9,6 @@ export * from "./core/base/math/number_like";
 export * from "./core/base/math/wrapped_calculator";
 export * from "./core/base/math/float/float_like";
 export * from "./core/base/math/float/float";
-export * from "./core/base/math/float/is_float";
 export * from "./core/base/math/signed/i_8";
 export * from "./core/base/math/signed/i_16";
 export * from "./core/base/math/signed/i_32";
