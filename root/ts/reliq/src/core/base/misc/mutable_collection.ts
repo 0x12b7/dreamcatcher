@@ -1,4 +1,3 @@
-import type { VecLike } from "@root";
 import type { Vec } from "@root";
 import type { Option } from "@root";
 
