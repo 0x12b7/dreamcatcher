@@ -3,7 +3,7 @@ import type { Polymorph } from "@root";
 import type { Span } from "@root";
 
 export type Arithmetic<T1> = 
-    & WrappedCalculator<T1>
+    & WrappedCalculator<Arithmetic<string>>
     & Exclude<Polymorph<T1>,
         | "toArray">
     & Exclude<Span<T1>,

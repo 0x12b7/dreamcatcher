@@ -1,12 +1,20 @@
-import type { Wrapper } from "@root";
-import type { Branded } from "@root";
+import { type Branded } from "@root";
+import { type Wrapper } from "@root";
 
 export type Unsafe = 
     & Branded<"UNSAFE"> 
     & Wrapper<unknown>;
 
-export function Unsafe(_v: unknown): Unsafe {
+export function Unsafe(): Unsafe;
+export function Unsafe(_x: unknown): Unsafe;
+export function Unsafe(
+    _args0?: unknown
+): Unsafe {
+    let _x: unknown;
+
     /** @constructor */ {
+        _args0 ??= undefined;
+        _x = _args0;
         return { type, unwrap };
     }
 
@@ -15,6 +23,6 @@ export function Unsafe(_v: unknown): Unsafe {
     }
 
     function unwrap(): unknown {
-        return _v;
+        return _x;
     }
 }

@@ -1,6 +1,6 @@
-import type { Function } from "@root";
-import type { Option } from "@root";
-import type { Branded } from "@root";
+import { type Branded } from "@root";
+import { type Function } from "@root";
+import { Option } from "@root";
 import { None } from "@root";
 import { Ok } from "@root";
 import { toString as toString_ } from "@root";

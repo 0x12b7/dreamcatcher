@@ -1,12 +1,12 @@
-import type { Wrapper } from "@root";
+import { type Wrapper } from "@root";
 
-export function isWrapper(v: unknown): v is Wrapper<unknown> {
+export function isWrapper(x: unknown): x is Wrapper<unknown> {
     if (
-        v !== null 
-        && v !== undefined 
-        && typeof v === "object" 
-        && "unwrap" in v 
-        && typeof v.unwrap === "function"
+        x !== null 
+        && x !== undefined 
+        && typeof x === "object" 
+        && "unwrap" in x 
+        && typeof x.unwrap === "function"
     ) return true;
     else return false;
 }

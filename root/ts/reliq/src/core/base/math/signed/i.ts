@@ -1,73 +1,51 @@
-import type { Wrapper } from "@root";
-import type { Branded } from "@root";
-import type { WrappedCalculator } from "@root";
-import type { NumberLike } from "@root";
-
-import { Result } from "@root";
-import { Ok } from "@root";
-import { Err } from "@root";
-import { Some } from "@root";
-import { None } from "@root";
+import { Result, type Branded } from "@root";
+import { type Wrapper } from "@root";
+import { type NumberLike } from "@root";
+import { type MathErrorCode } from "@root";
 import { MathError } from "@root";
-import { isBranded } from "@root";
+import { Float } from "@root";
+import { I8 } from "@root";
+import { I16 } from "@root";
+import { I32 } from "@root";
+import { I64 } from "@root";
+import { I128 } from "@root";
+import { I256 } from "@root";
+import { U } from "@root";
+import { U8 } from "@root";
+import { U16 } from "@root";
+import { U32 } from "@root";
+import { U64 } from "@root";
+import { U128 } from "@root";
+import { U256 } from "@root";
+
+export type ILossR = IR<"MATH.ERR_PRECISION_LOSS">;
+export type ILoss = Float | number;
+
+export type IR<T1 extends MathErrorCode> = Result<I, MathError<T1>>;
 
 export type I = 
     & Branded<"I">
-    & Wrapper<bigint>
-    & WrappedCalculator<bigint>;
+    & Wrapper<bigint>;
 
-export function I(_number: NumberLike): I {
-    let _v: bigint;
-    
-    /** @constructor */ {
-        if (isBranded(_number, "I")) _v = _number.unwrap();
-        else if (isBranded(_number, "U")) _v = _number.unwrap();
-        else if (isBranded(_number, "FLOAT")) _v = BigInt(_number.unwrap());
-        else if (typeof _number === "number") _v = BigInt(_number);
-        else _v = _number;
-        return {
-            type,
-            unwrap,
-            add,
-            sub,
-            mul,
-            div,
-            pow
-        };
-    }
+export function I(_n: Float): I;
+export function I(_n: I): I;
+export function I(_n: I8): I;
+export function I(_n: I16): I;
+export function I(_n: I32): I;
+export function I(_n: I64): I;
+export function I(_n: I128): I;
+export function I(_n: I256): I;
+export function I(_n: U): I;
+export function I(_n: U8): I;
+export function I(_n: U16): I;
+export function I(_n: U32): I;
+export function I(_n: U64): I;
+export function I(_n: U128): I;
+export function I(_n: U256): I;
+export function I(_n: number): I;
+export function I(_n: bigint): I;
+export function I(
+    _args0: NumberLike
+): I {
 
-    function type(): "I" {
-        return "I";
-    }
-
-    function unwrap(): bigint {
-        return _v;
-    }
-
-    function add(v: NumberLike): Result<I, MathError> {
-        let n: bigint = v.unwrap();
-        return Ok(I(_v + n));
-    }
-
-    function sub(v: NumberLike): Result<I, MathError> {
-        let n: bigint = v.unwrap();
-        return Ok(I(_v - n));
-    }
-
-    function mul(v: NumberLike): Result<I, MathError> {
-        let n: bigint = v.unwrap();
-        return Ok(I(_v * n));
-    }
-
-    function div(v: NumberLike): Result<I, MathError> {
-        let n: bigint = v.unwrap();
-        if (n === 0n) return Err(MathError({ code: "MATH.ERR_DIVISION_BY_ZERO", message: None }));
-        return Ok(I(_v / n));
-    }
-
-    function pow(v: NumberLike): Result<I, MathError> {
-        let n: bigint = v.unwrap();
-        return Ok(I(_v ** n));
-    }
 }
-

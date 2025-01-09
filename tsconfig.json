@@ -8,7 +8,7 @@
 		"allowJs": true,
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,
-		"verbatimModuleSyntax": true,
+		"verbatimModuleSyntax": false,
 		"noEmit": true,
 		"strict": true,
 		"skipLibCheck": true,
