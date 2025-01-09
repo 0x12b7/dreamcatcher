@@ -59,40 +59,11 @@ export type Float =
 
 
 
-/**
- * @notice Accepts a `Float` type.
- * @dev No conversion occurs; if the input is already a `Float`, it is returned unchanged.
- * @param _n The `Float` input value.
- * @return Returns the same `Float` input.
- */
+
 export function Float(_n: Float): Float;
-
-/**
- * @notice Accepts an `I8` type.
- * @dev Converts the `I8` value to a `Float` without any overflow or underflow checks, 
- *      as the range of `I8` is known to be within the acceptable limits for a `Float`.
- * @param _n The `I8` value to convert to a `Float`.
- * @return Returns the `Float` representation of the input value.
- */
 export function Float(_n: I8): Float;
-
-/**
- * @notice Accepts an `I16` type.
- * @dev Converts the `I16` value to a `Float` without any overflow or underflow checks, 
- *      as the range of `I16` is known to be within the acceptable limits for a `Float`.
- * @param _n The `I16` value to convert to a `Float`.
- * @return Returns the `Float` representation of the input value.
- */
 export function Float(_n: I16): Float;
 export function Float(_n: I32): Float;
-
-/**
- * @notice Accepts an `I64` type.
- * @dev Converts the `I64` value to a `Float`, with overflow and underflow checks. 
- *      If the value falls outside the safe `float` range, returns an error.
- * @param _n The `I64` value to convert to a `Float`.
- * @return `Result<Float, MathError>` - returns the `Float` in `Ok` or an error for overflow/underflow.
- */
 export function Float(_n: I64): Result<Float, MathError<"MATH.ERR_ARITHMETIC_OVERFLOW" | "MATH.ERR_ARITHMETIC_UNDERFLOW">>;
 export function Float(_n: I128): Result<Float, MathError<"MATH.ERR_ARITHMETIC_OVERFLOW" | "MATH.ERR_ARITHMETIC_UNDERFLOW">>;
 export function Float(_n: I256): Result<Float, MathError<"MATH.ERR_ARITHMETIC_OVERFLOW" | "MATH.ERR_ARITHMETIC_UNDERFLOW">>;
@@ -100,14 +71,6 @@ export function Float(_n: I): Result<Float, MathError<"MATH.ERR_ARITHMETIC_OVERF
 export function Float(_n: U8): Float;
 export function Float(_n: U16): Float;
 export function Float(_n: U32): Float;
-
-/**
- * @notice Accepts a `U64` type.
- * @dev Converts the `U64` value to a `Float`, checking for overflow. 
- *      Returns an error if it exceeds the acceptable `float` range.
- * @param _n The `U64` value to convert to a `Float`.
- * @return `Result<Float, MathError>` - returns the `Float` in `Ok` or an error for overflow.
- */
 export function Float(_n: U64): Result<Float, MathError<"MATH.ERR_ARITHMETIC_OVERFLOW">>;
 export function Float(_n: U128): Result<Float, MathError<"MATH.ERR_ARITHMETIC_OVERFLOW">>;
 export function Float(_n: U256): Result<Float, MathError<"MATH.ERR_ARITHMETIC_OVERFLOW">>;
