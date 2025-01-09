@@ -1,1 +1,0 @@
-export type MathRoundingMode = "FLOOR" | "CEIL" | "NEAREST";

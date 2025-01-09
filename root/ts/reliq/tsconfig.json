@@ -6,6 +6,6 @@
 			"@root": ["src/mod.ts"]
 		}
 	},
-	"include": ["."],
+	"include": ["src", "script"],
 	"exclude": ["node_modules", "target/**/*"]
 }

@@ -1,5 +1,5 @@
 import type { Float } from "@root";
-import type { I } from "@root";
-import type { U } from "@root";
+import type { ILike } from "@root";
+import type { ULike } from "@root";
 
-export type NumberLike = Float | I | U | bigint | number;
+export type NumberLike = Float | ILike | ULike | bigint | number;

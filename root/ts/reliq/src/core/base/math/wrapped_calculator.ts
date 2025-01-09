@@ -2,7 +2,6 @@ import type { Wrapper } from "@root";
 import type { MathError } from "@root";
 import type { Result } from "@root";
 import type { NumberLike } from "@root";
-import type { MathRoundingMode } from "@root";
 
 export type WrappedCalculator<T1> = {
     eq(v: NumberLike): boolean;
@@ -16,7 +15,5 @@ export type WrappedCalculator<T1> = {
     div(v: NumberLike): Result<Wrapper<T1>, MathError>;
     pow(v: NumberLike): Result<Wrapper<T1>, MathError>;
     mod(v: NumberLike): Result<Wrapper<T1>, MathError>;
-    neg(v: NumberLike): Result<Wrapper<T1>, MathError>;
     sqrt(v: NumberLike): Result<Wrapper<T1>, MathError>;
-    round(mode: MathRoundingMode): Result<Wrapper<T1>, MathError>;
 };
