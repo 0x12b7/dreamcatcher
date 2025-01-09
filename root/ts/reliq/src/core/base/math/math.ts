@@ -18,89 +18,154 @@ export type IIsh<T1 extends IIshBrand> =
 }
 
 
-/**
- * @title IRIsh Type Alias
- * @notice A generic type alias that represents the result of a mathematical operation, associating it with potential error codes.
- *
- * @dev
- * The `IRIsh` type provides a structured way to pair the result of an operation (`Result<T1>`)
- * with a specific error type (`MathError<T2>`), enabling type-safe error handling for numerical operations.
- *
- * @typeParam T1 - The main result type derived from `IIsh<T3>`, representing the successful outcome of a computation.
- * @typeParam T2 - The type of math error code, derived from `MathErrorCode`, identifying specific errors that might occur.
- * @typeParam T3 - An optional brand type for differentiating between similar `IIsh` instances, defaults to `IIshBrandMap<T1>`.
- *
- * @return
- * Combines `T1` as the result of a computation and an associated `MathError<T2>` to represent specific failure scenarios.
- *
- * @example
- * ```typescript
- * // Example Usage: Result of computation with error handling
- * type CalculationResult = IRIsh<I8, "MATH.ERR_PRECISION_VIOLATION">;
- * ```
- */
+
+
+
+export type _ArithmeticRangeAndPrecisionViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION";
+export type _ArithmeticRangeViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"; 
+export type _UpperArithmeticRangeViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION";
+export type _PrecisionViolation = "MATH.ERR_PRECISION_VIOLATION";
+
 export type IRIsh<T1 extends IIsh<T3>, T2 extends MathErrorCode, T3 extends IIshBrand = IIshBrandMap<T1>> = Result<T1, MathError<T2>>;
 
 
 export type IRMap<T1 extends IIsh<T3>, T2 extends NumberIsh, T3 extends IIshBrand = IIshBrandMap<T1>> =
     T1 extends I8
-        ? T2 extends number  ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION">
-        : T2 extends bigint  ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"> 
-        : T2 extends Float   ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION">
+        ? T2 extends number  ? IRIsh<I8, _ArithmeticRangeAndPrecisionViolation>
+        : T2 extends bigint  ? IRIsh<I8, _ArithmeticRangeViolation> 
+        : T2 extends Float   ? IRIsh<I8, _ArithmeticRangeAndPrecisionViolation>
         : T2 extends I8      ? I8
-        : T2 extends I16     ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends I32     ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends I64     ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends I128    ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends I256    ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends I       ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
+        : T2 extends I16     ? IRIsh<I8, _ArithmeticRangeViolation>
+        : T2 extends I32     ? IRIsh<I8, _ArithmeticRangeViolation>
+        : T2 extends I64     ? IRIsh<I8, _ArithmeticRangeViolation>
+        : T2 extends I128    ? IRIsh<I8, _ArithmeticRangeViolation>
+        : T2 extends I256    ? IRIsh<I8, _ArithmeticRangeViolation>
+        : T2 extends I       ? IRIsh<I8, _ArithmeticRangeViolation>
         : T2 extends U8      ? I8
-        : T2 extends U16     ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends U32     ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends U64     ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends U128    ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends U256    ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends U       ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION"> 
+        : T2 extends U16     ? IRIsh<I8, _UpperArithmeticRangeViolation>
+        : T2 extends U32     ? IRIsh<I8, _UpperArithmeticRangeViolation>
+        : T2 extends U64     ? IRIsh<I8, _UpperArithmeticRangeViolation>
+        : T2 extends U128    ? IRIsh<I8, _UpperArithmeticRangeViolation>
+        : T2 extends U256    ? IRIsh<I8, _UpperArithmeticRangeViolation>
+        : T2 extends U       ? IRIsh<I8, _UpperArithmeticRangeViolation> 
         : never :
     T1 extends I16
-        ? T2 extends number  ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION">
-        : T2 extends bigint  ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends Float   ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION">
+        ? T2 extends number  ? IRIsh<I16, _ArithmeticRangeAndPrecisionViolation>
+        : T2 extends bigint  ? IRIsh<I16, _ArithmeticRangeViolation>
+        : T2 extends Float   ? IRIsh<I16, _ArithmeticRangeAndPrecisionViolation>
         : T2 extends I8      ? I16
         : T2 extends I16     ? I16
-        : T2 extends I32     ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends I64     ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends I128    ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends I256    ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends I       ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
+        : T2 extends I32     ? IRIsh<I16, _ArithmeticRangeViolation>
+        : T2 extends I64     ? IRIsh<I16, _ArithmeticRangeViolation>
+        : T2 extends I128    ? IRIsh<I16, _ArithmeticRangeViolation>
+        : T2 extends I256    ? IRIsh<I16, _ArithmeticRangeViolation>
+        : T2 extends I       ? IRIsh<I16, _ArithmeticRangeViolation>
         : T2 extends U8      ? I16
         : T2 extends U16     ? I16
-        : T2 extends U32     ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends U64     ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends U128    ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends U256    ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">
-        : T2 extends U       ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">
+        : T2 extends U32     ? IRIsh<I16, _UpperArithmeticRangeViolation>
+        : T2 extends U64     ? IRIsh<I16, _UpperArithmeticRangeViolation>
+        : T2 extends U128    ? IRIsh<I16, _UpperArithmeticRangeViolation>
+        : T2 extends U256    ? IRIsh<I16, _UpperArithmeticRangeViolation>
+        : T2 extends U       ? IRIsh<I16, _UpperArithmeticRangeViolation>
+        : never :
+    T1 extends I32
+        ? T2 extends number  ? IRIsh<I32, _ArithmeticRangeAndPrecisionViolation>
+        : T2 extends bigint  ? IRIsh<I32, _ArithmeticRangeViolation>
+        : T2 extends Float   ? IRIsh<I32, _ArithmeticRangeAndPrecisionViolation>
+        : T2 extends I8      ? I32
+        : T2 extends I16     ? I32
+        : T2 extends I32     ? I32
+        : T2 extends I64     ? IRIsh<I32, _ArithmeticRangeViolation>
+        : T2 extends I128    ? IRIsh<I32, _ArithmeticRangeViolation>
+        : T2 extends I256    ? IRIsh<I32, _ArithmeticRangeViolation>
+        : T2 extends I       ? IRIsh<I32, _ArithmeticRangeViolation>
+        : T2 extends U8      ? I32
+        : T2 extends U16     ? I32
+        : T2 extends U32     ? I32
+        : T2 extends U64     ? IRIsh<I32, _UpperArithmeticRangeViolation>
+        : T2 extends U128    ? IRIsh<I32, _UpperArithmeticRangeViolation>
+        : T2 extends U256    ? IRIsh<I32, _UpperArithmeticRangeViolation>
+        : T2 extends U       ? IRIsh<I32, _UpperArithmeticRangeViolation>
+        : never :
+    T1 extends I64
+        ? T2 extends number  ? IRIsh<I64, _PrecisionViolation>
+        : T2 extends bigint  ? IRIsh<I64, _ArithmeticRangeViolation>
+        : T2 extends Float   ? IRIsh<I64, _PrecisionViolation>
+        : T2 extends I8      ? I64
+        : T2 extends I16     ? I64
+        : T2 extends I32     ? I64
+        : T2 extends I64     ? I64
+        : T2 extends I128    ? IRIsh<I64, _ArithmeticRangeViolation>
+        : T2 extends I256    ? IRIsh<I64, _ArithmeticRangeViolation>
+        : T2 extends I       ? IRIsh<I64, _ArithmeticRangeViolation>
+        : T2 extends U8      ? I64
+        : T2 extends U16     ? I64
+        : T2 extends U32     ? I64 
+        : T2 extends U64     ? I64
+        : T2 extends U128    ? IRIsh<I64, _ArithmeticRangeViolation>
+        : T2 extends U256    ? IRIsh<I64, _ArithmeticRangeViolation>
+        : T2 extends U       ? IRIsh<I64, _ArithmeticRangeViolation>
+        : never :
+    T1 extends I128
+        ? T2 extends number  ? IRIsh<I128, _PrecisionViolation>
+        : T2 extends bigint  ? IRIsh<I128, _ArithmeticRangeViolation>
+        : T2 extends Float   ? IRIsh<I128, _PrecisionViolation>
+        : T2 extends I8      ? I128
+        : T2 extends I16     ? I128
+        : T2 extends I32     ? I128
+        : T2 extends I64     ? I128
+        : T2 extends I128    ? I128
+        : T2 extends I256    ? IRIsh<I128, _ArithmeticRangeViolation>
+        : T2 extends I       ? IRIsh<I128, _ArithmeticRangeViolation>
+        : T2 extends U8      ? I128
+        : T2 extends U16     ? I128
+        : T2 extends U32     ? I128
+        : T2 extends U64     ? I128
+        : T2 extends U128    ? I128
+        : T2 extends U256    ? IRIsh<I128, _UpperArithmeticRangeViolation>
+        : T2 extends U       ? IRIsh<I128, _UpperArithmeticRangeViolation>
+        : never :
+    T1 extends I256
+        ? T2 extends number  ? IRIsh<I256, _PrecisionViolation>
+        : T2 extends bigint  ? IRIsh<I256, _ArithmeticRangeViolation>
+        : T2 extends Float   ? IRIsh<I256, _PrecisionViolation>
+        : T2 extends I8      ? I256
+        : T2 extends I16     ? I256
+        : T2 extends I32     ? I256
+        : T2 extends I64     ? I256
+        : T2 extends I128    ? I256
+        : T2 extends I256    ? I256
+        : T2 extends I       ? IRIsh<I256, _ArithmeticRangeViolation>
+        : T2 extends U8      ? I256
+        : T2 extends U16     ? I256
+        : T2 extends U32     ? I256
+        : T2 extends U64     ? I256
+        : T2 extends U128    ? I256
+        : T2 extends U256    ? I256
+        : T2 extends U       ? IRIsh<I256, _ArithmeticRangeViolation>
+        : never :
+    T1 extends I
+        ? T2 extends number  ? IRIsh<I, _PrecisionViolation>
+        : T2 extends bigint  ? I
+        : T2 extends Float   ? IRIsh<I, _PrecisionViolation>
+        : T2 extends I8      ? I
+        : T2 extends I16     ? I
+        : T2 extends I32     ? I
+        : T2 extends I64     ? I
+        : T2 extends I128    ? I
+        : T2 extends I256    ? I
+        : T2 extends I       ? I
+        : T2 extends U8      ? I
+        : T2 extends U16     ? I
+        : T2 extends U32     ? I
+        : T2 extends U64     ? I
+        : T2 extends U128    ? I
+        : T2 extends U256    ? I
+        : T2 extends U       ? I
+        : never :
+    never;
 
-
-                ? IRIsh<I16, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">
-                : T2 extends bigint
-                    ? IRIsh<I16, "MATH.ERR_BIGINT_NOT_SUPPORTED">
-                    : never
-            : never;
-    
-
-
-export type I8RMap<T1 extends NumberIsh> =
-    T1 extends number ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION"> :
-    T1 extends bigint ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"> :
-    T1 extends I16 ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"> :
-    T1 extends I32 ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"> :
-    T1 extends I64 ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"> :
-    T1 extends I128 ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"> :
-    T1 extends I256 ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"> :
-    T1 extends I ? IRIsh<I8, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"> :
-    ;
-
+let x: IRMap<I8, number>
 
 
 export type I8Compatible = I8 | U8;
@@ -177,8 +242,14 @@ export const MIN_NUMBER: number = Number.MIN_SAFE_INTEGER;
 
 // #region Math Error Context
 
+export type MathContextIsh =
+    | MathPrecisionViolationContext
+    | MathPrecisionViolationContext;
+
+
 export type MathRangeViolationContext = [lower: bigint, upper: bigint, actual: bigint];
 
+export type MathPrecisionViolationContext = {};
 
 // #region Math Error
 
@@ -192,7 +263,7 @@ export type MathErrorCode =
 export type MathError<T1 extends MathErrorCode> = {
     code: T1;
     message: Option<string>;
-    context: Option<MathRangeViolationContext>
+    context: Option<MathContextIsh>
     result: Option<NumberIsh>;
 };
 
