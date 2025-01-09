@@ -29,7 +29,5 @@ export const MAX_I256: I256 = I256(MAX_256);
 export const MIN_I256: I256 = I256(MIN_256);
 export const MAX_I128: I128 = I128(MAX_128);
 export const MIN_I128: I128 = I128(MIN_128);
-
-
 export const MAX_NUMBER: number = Number.MAX_SAFE_INTEGER;
 export const MIN_NUMBER: number = Number.MIN_SAFE_INTEGER;

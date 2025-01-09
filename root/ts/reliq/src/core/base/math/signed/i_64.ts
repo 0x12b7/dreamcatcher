@@ -1,5 +1,9 @@
 import { type Branded } from "@root";
 import { type Wrapper } from "@root";
+import { type LargestI } from "@root";
+import { type LargestU } from "@root";
+import { type ILike } from "@root";
+import { type ULike } from "@root";
 import { type NumberLike } from "@root";
 import { type MathErrorCode } from "@root";
 import { MathError } from "@root";
@@ -18,6 +22,16 @@ import { U32 } from "@root";
 import { U64 } from "@root";
 import { U128 } from "@root";
 import { U256 } from "@root";
+
+export type I64RIMap<T1 extends I | I8> =
+    LargestU<U64, T1> extends U64 
+        ? I64 
+        : 
+        | I64R<"MATH.ERR_ARITHMETIC_OVERFLOW">;
+
+let x: I64RIMap<I8> /// should be I64 but x is any
+
+
 
 export type I64Compatible = I8 | I16 | I32 | I64 | U8 | U16 | U32 | U64;
 export type I64OverfUnderLossR = I64R<"MATH.ERR_ARITHMETIC_OVERFLOW" | "MATH.ERR_ARITHMETIC_UNDERFLOW" | "MATH.ERR_PRECISION_LOSS">;
