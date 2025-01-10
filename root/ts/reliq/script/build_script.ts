@@ -21,7 +21,7 @@ export function BuildScript(): BuildScript {
             dts: true,
             sourcemap: "inline",
             clean: true,
-            minify: false,
+            minify: true,
             config: "tsconfig.json"
         });
     }
