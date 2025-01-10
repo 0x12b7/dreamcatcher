@@ -3,31 +3,15 @@ import { type Wrapper } from "@root";
 import { Result } from "@root";
 import { Option } from "@root";
 
+export type NumberIsh = Float | number | bigint | I8 | I16 | I32 | I64 | I128 | I256 | I | U8 | U16 | U32 | U64 | U128 | U256 | U;
 
 export type Float = {
 
 };
 
-export type IIshBrand = "I8" | "I16" | "I32" | "I64" | "I128" | "I256" | "I";
 
-export type IIsh<T1 extends IIshBrand> = 
-    & Branded<T1>
-    & Wrapper<bigint>
-    & {
-    
-}
-
-
-
-
-
-export type _ArithmeticRangeAndPrecisionViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION";
-export type _ArithmeticRangeViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"; 
-export type _UpperArithmeticRangeViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION";
-export type _PrecisionViolation = "MATH.ERR_PRECISION_VIOLATION";
 
 export type IRIsh<T1 extends IIsh<T3>, T2 extends MathErrorCode, T3 extends IIshBrand = IIshBrandMap<T1>> = Result<T1, MathError<T2>>;
-
 
 export type IRMap<T1 extends IIsh<T3>, T2 extends NumberIsh, T3 extends IIshBrand = IIshBrandMap<T1>> =
     T1 extends I8
@@ -165,39 +149,131 @@ export type IRMap<T1 extends IIsh<T3>, T2 extends NumberIsh, T3 extends IIshBran
         : never :
     never;
 
-let x: IRMap<I8, number>
+export type LargestIR<T1 extends IIsh<any>, T2 extends IIsh<any>, T3 extends MathErrorCode> = Result<LargestI<T1, T2>, MathError<T3>>;
+
+export type LargestI<T1 extends IIsh<T3>, T2 extends IIsh<T4>, T3 extends IIshBrand = IIshBrandMap<T1>, T4 extends IIshBrand = IIshBrandMap<T2>> =
+    T1 extends T2    ? T1 :
+    T1 extends I     ? T1 :
+    T2 extends I     ? T2 :
+    T1 extends I256  ? T1 :
+    T2 extends I256  ? T2 :
+    T1 extends I128  ? T1 :
+    T2 extends I128  ? T2 :
+    T1 extends I64   ? T1 :
+    T2 extends I64   ? T2 :
+    T1 extends I32   ? T1 :
+    T2 extends I32   ? T2 :
+    T1 extends I16   ? T1 :
+    T2 extends I16   ? T2 :
+    T1 extends I8    ? T1 :
+    T1 extends I8    ? T2 :
+    never;
+
+export type IIshBrandMap<T1 extends IIsh<IIshBrand>> = 
+    T1 extends I8    ? "I8" :
+    T1 extends I16   ? "I16" :
+    T1 extends I32   ? "I32" :
+    T1 extends I64   ? "I64" :
+    T1 extends I128  ? "I128" :
+    T1 extends I256  ? "I256" :
+    T1 extends I     ? "I" :
+    never;
+
+export type IIshBrand = "I8" | "I16" | "I32" | "I64" | "I128" | "I256" | "I";
+
+export type IIsh<T1 extends IIshBrand> = 
+    & Branded<T1> 
+    & Wrapper<bigint>;
+
+export type I8 = 
+    & IIsh<"I8">
+    & {
+    eq<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): boolean;
+    lt<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): boolean;
+    gt<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): boolean;
+    lteq<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): boolean;
+    gteq<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): boolean;
+    add<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): LargestIR<I8, T1, _UpperArithmeticRangeViolation>;
+    sub<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): LargestIR<I8, T1, _LowerArithmeticRangeViolation>;
+    mul<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): LargestIR<I8, T1, _ArithmeticRangeViolation>;
+    div<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): LargestIR<I8, T1, _ArithmeticRangeViolationAndDivisionByZero>;
+};
+
+export function I8<T1 extends NumberIsh>(_x: NumberIsh): IRMap<I8, T1> {}
+
+export type I16 = 
+    & IIsh<"I16">
+    & {
+    eq<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): boolean;
+    lt<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): boolean;
+    gt<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): boolean;
+    lteq<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): boolean;
+    gteq<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): boolean;
+    add<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): LargestIR<I16, T1, _UpperArithmeticRangeViolation>;
+    sub<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): LargestIR<I16, T1, _LowerArithmeticRangeViolation>;
+    mul<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): LargestIR<I16, T1, _ArithmeticRangeViolation>;
+    div<T1 extends IIsh<T2>, T2 extends IIshBrand = IIshBrandMap<T1>>(x: T1): LargestIR<I16, T1, _ArithmeticRangeViolationAndDivisionByZero>;
+};
+
+export function I16<T1 extends NumberIsh>(_x: NumberIsh): IRMap<I16, T1> {}
 
 
-export type I8Compatible = I8 | U8;
-export type I8R<T1 extends MathErrorCode> = Result<I8, MathError<T1>>;
-export type I8 = IIsh<"I8">;
-export type I8ArithmeticRangeViolationR = I8R<"MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">;
-export type I8ArithmeticRangeViolation = bigint | I16 | I32 | I64 | I128 | I256 | I;
-export type I8UpperArithmeticRangeViolationR = I8R<"MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">;
-export type I8UpperArithmeticRangeViolation = U16 | U32 | U64 | U128 | U256 | U;
-export type I8ArithmeticRangeAndPrecisionViolationR = I8R<"MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION">;
-export type I8ArithmeticRangeAndPrecisionViolation = number | Float;
 
-export type I16Compatible = I8 | I16 | U8 | U16;
-export type I16R<T1 extends MathErrorCode> = Result<I16, MathError<T1>>;
-export type I16 = IIsh<"I16">;
-export type I16ArithmeticRangeViolationR = I16R<"MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">;
-export type I16ArithmeticRangeViolation = bigint | I32 | I64 | I128 | I256;
-export type I16UpperArithmeticRangeViolationR = I16R<"MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">;
-export type I16UpperArithmeticRangeViolation = U32 | U64 | U128 | U256;
 
-export type I32R<T1 extends MathErrorCode> = Result<I32, MathError<T1>>;
-export type I64R<T1 extends MathErrorCode> = Result<I64, MathError<T1>>;
-export type I128R<T1 extends MathErrorCode> = Result<I128, MathError<T1>>;
-export type I256R<T1 extends MathErrorCode> = Result<I256, MathError<T1>>;
+export type I32      = IIsh<"I32">;
+export type I64      = IIsh<"I64">;
+export type I128     = IIsh<"I128">;
+export type I256     = IIsh<"I256">;
+export type I        = IIsh<"I">;
 
 
 
-export type I32 = IIsh<"I32">;
-export type I64 = IIsh<"I64">;
-export type I128 = IIsh<"I128">;
-export type I256 = IIsh<"I256">;
-export type I = IIsh<"I">;
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -209,7 +285,12 @@ export type UIsh<T1 extends UIshBrand> =
     & Wrapper<bigint>
     & {};
 
-export type U8 = UIsh<"U8">;
+export type U8 = 
+    & UIsh<"U8">
+    & {
+
+};
+
 export type U16 = UIsh<"U16">;
 export type U32 = UIsh<"U32">;
 export type U64 = UIsh<"U64">;
@@ -258,7 +339,8 @@ export type MathErrorCode =
     | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"
     | "MATH.ERR_UPPER_RANGE_VIOLATION"
     | "MATH.ERR_LOWER_RANGE_VIOLATION"
-    | "MATH.ERR_PRECISION_VIOLATION";
+    | "MATH.ERR_PRECISION_VIOLATION"
+    | "MATH.ERR_DIVISION_BY_ZERO";
 
 export type MathError<T1 extends MathErrorCode> = {
     code: T1;
@@ -276,43 +358,21 @@ export function MathError<T1 extends MathErrorCode>(_this: MathError<T1>): MathE
 
 // #region Generic
 
-export type NumberIsh = number | bigint | I;
+
 
 
 // #region I Util
 
-export type IIshBrandMap<T1 extends IIsh<IIshBrand>> = 
-    T1 extends I8 ? "I8" :
-    T1 extends I16 ? "I16" :
-    T1 extends I32 ? "I32" :
-    T1 extends I64 ? "I64" :
-    T1 extends I128 ? "I128" :
-    T1 extends I256 ? "I256" :
-    T1 extends I ? "I" :
-    never;
-
-
-export type IGreaterThanOrEqual<T1 extends IIsh<T3>, T2 extends IIsh<T4>, T3 extends IIshBrand = IIshBrandMap<T1>, T4 extends IIshBrand = IIshBrandMap<T2>> = 
-    [T3] extends [T4] ? true : 
-    T3 extends "I" ? true :
-    T4 extends "I" ? false :
-    T3 extends "I256" ? true :
-    T4 extends "I256" ? false :
-    T3 extends "I128" ? true :
-    T4 extends "I128" ? false :
-    T3 extends "I64" ? true :
-    T4 extends "I64" ? false :
-    T3 extends "I32" ? true :
-    T4 extends "I32" ? false :
-    T3 extends "I16" ? true :
-    T4 extends "I16" ? false :
-    T3 extends "I8" ? true :
-    T4 extends "I8" ? false :
-    false;
-
-// #region I
 
 
 
 
 
+
+
+export type _ArithmeticRangeAndPrecisionViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION";
+export type _ArithmeticRangeViolationAndDivisionByZero = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_DIVISION_BY_ZERO";
+export type _ArithmeticRangeViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"; 
+export type _UpperArithmeticRangeViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION";
+export type _LowerArithmeticRangeViolation = "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION";
+export type _PrecisionViolation = "MATH.ERR_PRECISION_VIOLATION";
