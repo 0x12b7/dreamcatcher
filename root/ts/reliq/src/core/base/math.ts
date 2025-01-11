@@ -53,7 +53,7 @@ export const MIN_U8: U8 = U8(0).expect("Invalid U8 constant.");
 export const MAX_NUMBER: number  = Number.MAX_SAFE_INTEGER;
 export const MIN_NUMBER: number  = Number.MIN_SAFE_INTEGER;
 export const MAX_FLOAT: Float = Float(MAX_NUMBER).expect("Invalid Float constant.");
-export const MIN_FLOAT: Float = Float(MIN_NUMBER).expect("Invalid Float constant.")
+export const MIN_FLOAT: Float = Float(MIN_NUMBER).expect("Invalid Float constant.");
 
 
 // #region Math
@@ -132,19 +132,19 @@ export type _LowerArithmeticRangeViolation = "MATH.ERR_LOWER_ARITHMETIC_RANGE_VI
 export type _LowerArithmeticRangeAndPrecisionViolation = "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION";
 export type _PrecisionViolation = "MATH.ERR_PRECISION_VIOLATION";
 
-function _upperArithmeticRangeViolationMessage(cl: string, actual: Numeric, limit: Numeric): string {
+function _upperArithmeticRangeViolationMessage(cl: string, actual: bigint, limit: bigint): string {
     return `
 ${ cl }: ${ actual } violates the upper arithmetic range ${ limit }.
     `;
 }
 
-function _lowerArithmeticRangeViolationMessage(cl: string, actual: Numeric, limit: Numeric): string {
+function _lowerArithmeticRangeViolationMessage(cl: string, actual: bigint, limit: bigint): string {
     return `
 ${ cl }: ${ actual } violates the lower arithmetic range ${ limit }.
     `;
 }
 
-function _precisionViolationMessage(cl: string, actual: Numeric, result: Numeric): string {
+function _precisionViolationMessage(cl: string, actual: number, result: bigint): string {
     return `
 ${ cl }: ${ actual } would be converted to ${ result }.
     `;
@@ -680,75 +680,120 @@ export type U128 = UnsignedInteger<"U128">;
 export type U256 = UnsignedInteger<"U256">;
 export type U = UnsignedInteger<"U">;
 
+/**
+ * @dev Checks if the numeric input `x` satisfies the constraints of an unsigned integer
+ *      of type `T1`, ensuring that it is within the acceptable range and that it is an integer
+ *      (no decimals or fractional part). Any violation of these rules will result in an error.
+ *
+ * @param x The numeric value to check.
+ *          This can be of type `number`, or other numeric-like branded types such as floats.
+ * @param brand The specific unsigned integer brand/type being validated.
+ * @param upper The upper bound for the unsigned integer brand, defining the maximum permissible value.
+ * @param lower The lower bound for the unsigned integer brand, defining the minimum permissible value.
+ *
+ * @return Ok If `x` is within bounds and is an integer, otherwise returns an error indicating
+ *         which constraint has been violated (e.g., range violation, precision violation).
+ *         If the value is not a valid unsigned integer, `Err` is returned with an appropriate message.
+ *
+ * @dev The function performs the following validations:
+ *      - **Precision check**: Ensures the value does not have any fractional part.
+ *      - **Range check**: Verifies that the value is within the defined `lower` and `upper` bounds.
+ *      - If any checks fail, an error is thrown indicating the nature of the violation.
+ * 
+ * **Example**:
+ * ```
+ * _checkUnsignedInteger({ x: 100, brand: "U8", upper: MAX_U8, lower: MIN_U8 });
+ * /// Returns Ok if x is within range and is an integer.
+ * ```
+ * 
+ * **Errors**:
+ * - `MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION`: If `x` is below the `lower` bound.
+ * - `MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION`: If `x` exceeds the `upper` bound.
+ * - `MATH.ERR_PRECISION_VIOLATION`: If `x` is not an integer (it has a fractional part).
+ */
+export function _checkUnsignedInteger<T1 extends UnsignedIntegerBrand>({ x, brand, upper, lower }: { x: Numeric, brand: T1, upper: UnsignedIntegerBrandToTypeMap<T1>, lower: UnsignedIntegerBrandToTypeMap<T1> }): Result<void, MathError<_ArithmeticRangeAndPrecisionViolation>> {
+    if (typeof x === "number" || isBranded(x, "FLOAT")) {
+        if (toNumber(x) < lower.unwrap()) return (Err(MathError<_ArithmeticRangeAndPrecisionViolation>({
+            code: "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION",
+            message: Some(_lowerArithmeticRangeViolationMessage(brand, toBigint(x), lower.unwrap())),
+            context: Some(MathRangeViolationContext({
+                upper: upper.unwrap(),
+                lower: lower.unwrap(),
+                actual: toBigint(x)
+            }).expect(`${ brand }: Invalid range violation context.`)),
+        })));
+        if (toNumber(x) > MAX_U8.unwrap()) return (Err(MathError<_ArithmeticRangeAndPrecisionViolation>({
+            code: "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION",
+            message: Some(_upperArithmeticRangeViolationMessage("U8", toBigint(x), upper.unwrap())),
+            context: Some(MathRangeViolationContext({
+                upper: upper.unwrap(),
+                lower: lower.unwrap(),
+                actual: toBigint(x)
+            }).expect(`${ brand }: Invalid range violation context.`))
+        })));
+        if (toNumber(x) % 1 !== 0) return (Err(MathError<_ArithmeticRangeAndPrecisionViolation>({
+            code: "MATH.ERR_PRECISION_VIOLATION",
+            message: Some(_precisionViolationMessage(brand, toNumber(x), toBigint(x))),
+            context: Some(MathPrecisionViolationContext({
+                actual: toNumber(x),
+                result: toBigint(x)
+            }).expect(`${ brand }: Invalid precision violation context.`))
+        })));
+    }
+    else {
+        if (toBigint(x) < lower.unwrap()) return (Err(MathError<_ArithmeticRangeViolation>({
+            code: "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION",
+            message: Some(_lowerArithmeticRangeViolationMessage(brand, toBigint(x), lower.unwrap())),
+            context: Some(MathRangeViolationContext({
+                upper: upper.unwrap(),
+                lower: lower.unwrap(),
+                actual: toBigint(x)
+            }).expect(`${ brand }: Invalid range violation context.`))
+        })));
+        if (toBigint(x) > upper.unwrap()) return (Err(MathError<_ArithmeticRangeViolation>({
+            code: "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION",
+            message: Some(_upperArithmeticRangeViolationMessage(brand, toBigint(x), upper.unwrap())),
+            context: Some(MathRangeViolationContext({
+                upper: MAX_U8.unwrap(),
+                lower: MIN_U8.unwrap(),
+                actual: toBigint(x)
+            }).expect(`${ brand }: Invalid range violation context.`))
+        })));
+    }
+    return Ok(undefined);
+}
+
 export function U8<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U8, T1> {
     /** @constructor */ {
-        if (typeof _x === "number") {
-            let x: number = _x;
-            if (x < MIN_U8.unwrap()) return (Err(MathError<_ArithmeticRangeAndPrecisionViolation>({
-                code: "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION",
-                message: Some(_lowerArithmeticRangeViolationMessage("U8", x, MIN_U8.unwrap())),
-                context: Some(MathRangeViolationContext({
-                    upper: MAX_U8.unwrap(),
-                    lower: MIN_U8.unwrap(),
-                    actual: BigInt(x)
-                }).expect("U8: Invalid range violation context.")),
-            })) as any);
-            if (x > MAX_U8.unwrap()) return (Err(MathError<_ArithmeticRangeAndPrecisionViolation>({
-                code: "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION",
-                message: Some(_upperArithmeticRangeViolationMessage("U8", x, MAX_U8.unwrap())),
-                context: Some(MathRangeViolationContext({
-                    upper: MAX_U8.unwrap(),
-                    lower: MIN_U8.unwrap(),
-                    actual: BigInt(x)
-                }).expect("U8: Invalid range violation context."))
-            }))) as any;
-            if (x % 1 !== 0) return (Err(MathError<_ArithmeticRangeAndPrecisionViolation>({
-                code: "MATH.ERR_PRECISION_VIOLATION",
-                message: Some(_precisionViolationMessage("U8", x, BigInt(x))),
-                context: Some(MathPrecisionViolationContext({
-                    actual: x,
-                    result: BigInt(x)
-                }).expect("U8: Invalid precision violation context."))
-            }))) as any;
-        }
-        else if (typeof _x === "bigint") {
-            let x: bigint = _x;
-            if (x < MIN_U8.unwrap()) return (Err(MathError<_ArithmeticRangeViolation>({
-                code: "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION",
-                message: Some(_lowerArithmeticRangeViolationMessage("U8", x, MIN_U8.unwrap())),
-                context: Some(MathRangeViolationContext({
-                    upper: MAX_U8.unwrap(),
-                    lower: MIN_U8.unwrap(),
-                    actual: BigInt(x)
-                }).expect("U8: Invalid range violation context."))
-            }))) as any;
-            
-        }
-        else if (isBranded(_x, "FLOAT")) {
+        let checkResult: Result<void, MathError<_ArithmeticRangeAndPrecisionViolation>> = _checkUnsignedInteger({ 
+            x: _x, 
+            brand: "U8", 
+            upper: MAX_U8, 
+            lower: MIN_U8 
+        });
+        if (checkResult.err()) return (checkResult as any);
 
-        }
-        else if (isBranded(_x, "I8")) {
-            
-        
-        }
     }
 }
 
 export function U16<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U16, T1> {
     /** @constructor */ {
-
+        let checkResult: Result<void, MathError<_ArithmeticRangeAndPrecisionViolation>> = _checkUnsignedInteger({ x: _x, brand: "U16", upper: MAX_U16, lower: MIN_U16 });
+        if (checkResult.err()) return (checkResult as any);
     }
 }
 
 export function U32<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U32, T1> {
     /** @constructor */ {
-
+        let checkResult: Result<void, MathError<_ArithmeticRangeAndPrecisionViolation>> = _checkUnsignedInteger({ x: _x, brand: "U32", upper: MAX_U32, lower: MIN_U32 });
+        if (checkResult.err()) return (checkResult as any);
     }
 }
 
 export function U64<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U64, T1> {
     /** @constructor */ {
-
+        let checkResult: Result<void, MathError<_ArithmeticRangeAndPrecisionViolation>> = _checkUnsignedInteger({ x: _x, brand: "U64", upper: MAX_U64, lower: MIN_U64 });
+        if (checkResult.err()) return (checkResult as any);
     }
 }
 
@@ -771,9 +816,18 @@ export function U<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U, T1> {
 }
 
 
+export function toNumber(x: Numeric): number {
+    return typeof x === "number" ? x :
+        typeof x === "bigint" ? Number(x) :
+        isBranded(x, "FLOAT") ? x.unwrap() :
+        isWrapper(x) ? Number(x.unwrap()) :
+        0; /// Will never return.
+}
 
-
-
-
-let count: U256 = U256(500n)*!;
-count = count.add(U256(500n)*!)*!;
+export function toBigint(x: Numeric): bigint {
+    return  typeof x === "number" ? BigInt(x) :
+        typeof x === "bigint" ? x :
+        isBranded(x, "FLOAT") ? BigInt(x.unwrap()) :
+        isWrapper(x) ? x.unwrap() :
+        0n; /// Will never return.
+}
