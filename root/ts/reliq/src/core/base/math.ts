@@ -1,7 +1,18 @@
 import { type Branded } from "@root";
 import { type Wrapper } from "@root";
+import { type Polymorph } from "@root";
+import { type Span } from "@root";
 import { Result } from "@root";
 import { Option } from "@root";
+import { Ok } from "@root";
+import { Err } from "@root";
+import { Some } from "@root";
+import { None } from "@root";
+import { isBranded } from "@root";
+import { isWrapper } from "@root";
+
+
+// #region Constant
 
 export const MAX_256: bigint = 2n**256n - 1n;
 export const MIN_256: bigint = - MAX_256;
@@ -44,13 +55,49 @@ export const MIN_NUMBER: number  = Number.MIN_SAFE_INTEGER;
 export const MAX_FLOAT: Float = Float(MAX_NUMBER).expect("Invalid Float constant.");
 export const MIN_FLOAT: Float = Float(MIN_NUMBER).expect("Invalid Float constant.")
 
-export type MathR<T1 extends MathErrorCode = MathErrorCode> = Result<NumberLike, MathError<T1>>;
+
+// #region Math
+
+export type MathResult<T1 extends MathErrorCode = MathErrorCode> = Result<Numeric, MathError<T1>>;
 
 export type MathContextLike = MathRangeViolationContext | MathPrecisionViolationContext;
 
-export type MathRangeViolationContext = [lower: bigint, upper: bigint, actual: bigint];
 
-export type MathPrecisionViolationContext = {};
+export type MathRangeViolationContextError =
+    | "MATH_RANGE_VIOLATION_CONTEXT.ERR_RANGE_DEFINITION_INVALIDATION"
+    | "MATH_RANGE_VIOLATION_CONTEXT.ERR_SPURIOUS_CLASSIFICATION";
+
+export type MathRangeViolationContext = {
+    upper: bigint;
+    lower: bigint;
+    actual: bigint;
+}
+
+export function MathRangeViolationContext(_this: MathRangeViolationContext): Result<MathRangeViolationContext, MathRangeViolationContextError> {
+    /** @constructor */ {
+        if (_this.upper <= _this.lower) return Err("MATH_RANGE_VIOLATION_CONTEXT.ERR_RANGE_DEFINITION_INVALIDATION");
+        if (_this.actual >= _this.lower && _this.actual <= _this.upper) return Err("MATH_RANGE_VIOLATION_CONTEXT.ERR_SPURIOUS_CLASSIFICATION");
+        return Ok(_this);
+    }
+}
+
+
+export type MathPrecisionViolationContextError = 
+    | "MATH_PRECISION_VIOLATION_CONTEXT.ERR_PRECISION_LOSS_INVALIDATION";
+
+export type MathPrecisionViolationContext = {
+    actual: number;
+    result: bigint;
+};
+
+export function MathPrecisionViolationContext(_this: MathPrecisionViolationContext): Result<MathPrecisionViolationContext, MathPrecisionViolationContextError> {
+    /** @constructor */ {
+        if (_this.actual === Number(_this.result)) return Err("MATH_PRECISION_VIOLATION_CONTEXT.ERR_PRECISION_LOSS_INVALIDATION");
+        return Ok(_this);
+    }
+}
+
+
 
 export type MathErrorCode = 
     | "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION"
@@ -60,11 +107,10 @@ export type MathErrorCode =
     | "MATH.ERR_PRECISION_VIOLATION"
     | "MATH.ERR_DIVISION_BY_ZERO";
 
-export type MathError<T1 extends MathErrorCode> = {
+export type MathError<T1 extends MathErrorCode = MathErrorCode> = {
     code: T1;
     message: Option<string>;
-    context: Option<MathContextLike>
-    result: Option<NumberLike>;
+    context: Option<MathContextLike>;
 };
 
 export function MathError<T1 extends MathErrorCode>(_this: MathError<T1>): MathError<T1> {
@@ -73,21 +119,70 @@ export function MathError<T1 extends MathErrorCode>(_this: MathError<T1>): MathE
     }
 }
 
+
+// #region Math Violation
+
 export type _ArithmeticRangeAndPrecisionViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION";
 export type _ArithmeticRangeViolationAndDivisionByZero = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_DIVISION_BY_ZERO";
 export type _ArithmeticRangeViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION"; 
+export type _RangeViolation = "MATH.ERR_UPPER_RANGE_VIOLATION" | "MATH.ERR_LOWER_RANGE_VIOLATION";
 export type _UpperArithmeticRangeViolation = "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION";
 export type _DivisionByZero = "MATH.ERR_DIVISION_BY_ZERO";
 export type _LowerArithmeticRangeViolation = "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION";
 export type _LowerArithmeticRangeAndPrecisionViolation = "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION" | "MATH.ERR_PRECISION_VIOLATION";
 export type _PrecisionViolation = "MATH.ERR_PRECISION_VIOLATION";
 
+function _upperArithmeticRangeViolationMessage(cl: string, actual: Numeric, limit: Numeric): string {
+    return `
+${ cl }: ${ actual } violates the upper arithmetic range ${ limit }.
+    `;
+}
 
-export type NumberLike = Float | number | bigint | I8 | I16 | I32 | I64 | I128 | I256 | I | U8 | U16 | U32 | U64 | U128 | U256 | U;
+function _lowerArithmeticRangeViolationMessage(cl: string, actual: Numeric, limit: Numeric): string {
+    return `
+${ cl }: ${ actual } violates the lower arithmetic range ${ limit }.
+    `;
+}
+
+function _precisionViolationMessage(cl: string, actual: Numeric, result: Numeric): string {
+    return `
+${ cl }: ${ actual } would be converted to ${ result }.
+    `;
+}
+
+// #region Numeric
+
+export type NumericNative<T1 extends SignedIntegerBrand | UnsignedIntegerBrand | "FLOAT", T2 extends number | bigint> = 
+    & Branded<T1>
+    & Wrapper<T2>
+    & Polymorph<T2>
+    & Exclude<Span<void>, "at">
+
+export type Numeric = 
+    | Float 
+    | number 
+    | bigint 
+    | I8 
+    | I16 
+    | I32 
+    | I64 
+    | I128 
+    | I256 
+    | I 
+    | U8 
+    | U16 
+    | U32 
+    | U64 
+    | U128 
+    | U256 
+    | U;
+
+
+// #region Float
 
 export type FloatResult<T1 extends MathErrorCode = MathErrorCode> = Result<Float, MathError<T1>>;
 
-export type FloatResultMap<T1 extends NumberLike> =
+export type FloatResultMap<T1 extends Numeric = Numeric> =
     T1 extends number    ? FloatResult<_ArithmeticRangeViolation> :
     T1 extends bigint    ? FloatResult<_ArithmeticRangeViolation> :
     T1 extends Float     ? Float :
@@ -107,10 +202,7 @@ export type FloatResultMap<T1 extends NumberLike> =
     T1 extends U         ? FloatResult<_UpperArithmeticRangeViolation> :
     never;
 
-export type Float = 
-    & Branded<"FLOAT">
-    & Wrapper<number>
-    & {
+export type FloatNative = {
     eq(x: Float): boolean;
     lt(x: Float): boolean;
     gt(x: Float): boolean;
@@ -122,16 +214,22 @@ export type Float =
     div(x: Float): FloatResult<_ArithmeticRangeViolationAndDivisionByZero>;
 };
 
-export function Float<T1 extends NumberLike>(_x: T1): FloatResultMap<T1> {
+export type Float = 
+    & FloatNative
+    & NumericNative<"FLOAT", number>;
+
+export function Float<T1 extends Numeric>(_x: T1): FloatResultMap<T1> {
     /** @constructor */ {
 
     }
 }
 
 
-export type SignedIntegerResult<T1 extends SignedInteger<T3>, T2 extends MathErrorCode, T3 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>> = Result<T1, MathError<T2>>;
+// #region Signed Integer
 
-export type SignedIntegerResultMap<T1 extends SignedInteger<T3>, T2 extends NumberLike, T3 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>> =
+export type SignedIntegerResult<T1 extends SignedInteger<T3>, T2 extends MathErrorCode, T3 extends SignedIntegerBrand = SignedIntegerTypeToBrandMap<T1>> = Result<T1, MathError<T2>>;
+
+export type SignedIntegerResultMap<T1 extends SignedInteger<T3>, T2 extends Numeric, T3 extends SignedIntegerBrand = SignedIntegerTypeToBrandMap<T1>> =
     T1 extends I8
         ? T2 extends number  ? SignedIntegerResult<I8, _ArithmeticRangeAndPrecisionViolation>
         : T2 extends bigint  ? SignedIntegerResult<I8, _ArithmeticRangeViolation>
@@ -267,9 +365,9 @@ export type SignedIntegerResultMap<T1 extends SignedInteger<T3>, T2 extends Numb
         : never :
     never;
 
-export type LargestSignedIntegerResult<T1 extends SignedInteger<any>, T2 extends SignedInteger<any>, T3 extends MathErrorCode> = Result<LargestSignedInteger<T1, T2>, MathError<T3>>;
+export type LargestSignedIntegerResult<T1 extends SignedInteger, T2 extends SignedInteger, T3 extends MathErrorCode> = Result<LargestSignedInteger<T1, T2>, MathError<T3>>;
 
-export type LargestSignedInteger<T1 extends SignedInteger<T3>, T2 extends SignedInteger<T4>, T3 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>, T4 extends SignedIntegerBrand = SignedIntegerBrandMap<T2>> =
+export type LargestSignedInteger<T1 extends SignedInteger, T2 extends SignedInteger> =
     T1 extends T2    ? T1 :
     T1 extends I     ? T1 :
     T2 extends I     ? T2 :
@@ -287,169 +385,100 @@ export type LargestSignedInteger<T1 extends SignedInteger<T3>, T2 extends Signed
     T1 extends I8    ? T2 :
     never;
 
-export type SignedIntegerBrandMap<T1 extends SignedInteger<SignedIntegerBrand>> = 
-    T1 extends I8    ? "I8" :
-    T1 extends I16   ? "I16" :
-    T1 extends I32   ? "I32" :
-    T1 extends I64   ? "I64" :
-    T1 extends I128  ? "I128" :
-    T1 extends I256  ? "I256" :
-    T1 extends I     ? "I" :
+export type SignedIntegerBrandToTypeMap<T1 extends SignedIntegerBrand> =
+    T1 extends "I8" ? I8 :
+    T1 extends "I16" ? I16 :
+    T1 extends "I32" ? I32 :
+    T1 extends "I64" ? I64 :
+    T1 extends "I128" ? I128 :
+    T1 extends "I256" ? I256 :
+    T1 extends "I" ? I :
+    never;
+
+export type SignedIntegerTypeToBrandMap<T1 extends SignedInteger> = 
+    T1 extends I8 ? "I8" :
+    T1 extends I16 ? "I16" :
+    T1 extends I32 ? "I32" :
+    T1 extends I64 ? "I64" :
+    T1 extends I128 ? "I128" :
+    T1 extends I256 ? "I256" :
+    T1 extends I ? "I" :
     never;
 
 export type SignedIntegerBrand = "I8" | "I16" | "I32" | "I64" | "I128" | "I256" | "I";
 
-export type SignedInteger<T1 extends SignedIntegerBrand> = 
-    & Branded<T1> 
-    & Wrapper<bigint>
-    & {
+export type SignedIntegerNative<T1 extends SignedIntegerBrand = SignedIntegerBrand> = {
+    eq<T2 extends SignedInteger>(x: T2): boolean;
+    lt<T2 extends SignedInteger>(x: T2): boolean;
+    gt<T2 extends SignedInteger>(x: T2): boolean;
+    lteq<T2 extends SignedInteger>(x: T2): boolean;
+    gteq<T2 extends SignedInteger>(x: T2): boolean;
+    add<T2 extends SignedInteger>(x: T2): LargestSignedIntegerResult<SignedIntegerBrandToTypeMap<T1>, T2, _UpperArithmeticRangeViolation>;
+    sub<T2 extends SignedInteger>(x: T2): LargestSignedIntegerResult<SignedIntegerBrandToTypeMap<T1>, T2, _LowerArithmeticRangeViolation>;
+    mul<T2 extends SignedInteger>(x: T2): LargestSignedIntegerResult<SignedIntegerBrandToTypeMap<T1>, T2, _ArithmeticRangeViolation>;
+    div<T2 extends SignedInteger>(x: T2): LargestSignedIntegerResult<SignedIntegerBrandToTypeMap<T1>, T2, _ArithmeticRangeViolationAndDivisionByZero>;
 };
 
+export type SignedInteger<T1 extends SignedIntegerBrand = SignedIntegerBrand> = 
+    & SignedIntegerNative 
+    & NumericNative<T1, bigint>;
 
-export type I8 = 
-    & SignedInteger<"I8">
-    & {
-    eq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I8, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I8, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I8, T1, _ArithmeticRangeViolation>;
-    div<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I8, T1, _ArithmeticRangeViolationAndDivisionByZero>;
-};
+export type I8 = SignedInteger<"I8">;
+export type I16 = SignedInteger<"I16">;
+export type I32 = SignedInteger<"I32">;
+export type I64 = SignedInteger<"I64">;
+export type I128 = SignedInteger<"I128">;
+export type I256 = SignedInteger<"I256">;
+export type I = SignedInteger<"I">;
 
-export type I16 = 
-    & SignedInteger<"I16">
-    & {
-    eq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I16, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I16, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I16, T1, _ArithmeticRangeViolation>;
-    div<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I16, T1, _ArithmeticRangeViolationAndDivisionByZero>;
-};
-
-export type I32 =
-    & SignedInteger<"I32">
-    & {
-    eq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I32, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I32, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I32, T1, _ArithmeticRangeViolation>;
-    div<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I32, T1, _ArithmeticRangeViolationAndDivisionByZero>;
-};
-
-export type I64 =
-    & SignedInteger<"I64">
-    & {
-    eq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I64, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I64, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I64, T1, _ArithmeticRangeViolation>;
-    div<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I64, T1, _ArithmeticRangeViolationAndDivisionByZero>;
-};
-
-export type I128 =
-    & SignedInteger<"I128">
-    & {
-    eq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I128, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I128, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I128, T1, _ArithmeticRangeViolation>;
-    div<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I128, T1, _ArithmeticRangeViolationAndDivisionByZero>;
-};
-
-export type I256 =
-    & SignedInteger<"I256">
-    & {
-    eq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I256, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I256, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I256, T1, _ArithmeticRangeViolation>;
-    div<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I256, T1, _ArithmeticRangeViolationAndDivisionByZero>;
-};
-
-export type I =
-    & SignedInteger<"I">
-    & {
-    eq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I, T1, _ArithmeticRangeViolation>;
-    div<T1 extends SignedInteger<T2>, T2 extends SignedIntegerBrand = SignedIntegerBrandMap<T1>>(x: T1): LargestSignedIntegerResult<I, T1, _ArithmeticRangeViolationAndDivisionByZero>;
-};
-
-export function I8<T1 extends NumberLike>(_x: T1): SignedIntegerResultMap<I8, T1> {
+export function I8<T1 extends Numeric>(_x: T1): SignedIntegerResultMap<I8, T1> {
     /** @constructor */ {
         
     }
 }
 
-export function I16<T1 extends NumberLike>(_x: T1): SignedIntegerResultMap<I16, T1> {
+export function I16<T1 extends Numeric>(_x: T1): SignedIntegerResultMap<I16, T1> {
     /** @constructor */ {
 
     }
 }
 
-export function I32<T1 extends NumberLike>(_x: T1): SignedIntegerResultMap<I32, T1> {
+export function I32<T1 extends Numeric>(_x: T1): SignedIntegerResultMap<I32, T1> {
     /** @constructor */ {
         
     }
 }
 
-export function I64<T1 extends NumberLike>(_x: T1): SignedIntegerResultMap<I64, T1> {
+export function I64<T1 extends Numeric>(_x: T1): SignedIntegerResultMap<I64, T1> {
     /** @constructor */ {
 
     }
 }
 
-export function I128<T1 extends NumberLike>(_x: T1): SignedIntegerResultMap<I128, T1> {
+export function I128<T1 extends Numeric>(_x: T1): SignedIntegerResultMap<I128, T1> {
     /** @constructor */ {
 
     }
 }
 
-export function I256<T1 extends NumberLike>(_x: T1): SignedIntegerResultMap<I256, T1> {
+export function I256<T1 extends Numeric>(_x: T1): SignedIntegerResultMap<I256, T1> {
     /** @constructor */ {
 
     }
 }
 
-export function I<T1 extends NumberLike>(_x: T1): SignedIntegerResultMap<I, T1> {
+export function I<T1 extends Numeric>(_x: T1): SignedIntegerResultMap<I, T1> {
     /** @constructor */ {
 
     }
 }
 
 
-export type UnsignedIntegerResult<T1 extends UnsignedInteger<T3>, T2 extends MathErrorCode, T3 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>> = Result<T1, MathError<T2>>;
+// #region Unsigned Integer
 
-export type UnsignedIntegerResultMap<T1 extends UnsignedInteger<T3>, T2 extends NumberLike, T3 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>> =
+export type UnsignedIntegerResult<T1 extends UnsignedInteger<T3>, T2 extends MathErrorCode, T3 extends UnsignedIntegerBrand = UnsignedIntegerTypeToBrandMap<T1>> = Result<T1, MathError<T2>>;
+
+export type UnsignedIntegerResultMap<T1 extends UnsignedInteger<T3>, T2 extends Numeric, T3 extends UnsignedIntegerBrand = UnsignedIntegerTypeToBrandMap<T1>> =
     T1 extends U8
         ? T2 extends number  ? UnsignedIntegerResult<U8, _ArithmeticRangeAndPrecisionViolation>
         : T2 extends bigint  ? UnsignedIntegerResult<U8, _ArithmeticRangeViolation>
@@ -585,9 +614,9 @@ export type UnsignedIntegerResultMap<T1 extends UnsignedInteger<T3>, T2 extends 
         : never :
     never;
 
-export type LargestUnsignedIntegerResult<T1 extends UnsignedInteger<any>, T2 extends UnsignedInteger<any>, T3 extends MathErrorCode> = Result<LargestUnsignedInteger<T1, T2>, MathError<T3>>;
+export type LargestUnsignedIntegerResult<T1 extends UnsignedInteger, T2 extends UnsignedInteger, T3 extends MathErrorCode> = Result<LargestUnsignedInteger<T1, T2>, MathError<T3>>;
 
-export type LargestUnsignedInteger<T1 extends UnsignedInteger<T3>, T2 extends UnsignedInteger<T4>, T3 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>, T4 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T2>> =
+export type LargestUnsignedInteger<T1 extends UnsignedInteger, T2 extends UnsignedInteger> =
     T1 extends T2    ? T2 :
     T1 extends U     ? T1 :
     T2 extends U     ? T2 :
@@ -605,160 +634,146 @@ export type LargestUnsignedInteger<T1 extends UnsignedInteger<T3>, T2 extends Un
     T2 extends U8    ? T2 :
     never;
 
-export type UnsignedIntegerBrandMap<T1 extends UnsignedInteger<UnsignedIntegerBrand>> =
-    T1 extends U8    ? "U8" :
-    T1 extends U16   ? "U16" :
-    T1 extends U32   ? "U32" :
-    T1 extends U64   ? "U64" :
-    T1 extends U128  ? "U128" :
-    T1 extends U256  ? "U256" :
-    T1 extends U     ? "U" :
+export type UnsignedIntegerBrandToTypeMap<T1 extends UnsignedIntegerBrand = UnsignedIntegerBrand> =
+    T1 extends "U8" ? U8 :
+    T1 extends "U16" ? U16 :
+    T1 extends "U32" ? U32 :
+    T1 extends "U64" ? U64 :
+    T1 extends "U128" ? U128 :
+    T1 extends "U256" ? U256 :
+    T1 extends "u" ? U :
+    never;
+    
+export type UnsignedIntegerTypeToBrandMap<T1 extends UnsignedInteger<UnsignedIntegerBrand>> =
+    T1 extends U8 ? "U8" :
+    T1 extends U16 ? "U16" :
+    T1 extends U32 ? "U32" :
+    T1 extends U64 ? "U64" :
+    T1 extends U128 ? "U128" :
+    T1 extends U256 ? "U256" :
+    T1 extends U ? "U" :
     never;
 
 export type UnsignedIntegerBrand = "U8" | "U16" | "U32" | "U64" | "U128" | "U256" | "U";
 
-export type UnsignedInteger<T1 extends UnsignedIntegerBrand> =
-    & Branded<T1>
-    & Wrapper<bigint>;
-
-export type U8 =
-    & UnsignedInteger<"U8"> 
-    & {
-    eq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U8, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U8, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U8, T1, _UpperArithmeticRangeViolation>;
-    div<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U8, T1, _DivisionByZero>;
+export type UnsignedIntegerNative<T1 extends UnsignedIntegerBrand = UnsignedIntegerBrand> = {
+    eq<T2 extends UnsignedInteger>(x: T2): boolean;
+    lt<T2 extends UnsignedInteger>(x: T2): boolean;
+    gt<T2 extends UnsignedInteger>(x: T2): boolean;
+    lteq<T2 extends UnsignedInteger>(x: T2): boolean;
+    gteq<T2 extends UnsignedInteger>(x: T2): boolean;
+    add<T2 extends UnsignedInteger>(x: T2): LargestUnsignedIntegerResult<UnsignedIntegerBrandToTypeMap<T1>, T2, _UpperArithmeticRangeViolation>;
+    sub<T2 extends UnsignedInteger>(x: T2): LargestUnsignedIntegerResult<UnsignedIntegerBrandToTypeMap<T1>, T2, _LowerArithmeticRangeViolation>;
+    mul<T2 extends UnsignedInteger>(x: T2): LargestUnsignedIntegerResult<UnsignedIntegerBrandToTypeMap<T1>, T2, _UpperArithmeticRangeViolation>;
+    div<T2 extends UnsignedInteger>(x: T2): LargestUnsignedIntegerResult<UnsignedIntegerBrandToTypeMap<T1>, T2, _DivisionByZero>;
 };
 
-export type U16 =
-    & UnsignedInteger<"U16">
-    & {
-    eq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U16, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U16, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U16, T1, _UpperArithmeticRangeViolation>;
-    div<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U16, T1, _DivisionByZero>;
-};
-    
-export type U32 =
-    & UnsignedInteger<"U32">
-    & {
-    eq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U32, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U32, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U32, T1, _UpperArithmeticRangeViolation>;
-    div<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U32, T1, _DivisionByZero>;
-};
+export type UnsignedInteger<T1 extends UnsignedIntegerBrand = UnsignedIntegerBrand> =
+    & UnsignedIntegerNative<T1>
+    & NumericNative<T1, bigint>;
 
-export type U64 =
-    & UnsignedInteger<"U64">
-    & {
-    eq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U64, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U64, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U64, T1, _UpperArithmeticRangeViolation>;
-    div<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U64, T1, _DivisionByZero>;
-};
+export type U8 = UnsignedInteger<"U8">;
+export type U16 = UnsignedInteger<"U16">;
+export type U32 = UnsignedInteger<"U32">;
+export type U64 = UnsignedInteger<"U64">;
+export type U128 = UnsignedInteger<"U128">;
+export type U256 = UnsignedInteger<"U256">;
+export type U = UnsignedInteger<"U">;
 
-export type U128 =
-    & UnsignedInteger<"U128">
-    & {
-    eq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U128, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U128, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U128, T1, _UpperArithmeticRangeViolation>;
-    div<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U128, T1, _DivisionByZero>;
-};
-
-export type U256 =
-    & UnsignedInteger<"U256">
-    & {
-    eq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U256, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U256, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U256, T1, _UpperArithmeticRangeViolation>;
-    div<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U256, T1, _DivisionByZero>;
-};
-
-export type U =
-    & UnsignedInteger<"U">
-    & {
-    eq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gt<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    lteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    gteq<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): boolean;
-    add<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U, T1, _UpperArithmeticRangeViolation>;
-    sub<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U, T1, _LowerArithmeticRangeViolation>;
-    mul<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U, T1, _UpperArithmeticRangeViolation>;
-    div<T1 extends UnsignedInteger<T2>, T2 extends UnsignedIntegerBrand = UnsignedIntegerBrandMap<T1>>(x: T1): LargestUnsignedIntegerResult<U, T1, _DivisionByZero>;
-};
-
-export function U8<T1 extends NumberLike>(_x: T1): UnsignedIntegerResultMap<U8, T1> {
+export function U8<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U8, T1> {
     /** @constructor */ {
+        if (typeof _x === "number") {
+            let x: number = _x;
+            if (x < MIN_U8.unwrap()) return (Err(MathError<_ArithmeticRangeAndPrecisionViolation>({
+                code: "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION",
+                message: Some(_lowerArithmeticRangeViolationMessage("U8", x, MIN_U8.unwrap())),
+                context: Some(MathRangeViolationContext({
+                    upper: MAX_U8.unwrap(),
+                    lower: MIN_U8.unwrap(),
+                    actual: BigInt(x)
+                }).expect("U8: Invalid range violation context.")),
+            })) as any);
+            if (x > MAX_U8.unwrap()) return (Err(MathError<_ArithmeticRangeAndPrecisionViolation>({
+                code: "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION",
+                message: Some(_upperArithmeticRangeViolationMessage("U8", x, MAX_U8.unwrap())),
+                context: Some(MathRangeViolationContext({
+                    upper: MAX_U8.unwrap(),
+                    lower: MIN_U8.unwrap(),
+                    actual: BigInt(x)
+                }).expect("U8: Invalid range violation context."))
+            }))) as any;
+            if (x % 1 !== 0) return (Err(MathError<_ArithmeticRangeAndPrecisionViolation>({
+                code: "MATH.ERR_PRECISION_VIOLATION",
+                message: Some(_precisionViolationMessage("U8", x, BigInt(x))),
+                context: Some(MathPrecisionViolationContext({
+                    actual: x,
+                    result: BigInt(x)
+                }).expect("U8: Invalid precision violation context."))
+            }))) as any;
+        }
+        else if (typeof _x === "bigint") {
+            let x: bigint = _x;
+            if (x < MIN_U8.unwrap()) return (Err(MathError<_ArithmeticRangeViolation>({
+                code: "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION",
+                message: Some(_lowerArithmeticRangeViolationMessage("U8", x, MIN_U8.unwrap())),
+                context: Some(MathRangeViolationContext({
+                    upper: MAX_U8.unwrap(),
+                    lower: MIN_U8.unwrap(),
+                    actual: BigInt(x)
+                }).expect("U8: Invalid range violation context."))
+            }))) as any;
+            
+        }
+        else if (isBranded(_x, "FLOAT")) {
+
+        }
+        else if (isBranded(_x, "I8")) {
+            
         
+        }
     }
 }
 
-export function U16<T1 extends NumberLike>(_x: T1): UnsignedIntegerResultMap<U16, T1> {
+export function U16<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U16, T1> {
     /** @constructor */ {
 
     }
 }
 
-export function U32<T1 extends NumberLike>(_x: T1): UnsignedIntegerResultMap<U32, T1> {
+export function U32<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U32, T1> {
     /** @constructor */ {
 
     }
 }
 
-export function U64<T1 extends NumberLike>(_x: T1): UnsignedIntegerResultMap<U64, T1> {
+export function U64<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U64, T1> {
     /** @constructor */ {
 
     }
 }
 
-export function U128<T1 extends NumberLike>(_x: T1): UnsignedIntegerResultMap<U128, T1> {
+export function U128<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U128, T1> {
     /** @constructor */ {
 
     }
 }
 
-export function U256<T1 extends NumberLike>(_x: T1): UnsignedIntegerResultMap<U256, T1> {
+export function U256<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U256, T1> {
     /** @constructor */ {
 
     }
 }
 
-export function U<T1 extends NumberLike>(_x: T1): UnsignedIntegerResultMap<U, T1> {
+export function U<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U, T1> {
     /** @constructor */ {
 
     }
 }
 
 
+
+
+
+
+let count: U256 = U256(500n)*!;
+count = count.add(U256(500n)*!)*!;
