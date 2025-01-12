@@ -1,7 +1,7 @@
-import { Result } from "@root";
-import { Unsafe } from "@root";
+import type { Result } from "@core";
+import type { Unsafe } from "@core";
+import { wrapAsync } from "@core";
 import { build } from "tsup";
-import { wrapAsync } from "@root";
 
 export type BuildScript = {
     run(): Promise<Result<void, Unsafe>>;

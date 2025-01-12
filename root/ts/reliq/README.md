@@ -211,3 +211,12 @@ Reliq is licensed under the MIT License.
 
 ## Aknowledgements
 The `Result` mechanism was taken from `ts-results`.
+
+
+
+
+
+
+BuilderPattern
+
+The Errors must be defered and returned at the build function.

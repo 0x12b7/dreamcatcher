@@ -128,7 +128,7 @@ export const Result: ResultHandler = (() => {
         return Err(out as ErrValOfAll<T1>);
     }
 
-    function wrap<T1, T2, T3 extends Array<T2>>(op: Closure<T3, T1>, ... args: T3): Result<T1, Unsafe<unknown>> {
+    function wrap<T1, T2, T3 extends Array<T2>>(op: Closure<T3, T1>, ... args: T3): Result<T1, Unsafe> {
         try {
             return Ok(op(... args));
         }
@@ -137,7 +137,7 @@ export const Result: ResultHandler = (() => {
         }
     }
 
-    async function wrapAsync<T1 extends Promise<unknown>, T2, T3 extends Array<T2>>(op: AsyncClosure<T3, T1>, ... args: T3): Promise<Result<Awaited<T1>, Unsafe<unknown>>> {
+    async function wrapAsync<T1 extends Promise<unknown>, T2, T3 extends Array<T2>>(op: AsyncClosure<T3, T1>, ... args: T3): Promise<Result<Awaited<T1>, Unsafe>> {
         try {
             return Ok((await op(... args)));
         }

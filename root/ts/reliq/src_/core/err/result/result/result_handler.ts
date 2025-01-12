@@ -13,6 +13,6 @@ export type ResultHandler = {
     err(unknown: unknown): unknown is Err<unknown>;
     all<T1 extends Array<Result<unknown, unknown>>>(... wrappers: T1): Result<OkValOfAll<T1>, ErrValOfAll<T1>[number]>;
     any<T1 extends Array<Result<unknown, unknown>>>(... wrappers: T1): Result<OkValOfAll<T1>[number], ErrValOfAll<T1>>;
-    wrap<T1, T2, T3 extends Array<T2>>(op: Closure<T3, T1>, ... args: T3): Result<T1, Unsafe<unknown>>;
-    wrapAsync<T1 extends Promise<unknown>, T2, T3 extends Array<T2>>(op: AsyncClosure<T3, T1>, ... args: T3): Promise<Result<Awaited<T1>, Unsafe<unknown>>>;
+    wrap<T1, T2, T3 extends Array<T2>>(op: Closure<T3, T1>, ... args: T3): Result<T1, Unsafe>;
+    wrapAsync<T1 extends Promise<unknown>, T2, T3 extends Array<T2>>(op: AsyncClosure<T3, T1>, ... args: T3): Promise<Result<Awaited<T1>, Unsafe>>;
 };

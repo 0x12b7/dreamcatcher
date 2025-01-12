@@ -162,20 +162,7 @@ export type Numeric =
     | Float 
     | number 
     | bigint 
-    | I8 
-    | I16 
-    | I32 
-    | I64 
-    | I128 
-    | I256 
-    | I 
-    | U8 
-    | U16 
-    | U32 
-    | U64 
-    | U128 
-    | U256 
-    | U;
+    | Integer;
 
 
 // #region Float
@@ -223,6 +210,25 @@ export function Float<T1 extends Numeric>(_x: T1): FloatResultMap<T1> {
 
     }
 }
+
+
+//
+
+export type Integer = 
+    | I
+    | I256
+    | I128
+    | I64
+    | I32
+    | I16
+    | I8
+    | U
+    | U256
+    | U128
+    | U64
+    | U32
+    | U16
+    | U8;
 
 
 // #region Signed Integer
@@ -763,7 +769,10 @@ export function _checkUnsignedInteger<T1 extends UnsignedIntegerBrand>({ x, bran
     return Ok(undefined);
 }
 
+
 export function U8<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U8, T1> {
+    let _n: bigint;
+    
     /** @constructor */ {
         let checkResult: Result<void, MathError<_ArithmeticRangeAndPrecisionViolation>> = _checkUnsignedInteger({ 
             x: _x, 
@@ -772,7 +781,46 @@ export function U8<T1 extends Numeric>(_x: T1): UnsignedIntegerResultMap<U8, T1>
             lower: MIN_U8 
         });
         if (checkResult.err()) return (checkResult as any);
+        _n = toBigint(_x);
+    }
 
+    function eq<T2 extends UnsignedInteger>(x: T2): boolean {
+        return _n === x.unwrap();
+    }
+
+    function lt<T2 extends UnsignedInteger>(x: T2): boolean {
+
+    }
+
+    function gt<T2 extends UnsignedInteger>(x: T2): boolean {
+
+    }
+
+    function lteq<T2 extends UnsignedInteger>(x: T2): boolean {
+
+    }
+
+    function gteq<T2 extends UnsignedInteger>(x: T2): boolean {
+
+    }
+
+    function add<T2 extends UnsignedInteger>(x: T2): LargestUnsignedIntegerResult<U8, T2, _UpperArithmeticRangeViolation> {
+        let n: bigint = x.unwrap();
+        let z: bigint = _n + n;
+        if (z > MAX_U8.unwrap()) return Err(MathError<_UpperArithmeticRangeViolation>({
+            code: "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION",
+            message: Some("U8: Upper arithmetic range violation."),
+            context: Some(MathRangeViolationContext({
+                upper: MAX_U8.unwrap(),
+                lower: MIN_U8.unwrap(),
+                actual: z
+            }).expect("U8: Invalid range violation context."))
+        }));
+        if (x.type() === "U8") return OkU8(z).expect("U8: Invalid.");
+
+
+
+        return U8(z).expect("U8: Invalid U8");
     }
 }
 
@@ -824,10 +872,126 @@ export function toNumber(x: Numeric): number {
         0; /// Will never return.
 }
 
-export function toBigint(x: Numeric): bigint {
+export function toBigint
+    (x: Numeric): bigint {
     return  typeof x === "number" ? BigInt(x) :
         typeof x === "bigint" ? x :
         isBranded(x, "FLOAT") ? BigInt(x.unwrap()) :
         isWrapper(x) ? x.unwrap() :
         0n; /// Will never return.
+}
+
+
+
+function _wrap<
+    T1 extends I | I256 | I128 | I64 | I32 | I16 | I8, 
+    T2 extends I | I256 | I128 | I64 | I32 | I16 | I8, 
+    T3 extends I | I256 | I128 | I64 | I32 | I16 | I8>
+    (x0: T1, x1: T2, x2: T3): I | I256 | I128 | I64 | I32 | I16 | I8;
+function _wrap<
+    T1 extends U | U256 | U128 | U64 | U32 | U16 | U, 
+    T2 extends U | U256 | U128 | U64 | U32 | U16 | U, 
+    T3 extends U | U256 | U128 | U64 | U32 | U16 | U>
+    (x0: T1, x1: T2, x2: T3): U | U256 | U128 | U64 | U32 | U16 | U;
+function _wrap<
+    T1 extends Integer, 
+    T2 extends Integer, 
+    T3 extends Integer>
+    (
+        args0: T1,
+        args1: T2,
+        args2: T3
+    ): Integer {
+    let isI: boolean =
+        args0.type() === "I"
+        || args0.type() === "I256"
+        || args0.type() === "I128"
+        || args0.type() === "I64"
+        || args0.type() === "I32"
+        || args0.type() === "I16"
+        || args0.type() === "I8";
+    if (isI) {
+        let ilike0: I | I256 | I128 | I64 | I32 | I16 | I8 = args0 as any;
+        let ilike1: I | I256 | I128 | I64 | I32 | I16 | I8 = args1 as any;
+        let ilike2: I | I256 | I128 | I64 | I32 | I16 | I8 = args2 as any;
+        let brand: SignedIntegerBrand = _largest(ilike0.type(), ilike1.type());
+        if (brand === "I") return I(ilike2);
+        if (brand === "I256") return I256(ilike2);
+    }
+    let ulike0: UnsignedInteger = args0 as UnsignedInteger;
+    let ulike1: UnsignedInteger = args1 as UnsignedInteger;
+    let ulike2: UnsignedInteger = args2 as UnsignedInteger;
+    let brand: UnsignedIntegerBrand = _largest(ulike0.type(), ulike1.type());
+
+}
+
+
+
+function _largest<
+    T1 extends SignedIntegerBrand, 
+    T2 extends SignedIntegerBrand>
+    (brand0: T1, brand1: T2): SignedIntegerBrand;
+function _largest<
+    T1 extends UnsignedIntegerBrand, 
+    T2 extends UnsignedIntegerBrand>
+    (brand0: T1, brand1: T2): UnsignedIntegerBrand;
+function _largest<
+    T1 extends 
+        | SignedInteger
+        | SignedIntegerBrand
+        | UnsignedInteger 
+        | UnsignedIntegerBrand, 
+    T2 extends 
+        | SignedInteger
+        | SignedIntegerBrand 
+        | UnsignedInteger
+        | UnsignedIntegerBrand>
+    (args0: T1, args1: T2, args2?: Numeric):
+        | SignedInteger
+        | SignedIntegerBrand
+        | UnsignedInteger
+        | UnsignedIntegerBrand {
+    if ((args0 === "I"
+        || args0 === "I256"
+        || args0 === "I128"
+        || args0 === "I64"
+        || args0 === "I32"
+        || args0 === "I16"
+        || args0 === "I8"
+        || args0 === "U"
+        || args0 === "U256"
+        || args0 === "U128"
+        || args0 === "U64"
+        || args0 === "U32"
+        || args0 === "U16"
+        || args0 === "U8") 
+        &&
+        (args1 === "I"
+        || args1 === "I256"
+        || args1 === "I128"
+        || args1 === "I64"
+        || args1 === "I32"
+        || args1 === "I16"
+        || args1 === "I8"
+        || args1 === "U"
+        || args1 === "U256"
+        || args1 === "U128"
+        || args1 === "U64"
+        || args1 === "U32"
+        || args1 === "U16"
+        || args1 === "U8")
+    ) {
+        if (args0 === "I") return "I";
+        if (args1 === "I") return "I";
+        if (args0 === "U") return "U";
+        if (args1 === "U") return "U";
+        let args0Size = BigInt(args0.split("")[1]);
+        let args1Size = BigInt(args1.split("")[1]);
+        if (args0Size >= args1Size) return args0;
+        else return args1;
+    }
+    else (args2) {
+        args0
+        let largest = _largest(args0, args1);
+    }
 }

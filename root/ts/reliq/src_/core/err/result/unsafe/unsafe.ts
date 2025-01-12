@@ -3,18 +3,19 @@ import { type Wrapper } from "@root";
 
 export type Unsafe = 
     & Branded<"UNSAFE"> 
-    & Wrapper<unknown>;
+    & Wrapper<unknown>
+    & {
+    val(): unknown;
+    validate(): boolean;      
+};
 
 export function Unsafe(): Unsafe;
-export function Unsafe(_x: unknown): Unsafe;
-export function Unsafe(
-    _args0?: unknown
-): Unsafe {
+export function Unsafe(_unknown: unknown): Unsafe;
+export function Unsafe(_0?: unknown): Unsafe {
     let _x: unknown;
 
     /** @constructor */ {
-        _args0 ??= undefined;
-        _x = _args0;
+        _x = _0 ?? null;
         return { type, unwrap };
     }
 
