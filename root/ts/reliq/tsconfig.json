@@ -3,9 +3,12 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@core": ["src/core/mod"],
+			"@root": ["src/mod"],
+			"@common": ["src/common/mod"],
 			"@data_structure": ["src/data_structure/mod"],
-			"@math": ["src/math/mod"]
+			"@error": ["src/error/mod"],
+			"@math": ["src/math/mod"],
+			"@wrapper": ["src/wrapper/mod"],
 		}
 	},
 	"include": ["src", "script"],

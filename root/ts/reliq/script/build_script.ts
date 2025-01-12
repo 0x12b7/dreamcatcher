@@ -1,6 +1,6 @@
-import type { Result } from "@core";
-import type { Unsafe } from "@core";
-import { wrapAsync } from "@core";
+import type { Result } from "@root";
+import type { Unsafe } from "@root";
+import { ResultHandler } from "@root";
 import { build } from "tsup";
 
 export type BuildScript = {
@@ -13,7 +13,7 @@ export function BuildScript(): BuildScript {
     }
 
     async function run(): ReturnType<BuildScript["run"]> {
-        return await wrapAsync(build, {
+        return await ResultHandler.wrapAsync(build, {
             entry: ["src/mod.ts"],
             outDir: "target/tslib",
             format: ["cjs"],
