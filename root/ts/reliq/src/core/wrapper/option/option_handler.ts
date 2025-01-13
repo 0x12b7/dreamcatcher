@@ -1,7 +1,4 @@
-import type { AsyncClosure } from "@root";
-import type { Closure } from "@root";
 import type { Option } from "@root";
-import type { AsyncOption } from "@root";
 import type { OptionArray } from "@root";
 import type { SomeValOfAll } from "@root";
 import { Some } from "@root";
@@ -10,12 +7,8 @@ import { None } from "@root";
 type OptionHandler = {
 
     /**
-     * **OUTCOME**
-     * Iterate through an `OptionArray`, short circuit at the first `None` or return
-     * a `Tuple` of all successful values. Will return an `Option`.
-     * 
      * **NOTE**
-     * - Returns `None` if **any** value is `None`.
+     * - Returns `None` if **any** `Option` is `None`.
      * 
      * @example
      *  let option0: Option<string> = Some("");
@@ -32,6 +25,9 @@ type OptionHandler = {
      *  let newOption: Option<[string, 7, 5]> = OptionHandler.all(option0, option1, option2);
      *  newOption.some(); /// true
      *  newOption.none(); /// false
+     *  newOption.map(values => {
+     *      console.log(values); /// ["", 7, 5]
+     *  });
      */
     all<T1 extends OptionArray<unknown>>(...options: T1): Option<SomeValOfAll<T1>>;
     
@@ -41,10 +37,23 @@ type OptionHandler = {
      * - Returns `None` only if **all** options are `None`. 
      * 
      * @example
-     * let o0: Option<string>;
-     * let o1: Option<750000>;
-     * let o2: Option<500000>;
-     * let o: Option<string | 750000 | 500000> = OptionHandler.any(o0, o1, o2);
+     * let option0: Option<string> = None;
+     * let option1: Option<7> = None;
+     * let option2: Option<5> = None;
+     * let newOption: Option<never> = OptionHandler.any(option0, option1, option2);
+     * newOption.some(); /// false
+     * newOption.none(); /// true
+     * 
+     * @example
+     *  let option0: Option<string> = None;
+     *  let option1: Option<7> = None;
+     *  let option2: Option<5> = Some(5);
+     *  let newOption: Option<5> = OptionHandler.any(option0, option1, option2);
+     *  newOption.some() /// true
+     *  newOption.none() /// false
+     *  newOption.map(values => {
+     *      console.log(value); /// 5
+     *  });
      */
     any<T1 extends OptionArray<unknown>>(...options: T1): Option<SomeValOfAll<T1>[number]>;
 };

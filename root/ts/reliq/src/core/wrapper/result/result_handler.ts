@@ -140,11 +140,3 @@ const ResultHandler: ResultHandler = (() => {
 })();
 
 export { ResultHandler };
-
-
-let result0: Result<"HelloWorld", "ERR_0"> = Ok("HelloWorld" as const);
-let result1: Result<"HelloWorld2", "ERR_1"> = Err("ERR_1");
-let result2: Result<"HelloWorld", "ERR_2"> = Err("ERR_2");
-let x= ResultHandler.any(result0, result1, result2);
-
-ResultHandler.wrap()

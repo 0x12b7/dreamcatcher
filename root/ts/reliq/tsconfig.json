@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@root": ["src/mod"]
+			"@root": ["src/mod"],
+			"@core": ["src/core/mod"]
 		}
 	},
 	"include": ["src", "script"],
