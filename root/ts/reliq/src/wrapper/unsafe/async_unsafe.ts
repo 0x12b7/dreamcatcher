@@ -1,3 +1,5 @@
-import type { Unsafe } from "@root";
+import { Unsafe } from "@root";
 
-export type AsyncUnsafe = Promise<Unsafe>;
+type AsyncUnsafe = Promise<Unsafe>;
+
+export type { AsyncUnsafe };

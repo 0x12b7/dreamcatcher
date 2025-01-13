@@ -3,14 +3,9 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@root": ["src/mod"],
-			"@common": ["src/common/mod"],
-			"@data_structure": ["src/data_structure/mod"],
-			"@error": ["src/error/mod"],
-			"@math": ["src/math/mod"],
-			"@wrapper": ["src/wrapper/mod"],
+			"@root": ["src/mod"]
 		}
 	},
 	"include": ["src", "script"],
-	"exclude": ["node_modules", "target/**/*"]
+	"exclude": ["node_modules", "target/**/*", "dump"]
 }

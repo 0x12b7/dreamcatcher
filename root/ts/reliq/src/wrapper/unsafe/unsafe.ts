@@ -5,9 +5,9 @@ import type { TypeGuard } from "@root";
 import type { Option } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
-import { toString as toStringUtil } from "@root";
+import { toString as $toString } from "@root";
 
-export type Unsafe =
+type Unsafe =
     & Branded<"Unsafe">
     & Wrapper<unknown>
     & Parsable
@@ -15,7 +15,7 @@ export type Unsafe =
     toString(): string;
 };
 
-export function Unsafe(_value: unknown): Unsafe {
+function Unsafe(_value: unknown): Unsafe {
     /** @constructor */ {
         return {
             type,
@@ -39,6 +39,8 @@ export function Unsafe(_value: unknown): Unsafe {
     }
 
     function toString(): string {
-        return type() + "(" + toStringUtil(unwrap()) + ")";
+        return type() + "(" + $toString(unwrap()) + ")";
     }
 }
+
+export { Unsafe };

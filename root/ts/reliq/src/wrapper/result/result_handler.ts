@@ -3,58 +3,135 @@ import type { AsyncClosure } from "@root";
 import type { Result } from "@root";
 import type { OkValOfAll } from "@root";
 import type { ErrValOfAll } from "@root";
+import type { ResultArray } from "@root";
+import type { AsyncResult } from "@root";
 import { Unsafe } from "@root";
 import { Ok } from "@root";
 import { Err } from "@root";
 
-export type ResultHandler = {
-    all<T1 extends Array<Result<unknown, unknown>>>(...wrappers: T1): Result<OkValOfAll<T1>, ErrValOfAll<T1>[number]>;
-    any<T1 extends Array<Result<unknown, unknown>>>(...wrappers: T1): Result<OkValOfAll<T1>[number], ErrValOfAll<T1>>;
+/**
+ * **NOTE**
+ * A util `class` to handle `Result`. 
+ */
+type ResultHandler = {
+
+    /**
+     * **NOTE**
+     * 
+     * 
+     * **OUTCOME**
+     * Iterate through a `ResultArray` short circuit at the first `Err` or return
+     * a `Tuple` of all successful values. Will return as a `Result`.
+     * 
+     * @example
+     * let r0: Result<number, "ERR_SOMETHING_WENT_WRONG_0">;
+     * let r1: Result<string, "ERR_SOMETHING_WENT_WRONG_1">;
+     * let r2: Result<500000, "ERR_SOMETHING_WENT_WRONG_2">;
+     * let r: Result<[number, string, 500000], "ERR_SOMETHING_WENT_WRONG_0" | "ERR_SOMETHING_WENT_WRONG_1" | "ERR_SOMETHING_WENT_WRONG_2"> = ResultHandler.all(r0, r1, r2);
+     */
+    all<T1 extends ResultArray<unknown, unknown>>(...results: T1): Result<OkValOfAll<T1>, ErrValOfAll<T1>[number]>;
+    
+    /**
+     * **OUTCOME**
+     * Iterate through a `ResultArray` short circuit at the first `Ok` or return
+     * a `Tuple` of all errors. Will return as a `Result`.
+     * 
+     * @example
+     * 
+     */
+    any<T1 extends ResultArray<unknown, unknown>>(...results: T1): Result<OkValOfAll<T1>[number], ErrValOfAll<T1>>;
+    
+    /**
+     * **OUTCOME**
+     * Wrap an unsafe operation which may throw and wrap the `unknown` error
+     * in an `Unsafe` wrapper.
+     * 
+     * @example
+     *  let exampleR: Result<number, Unsafe> = ResultHandler.wrap(() => {
+     *      if () throw "ERR_SOMETHING_WENT_WRONG";
+     *      return 500;
+     *  });
+     *  exampleR.mapErr(unsafe => {
+     *      let stringO: Option<string> = unsafe.parse((unknown): unknown is string => {
+     *          if (
+     *              unknown !== null
+     *              && unknown !== undefined
+     *              && typeof unknown === "string"
+     *          ) return true;
+     *          else return false;
+     *      });
+     *      /// ...
+     *  });
+     */
     wrap<T1, T2, T3 extends Array<T2>>(operation: Closure<T3, T1>, ...payload: T3): Result<T1, Unsafe>;
-    wrapAsync<T1 extends Promise<unknown>, T2, T3 extends Array<T2>>(operation: AsyncClosure<T3, T1>, ...payload: T3): Promise<Result<Awaited<T1>, Unsafe>>;
+    
+    /**
+     * **OUTCOME**
+     * Wrap an unsafe async operation which may throw and wrap the `unknown` error
+     * in an `Unsafe` wrapper.
+     * 
+     * @example
+     *  let exampleR: Result<number, Unsafe> = await ResultHandler.wrapAsync(async () => {
+     *      /// Some async operation.
+     *      if () throw "ERR_SOMETHING_WENT_WRONG";
+     *      return 500;
+     *  });
+     *  exampleR.mapErr(unsafe => {
+     *      let stringO: Option<string> = unsafe.parse((unknown): unknown is string => {
+     *          if (
+     *              unknown !== null
+     *              && unknown !== undefined
+     *              && typeof unknown === "string"
+     *          ) return true;
+     *          else return false;
+     *      });
+     *      /// ...
+     *  });
+     */
+    wrapAsync<T1 extends Promise<unknown>, T2, T3 extends Array<T2>>(operation: AsyncClosure<T3, T1>, ...payload: T3): AsyncResult<Awaited<T1>, Unsafe>;
 };
 
-export const ResultHandler: ResultHandler = (() => {
+const ResultHandler: ResultHandler = (() => {
     /** @constructor */ {
         return { all, any, wrap, wrapAsync };
     }
 
-    function all<T1 extends Array<Result<unknown, unknown>>>(...wrappers: T1): Result<OkValOfAll<T1>, ErrValOfAll<T1>[number]> {
-        let result: Array<unknown> = [];
+    function all<T1 extends ResultArray<unknown, unknown>>(...results: T1): Result<OkValOfAll<T1>, ErrValOfAll<T1>[number]> {
+        let out: Array<unknown> = [];
         let i: number = 0;
-        while (i < wrappers.length) {
-            let wrapper: Result<unknown, unknown> = wrappers.at(i)!;
-            if (wrapper.ok()) result.push(wrapper.val());
-            else return wrapper as Err<ErrValOfAll<T1>[number]>;
+        while (i < results.length) {
+            let result: Result<unknown, unknown> = results.at(i)!;
+            if (result.ok()) out.push(result.unwrapSafely());
+            else return result as Err<ErrValOfAll<T1>[number]>;
             i ++;
         }
-        return Ok((result as OkValOfAll<T1>));
+        return Ok((out as OkValOfAll<T1>));
     }
 
-    function any<T1 extends Array<Result<unknown, unknown>>>(...wrappers: T1): Result<OkValOfAll<T1>[number], ErrValOfAll<T1>> {
-        let result: Array<unknown> = [];
+    function any<T1 extends Array<Result<unknown, unknown>>>(...results: T1): Result<OkValOfAll<T1>[number], ErrValOfAll<T1>> {
+        let out: Array<unknown> = [];
         let i: number = 0;
-        while (i < wrappers.length) {
-            let wrapper: Result<unknown, unknown> = wrappers.at(i)!;
+        while (i < results.length) {
+            let wrapper: Result<unknown, unknown> = results.at(i)!;
             if (wrapper.ok()) return wrapper as Ok<OkValOfAll<T1>[number]>;
-            else result.push(wrapper.val());
+            else out.push(wrapper.inspect());
             i ++;
         }
-        return Err((result as ErrValOfAll<T1>));
+        return Err((out as ErrValOfAll<T1>));
     }
     
-    function wrap<T1, T2, T3 extends Array<T2>>(op: Closure<T3, T1>, ... args: T3): Result<T1, Unsafe> {
+    function wrap<T1, T2, T3 extends Array<T2>>(operation: Closure<T3, T1>, ...payload: T3): Result<T1, Unsafe> {
         try {
-            return Ok(op(... args));
+            return Ok(operation(...payload));
         }
         catch (e) {
             return Err(Unsafe(e));
         }
     }
 
-    async function wrapAsync<T1 extends Promise<unknown>, T2, T3 extends Array<T2>>(op: AsyncClosure<T3, T1>, ... args: T3): Promise<Result<Awaited<T1>, Unsafe>> {
+    async function wrapAsync<T1 extends Promise<unknown>, T2, T3 extends Array<T2>>(operation: AsyncClosure<T3, T1>, ...payload: T3): Promise<Result<Awaited<T1>, Unsafe>> {
         try {
-            return Ok((await op(... args)));
+            return Ok((await operation(...payload)));
         }
         catch (e) {
             return Err(Unsafe(e));
@@ -62,3 +139,12 @@ export const ResultHandler: ResultHandler = (() => {
     }
 })();
 
+export { ResultHandler };
+
+
+let result0: Result<"HelloWorld", "ERR_0"> = Ok("HelloWorld" as const);
+let result1: Result<"HelloWorld2", "ERR_1"> = Err("ERR_1");
+let result2: Result<"HelloWorld", "ERR_2"> = Err("ERR_2");
+let x= ResultHandler.any(result0, result1, result2);
+
+ResultHandler.wrap()

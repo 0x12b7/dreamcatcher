@@ -1,1 +1,0 @@
-export type TypeGuard<T1> = (instance: unknown) => instance is T1;

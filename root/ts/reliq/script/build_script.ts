@@ -1,10 +1,10 @@
-import type { Result } from "@root";
-import type { Unsafe } from "@root";
-import { ResultHandler } from "@root";
+import { AsyncResult } from "@";
+import { Unsafe } from "@";
+import { ResultHandler } from "@";
 import { build } from "tsup";
 
 export type BuildScript = {
-    run(): Promise<Result<void, Unsafe>>;
+    run(): AsyncResult<void, Unsafe>
 };
 
 export function BuildScript(): BuildScript {
@@ -12,7 +12,7 @@ export function BuildScript(): BuildScript {
         return { run };
     }
 
-    async function run(): ReturnType<BuildScript["run"]> {
+    async function run(): AsyncResult<void, Unsafe> {
         return await ResultHandler.wrapAsync(build, {
             entry: ["src/mod.ts"],
             outDir: "target/tslib",

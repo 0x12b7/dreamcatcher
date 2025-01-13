@@ -1,10 +1,26 @@
-import type { ResultAndOptionBrandToWrapperMap } from "@root";
+import type { Branded } from "@root";
+import type { RecoveryWrapper } from "@root";
+import type { Serializable } from "@root";
+import type { Displayable } from "@root";
 import { Some } from "@root";
 import { Err } from "@root";
+import { panic } from "@root";
 
-export type None = ResultAndOptionBrandToWrapperMap<"None", never>;
+type None = 
+    & Branded<"None">
+    & RecoveryWrapper<never>
+    & Serializable
+    & Displayable 
+    & {
+    some(): this is Some<unknown>;
+    none(): this is None;
+    expect(message: string): never;
+    and(__: unknown): None;
+    map(__: unknown): None;
+    toResult<T1>(value: T1): Err<T1>;
+};
 
-export const None: None = (() => {
+const None: None = (() => {
     let _this: None;
 
     /** @constructor */ {
@@ -18,14 +34,14 @@ export const None: None = (() => {
             and,
             map,
             toResult,
-            toString
+            toString,
+            display
         };
     }
-
     function type(): "None" {
         return "None";
     }
-
+    
     function some(): this is Some<unknown> {
         return false;
     }
@@ -35,21 +51,15 @@ export const None: None = (() => {
     }
 
     function expect(message: string): never {
-        let e: Error = Error(message);
-        Error.captureStackTrace(e, expect);
-        if (e.stack) throw message + "\n" + e.stack;
-        throw message;
+        panic(message, expect);
     }
 
     function unwrap(): never {
-        let e: Error = Error();
-        Error.captureStackTrace(e, unwrap);
-        if (e.stack) throw type() + "\n" + e.stack;
-        throw type();
+        panic(type());
     }
 
-    function unwrapOr<T1>(alternative: T1): T1 {
-        return alternative;
+    function unwrapOr<T1>(fallback: T1): T1 {
+        return fallback;
     }
 
     function and(__: unknown): None {
@@ -60,11 +70,17 @@ export const None: None = (() => {
         return _this;
     }
 
-    function toResult<T1>(e: T1): Err<T1> {
-        return Err(e);
+    function toResult<T1>(value: T1): Err<T1> {
+        return Err(value);
     }
 
     function toString(): string {
         return type();
     }
+
+    function display(): void {
+        return console.log(toString());
+    }
 })();
+
+export { None };

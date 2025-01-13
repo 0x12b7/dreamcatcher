@@ -1,1 +1,3 @@
-export type UnsafeBrand = "Unsafe";
+type UnsafeBrand = "Unsafe";
+
+export type { UnsafeBrand };
