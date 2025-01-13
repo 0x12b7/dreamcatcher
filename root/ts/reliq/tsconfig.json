@@ -4,7 +4,8 @@
 		"baseUrl": ".",
 		"paths": {
 			"@root": ["src/mod"],
-			"@core": ["src/core/mod"]
+			"@core": ["src/core/mod"],
+			"@math": ["src/math/mod"]
 		}
 	},
 	"include": ["src", "script"],

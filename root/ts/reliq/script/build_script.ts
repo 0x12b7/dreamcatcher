@@ -1,6 +1,6 @@
-import { AsyncResult } from "@";
-import { Unsafe } from "@";
-import { ResultHandler } from "@";
+import type { AsyncResult } from "@root";
+import { Unsafe } from "@root";
+import { ResultHandler } from "@root";
 import { build } from "tsup";
 
 export type BuildScript = {
