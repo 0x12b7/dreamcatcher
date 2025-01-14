@@ -20,12 +20,24 @@ type Ok<T1> =
     err(): this is Err<unknown>;
     expect(__: unknown): T1;
     expectErr(__: unknown): never;
-    unwrapOr(__: unknown): T1; 
+    unwrapOr(__: unknown): T1;
     and<T2>(operation: Function<T1, Ok<T2>>): Ok<T2>;
     and<T2>(operation: Function<T1, Err<T2>>): Result<T1, T2>;
     and<T2, T3>(operation: Function<T1, Result<T2, T3>>): Result<T2, T3>;
     map<T2>(operation: Function<T1, T2>): Ok<T2>;
     mapErr(__: unknown): Ok<T1>;
+    resolve(__: unknown): Ok<T1>;
+    
+    /**
+     * 
+     * 
+     * **Example**
+     * ```
+     *  let result: Result<200, 404>
+     *      .toOption()
+     *      .unwrap();
+     * ```
+     */
     toOption(): Option<T1>;
 };
 

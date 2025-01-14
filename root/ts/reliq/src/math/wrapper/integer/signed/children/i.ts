@@ -2,10 +2,12 @@ import type { SignedInteger } from "@root";
 import type { SignedIntegerResultMap } from "@root";
 import type { Numeric } from "@root";
 import type { Branded } from "@root";
+import type { Wrapper } from "@root";
 
 type I = 
     & SignedInteger<"I">
-    & Branded<"I">;
+    & Branded<"I">
+    & Wrapper<bigint>;
 
 /**
  * **Warning**

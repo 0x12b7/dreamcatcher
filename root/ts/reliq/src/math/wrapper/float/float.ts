@@ -2,6 +2,8 @@ import type { FloatResult } from "@root";
 import type { FloatResultMap } from "@root";
 import type { Numeric } from "@root";
 import type { MathViolation } from "@root";
+import type { Branded } from "@root";
+import type { Wrapper } from "@root";
 
 /**
  * **Note**
@@ -34,7 +36,10 @@ import type { MathViolation } from "@root";
  *      });
  * ```
  */
-type Float = {
+type Float = 
+    & Branded<"Float">
+    & Wrapper<number>
+    & {
 
     /**
      * **Note**

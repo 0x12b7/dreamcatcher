@@ -1,8 +1,12 @@
-import type { SignedInteger } from "@root";
+import type { SignedIntegerLike } from "@root";
+import type { UnsignedIntegerLike } from "@root";
+import type { Float } from "@root";
 
 type Numeric =
+    | Float
     | number
     | bigint
-    | SignedInteger;
+    | SignedIntegerLike
+    | UnsignedIntegerLike;
 
 export type { Numeric };

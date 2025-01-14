@@ -43,6 +43,7 @@ type Err<T1> =
     and(__: unknown): Err<T1>;
     map(__: unknown): Err<T1>;
     mapErr<T2>(operation: Function<T1, T2>): Err<T2>;
+    resolve<T2>(operation: Function<T1, T2>): Ok<T2>;
     toOption(): Option<never>;
 };
 

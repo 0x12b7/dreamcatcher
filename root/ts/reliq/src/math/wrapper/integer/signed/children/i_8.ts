@@ -2,6 +2,9 @@ import type { SignedInteger } from "@root";
 import type { SignedIntegerResultMap } from "@root";
 import type { Numeric } from "@root";
 import type { Branded } from "@root";
+import type { Wrapper } from "@root";
+import { SignedIntegerParser } from "@root";
+import { Ok } from "@root";
 
 /**
  * **NOTE**
@@ -25,7 +28,8 @@ import type { Branded } from "@root";
  */
 type I8 = 
     & SignedInteger<"I8">
-    & Branded<"I8">;
+    & Branded<"I8">
+    & Wrapper<bigint>;
 
 /**
  * **Note**
@@ -53,12 +57,20 @@ type I8 =
  * 
  * ```
  */
-function I8<T1 extends Numeric>(_value: T1): SignedIntegerResultMap<I8, T1> {
+function I8<T1 extends Numeric>(_value: T1): SignedIntegerResultMap<I8, T1>;
+function I8<T1 extends Numeric>(_value: T1, _parser: SignedIntegerParser): SignedIntegerResultMap<I8, T1>;
+function I8<T1 extends Numeric>(_0: T1, _1: SignedIntegerParser = SignedIntegerParser()): SignedIntegerResultMap<I8, T1> {
+    let _value: T1;
+    let _parser: SignedIntegerParser;
     /** @constructor */ {
-
+        _value = _0;
+        _parser = _1;
+        return _parser.parse("I8", _value, {
+            
+        });
     }
 }
 
 export { I8 };
 
-I8()
+I8().display()
