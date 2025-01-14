@@ -9,6 +9,7 @@ export * from "./wrapper/integer/signed/largest_signed_integer_result";
 export * from "./wrapper/integer/signed/largest_signed_integer";
 export * from "./wrapper/integer/signed/signed_integer_brand_to_type_map";
 export * from "./wrapper/integer/signed/signed_integer_brand";
+export * from "./wrapper/integer/signed/signed_integer_parser";
 export * from "./wrapper/integer/signed/signed_integer_result_map";
 export * from "./wrapper/integer/signed/signed_integer_result";
 export * from "./wrapper/integer/signed/signed_integer_type_to_brand_map";

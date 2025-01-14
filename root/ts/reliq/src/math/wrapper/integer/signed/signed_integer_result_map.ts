@@ -130,8 +130,29 @@ type SignedIntegerResultMap<T1 extends SignedInteger, T2 extends Numeric> =
         : T2 extends U16     ? Ok<I256>
         : T2 extends U32     ? Ok<I256>
         : T2 extends U64     ? Ok<I256>
-        : T2 extends 
-
-        ;
+        : T2 extends U128    ? Ok<I256>
+        : T2 extends U256    ? Ok<I256>
+        : T2 extends U       ? SignedIntegerResult<I256, MathViolation.UpperArithmeticRange>
+        : never :
+    T1 extends I
+        ? T2 extends number  ? SignedIntegerResult<I, MathViolation.Precision>
+        : T2 extends bigint  ? Ok<I>
+        : T2 extends Float   ? SignedIntegerResult<I, MathViolation.Precision>
+        : T2 extends I8      ? Ok<I>
+        : T2 extends I16     ? Ok<I>
+        : T2 extends I32     ? Ok<I>
+        : T2 extends I64     ? Ok<I>
+        : T2 extends I128    ? Ok<I>
+        : T2 extends I256    ? Ok<I>
+        : T2 extends I       ? Ok<I>
+        : T2 extends U8      ? Ok<I>
+        : T2 extends U16     ? Ok<I>
+        : T2 extends U32     ? Ok<I>
+        : T2 extends U64     ? Ok<I>
+        : T2 extends U128    ? Ok<I>
+        : T2 extends U256    ? Ok<I>
+        : T2 extends U       ? Ok<I>
+        : never :
+    never;
 
 export type { SignedIntegerResultMap };
