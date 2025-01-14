@@ -1,3 +1,4 @@
+export * from "./math_constant";
 export * from "./math_error_code";
 export * from "./math_error";
 export * from "./math_violation";
@@ -25,6 +26,7 @@ export * from "./wrapper/integer/unsigned/largest_unsigned_integer_result";
 export * from "./wrapper/integer/unsigned/largest_unsigned_integer";
 export * from "./wrapper/integer/unsigned/unsigned_integer_brand_to_type_map";
 export * from "./wrapper/integer/unsigned/unsigned_integer_brand";
+export * from "./wrapper/integer/unsigned/unsigned_integer_result_map";
 export * from "./wrapper/integer/unsigned/unsigned_integer_result";
 export * from "./wrapper/integer/unsigned/unsigned_integer_type_to_brand_map";
 export * from "./wrapper/integer/unsigned/unsigned_integer";
