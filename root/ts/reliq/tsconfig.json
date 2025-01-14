@@ -5,7 +5,8 @@
 		"paths": {
 			"@root": ["src/mod"],
 			"@core": ["src/core/mod"],
-			"@math": ["src/math/mod"]
+			"@math": ["src/math/mod"],
+			"@private": ["src/private/mod"]
 		}
 	},
 	"include": ["src", "script"],

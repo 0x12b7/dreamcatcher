@@ -1,12 +1,17 @@
+import { Float } from "@root";
 import { I8 } from "@root";
 import { I16 } from "@root";
 import { I32 } from "@root";
 import { I64 } from "@root";
 import { I128 } from "@root";
 import { I256 } from "@root";
-import { I } from "@root";
-
-
+import { U8 } from "@root";
+import { U16 } from "@root";
+import { U32 } from "@root";
+import { U64 } from "@root";
+import { U128 } from "@root";
+import { U256 } from "@root";
+import { INTERNAL_ERROR_MESSAGE } from "@private";
 
 const MAX_256: bigint = 2n**256n - 1n;
 const MIN_256: bigint = -MAX_256;
@@ -20,20 +25,72 @@ const MAX_16: bigint = 2n**16n - 1n;
 const MIN_16: bigint = -MAX_16;
 const MAX_8: bigint = 2n**8n - 1n;
 const MIN_8: bigint = -MAX_8;
-const MAX_I_256: I256 = I256(MAX_256).expect("Invalid I256 constant.");
-const MIN_I_256: I256 = I256(MIN_256).expect("Invalid I256 constant.");
-const MAX_I_128: I128 = I128(MAX_128).expect("Invalid I128 constant.");
-const MIN_I_128: I128 = I128(MIN_128).expect("Invalid I128 constant.");
-const MAX_I_64: I64 = I64(MAX_64).expect("Invalid I64 constant.");
-const MIN_I_64: I64 = I64(MIN_64).expect("Invalid I64 constant.");
-const MAX_I_32: I32 = I32(MAX_32).expect("Invalid I32 constant.");
-const MIN_I_32: I32 = I32(MIN_32).expect("Invalid I32 constant.");
-const MAX_I_16: I16 = I16(MAX_16).expect("Invalid I16 constant.");
-const MIN_I_16: I16 = I16(MIN_16).expect("Invalid I16 constant.");
-const MAX_I_8: I8 = I8(MAX_8).expect("Invalid I8 constant.");
-const MIN_I_8: I8 = I8(MIN_8).expect("Invalid I8 constant.");
-
-
-
+const MAX_I_256: I256 = I256(MAX_256).expect("Invalid maximum I256 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_I_256: I256 = I256(MIN_256).expect("Invalid minimum I256 constant." + INTERNAL_ERROR_MESSAGE);
+const MAX_I_128: I128 = I128(MAX_128).expect("Invalid maximum I128 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_I_128: I128 = I128(MIN_128).expect("Invalid minimum I128 constant." + INTERNAL_ERROR_MESSAGE);
+const MAX_I_64: I64 = I64(MAX_64).expect("Invalid maximum I64 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_I_64: I64 = I64(MIN_64).expect("Invalid minimum I64 constant." + INTERNAL_ERROR_MESSAGE);
+const MAX_I_32: I32 = I32(MAX_32).expect("Invalid maximum I32 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_I_32: I32 = I32(MIN_32).expect("Invalid minimum I32 constant." + INTERNAL_ERROR_MESSAGE);
+const MAX_I_16: I16 = I16(MAX_16).expect("Invalid maximum I16 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_I_16: I16 = I16(MIN_16).expect("Invalid minimum I16 constant." + INTERNAL_ERROR_MESSAGE);
+const MAX_I_8: I8 = I8(MAX_8).expect("Invalid maximum I8 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_I_8: I8 = I8(MIN_8).expect("Invalid minimum I8 constant." + INTERNAL_ERROR_MESSAGE);
+const MAX_U_256: U256 = U256(MAX_256).expect("Invalid maximum U256 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_U_256: U256 = U256(0).expect("Invalid minimum U256 constant." + INTERNAL_ERROR_MESSAGE);
+const MAX_U_128: U128 = U128(MAX_128).expect("Invalid maximum U128 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_U_128: U128 = U128(0).expect("Invalid minimum U128 constant." + INTERNAL_ERROR_MESSAGE);
+const MAX_U_64: U64 = U64(MAX_64).expect("Invalid maximum U64 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_U_64: U64 = U64(0).expect("Invalid minimum U64 constant." + INTERNAL_ERROR_MESSAGE);
+const MAX_U_32: U32 = U32(MAX_32).expect("Invalid maximum I32 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_U_32: U32 = U32(0).expect("Invalid minimum U32 constant." + INTERNAL_ERROR_MESSAGE);
+const MAX_U_16: U16 = U16(MAX_16).expect("Invalid maximum U16 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_U_16: U16 = U16(0).expect("Invalid minimum U16 constant." + INTERNAL_ERROR_MESSAGE);
+const MAX_U_8: U8 = U8(MAX_8).expect("Invalid maximum U8 constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_U_8: U8 = U8(MIN_8).expect("Invalid minimum U8 constant." + INTERNAL_ERROR_MESSAGE);
 const MAX_NUMBER: number = Number.MAX_SAFE_INTEGER; ///  2**53 - 1
 const MIN_NUMBER: number = Number.MIN_SAFE_INTEGER; /// -2**53 - 1
+const MAX_FLOAT: Float = Float(MAX_NUMBER).expect("Invalid maximum Float constant." + INTERNAL_ERROR_MESSAGE);
+const MIN_FLOAT: Float = Float(MIN_NUMBER).expect("Invalid minimum Float constant." + INTERNAL_ERROR_MESSAGE);
+
+export { MAX_256 };
+export { MIN_256 };
+export { MAX_128 };
+export { MIN_128 };
+export { MAX_64 };
+export { MIN_64 };
+export { MAX_32 };
+export { MIN_32 };
+export { MAX_16 };
+export { MIN_16 };
+export { MAX_8 };
+export { MIN_8 };
+export { MAX_I_256 };
+export { MIN_I_256 };
+export { MAX_I_128 };
+export { MIN_I_128 };
+export { MAX_I_64 };
+export { MIN_I_64 };
+export { MAX_I_32 };
+export { MIN_I_32 };
+export { MAX_I_16 };
+export { MIN_I_16 };
+export { MAX_I_8 };
+export { MIN_I_8 };
+export { MAX_U_256 };
+export { MIN_U_256 };
+export { MAX_U_128 };
+export { MIN_U_128 };
+export { MAX_U_64 };
+export { MIN_U_64 };
+export { MAX_U_32 };
+export { MIN_U_32 };
+export { MAX_U_16 };
+export { MIN_U_16 };
+export { MAX_U_8 };
+export { MIN_U_8 };
+export { MAX_NUMBER };
+export { MIN_NUMBER };
+export { MAX_FLOAT };
+export { MIN_FLOAT };

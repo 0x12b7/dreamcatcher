@@ -3,6 +3,7 @@ export * from "./math_error_code";
 export * from "./math_error";
 export * from "./math_violation";
 export * from "./wrapper/numeric";
+export * from "./wrapper/float/float_result_map";
 export * from "./wrapper/float/float_result";
 export * from "./wrapper/float/float";
 export * from "./wrapper/integer/integer";

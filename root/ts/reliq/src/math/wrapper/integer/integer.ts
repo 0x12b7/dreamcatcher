@@ -15,6 +15,22 @@ import type { U128 } from "@root";
 import type { U256 } from "@root";
 import type { U } from "@root";
 
+/**
+ * **Note**
+ * A `bigint` `Wrapper` that enforces various ranges at result-time.
+ * 
+ * **Example**
+ * ```
+ *  /// Will panic because 500n is out of range. All fail cases are
+ *  /// properly typed.
+ *  U8(500n).unwrap();
+ * 
+ *  U8(1000n).mapErr(e => {
+ *      /// All errors are properly mapped.
+ *      /// ...
+ *  });
+ * ```
+ */
 type Integer =
     | SignedInteger
     | I8
