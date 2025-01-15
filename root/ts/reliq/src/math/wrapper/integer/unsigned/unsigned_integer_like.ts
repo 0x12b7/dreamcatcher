@@ -1,18 +1,12 @@
-import type { U8 } from "@root";
-import type { U16 } from "@root";
-import type { U32 } from "@root";
-import type { U64 } from "@root";
-import type { U128 } from "@root";
-import type { U256 } from "@root";
-import type { U } from "@root";
+import * as Reliq from "@root";
 
 type UnsignedIntegerLike =
-    | U8
-    | U16
-    | U32
-    | U64
-    | U128
-    | U256
-    | U;
+    | Reliq.U8
+    | Reliq.U16
+    | Reliq.U32
+    | Reliq.U64
+    | Reliq.U128
+    | Reliq.U256
+    | Reliq.U;
 
 export type { UnsignedIntegerLike };

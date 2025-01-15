@@ -1,10 +1,4 @@
-import type { SignedInteger } from "@root";
-import type { SignedIntegerResultMap } from "@root";
-import type { Numeric } from "@root";
-import type { Branded } from "@root";
-import type { Wrapper } from "@root";
-import { SignedIntegerParser } from "@root";
-import { Ok } from "@root";
+import * as Reliq from "@root";
 
 /**
  * **NOTE**
@@ -27,9 +21,9 @@ import { Ok } from "@root";
  * ```
  */
 type I8 = 
-    & SignedInteger<"I8">
-    & Branded<"I8">
-    & Wrapper<bigint>;
+    & Reliq.SignedInteger<"I8">
+    & Reliq.Branded<"I8">
+    & Reliq.Wrapper<bigint>;
 
 /**
  * **Note**
@@ -57,17 +51,56 @@ type I8 =
  * 
  * ```
  */
-function I8<T1 extends Numeric>(_value: T1): SignedIntegerResultMap<I8, T1>;
-function I8<T1 extends Numeric>(_value: T1, _parser: SignedIntegerParser): SignedIntegerResultMap<I8, T1>;
-function I8<T1 extends Numeric>(_0: T1, _1: SignedIntegerParser = SignedIntegerParser()): SignedIntegerResultMap<I8, T1> {
-    let _value: T1;
-    let _parser: SignedIntegerParser;
+function I8<T1 extends Reliq.Numeric>(_value: T1): Reliq.SignedIntegerResultMap<I8, T1>;
+function I8<T1 extends Reliq.Numeric>(_value: T1, _parser: Reliq.SignedIntegerParser): Reliq.SignedIntegerResultMap<I8, T1>;
+function I8<T1 extends Reliq.Numeric>(_0: T1, _1: Reliq.SignedIntegerParser = Reliq.SignedIntegerParser()): Reliq.SignedIntegerResultMap<I8, T1> {
+    let _value: bigint;
+    let _parser: Reliq.SignedIntegerParser;
     /** @constructor */ {
-        _value = _0;
         _parser = _1;
-        return _parser.parse("I8", _value, {
-            
+        if (typeof _0 === "number") _value = BigInt(_0);
+        else if (Reliq.isBrand(_0, "Float")) _value = BigInt(_0.unwrap());
+        else if (typeof _0 === "bigint") _value = _0;
+        else _value = _0.unwrap();
+        return _parser.parse("I8", _0, {
+            eq,
+            lt,
+            gt,
+            lteq,
+            gteq
         });
+    }
+
+    function eq<T2 extends SignedIntegerLike>(value: T2): boolean {
+        return _value === value.unwrap();
+    }
+
+    function lt<T2 extends SignedIntegerLike>(value: T2): boolean {
+        return _value < value.unwrap();
+    }
+
+    function gt<T2 extends SignedIntegerLike>(value: T2): boolean {
+        return _value > value.unwrap();
+    }
+
+    function lteq<T2 extends SignedIntegerLike>(value: T2): boolean {
+        return _value <= value.unwrap();
+    }
+
+    function gteq<T2 extends SignedIntegerLike>(value: T2): boolean {
+        return _value >= value.unwrap();
+    }
+
+    function add<T2 extends Reliq.SignedIntegerLike>(value: T2): Reliq.LargestSignedIntegerResult<I8, T2, Reliq.MathViolation.UpperArithmeticRange> {
+        let x: bigint = _value + value.unwrap();
+        if (x > Reliq.MAX_I_8.unwrap()) return Reliq.Err(Reliq.Error({
+            code: "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION",
+            message: Reliq.Some(
+
+            ),
+            payload: Reliq.None
+        }));
+        return Reliq.Ok()
     }
 }
 

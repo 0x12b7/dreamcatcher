@@ -1,6 +1,5 @@
-import type { MathErrorCode } from "@root";
-import { Error } from "@root";
+import * as Reliq from "@root";
 
-type MathError<T1 extends MathErrorCode = MathErrorCode> = Error<T1>;
+type MathError<T1 extends Reliq.MathErrorCode = Reliq.MathErrorCode> = Reliq.Error<T1>;
 
 export type { MathError };

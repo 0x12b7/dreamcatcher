@@ -1,9 +1,4 @@
-import type { FloatResult } from "@root";
-import type { FloatResultMap } from "@root";
-import type { Numeric } from "@root";
-import type { MathViolation } from "@root";
-import type { Branded } from "@root";
-import type { Wrapper } from "@root";
+import * as Reliq from "@root";
 
 /**
  * **Note**
@@ -37,8 +32,8 @@ import type { Wrapper } from "@root";
  * ```
  */
 type Float = 
-    & Branded<"Float">
-    & Wrapper<number>
+    & Reliq.Branded<"Float">
+    & Reliq.Wrapper<number>
     & {
 
     /**
@@ -73,15 +68,42 @@ type Float =
     gt(value: Float): boolean;
     lteq(value: Float): boolean;
     gteq(value: Float): boolean;
-    add(value: Float): FloatResult<MathViolation.UpperArithmeticRange>;
-    sub(value: Float): FloatResult<MathViolation.LowerArithmeticRange>;
-    mul(value: Float): FloatResult<MathViolation.ArithmeticRange>;
-    div(value: Float): FloatResult<MathViolation.ArithmeticRangeAndDivisionByZero>;
+    add(value: Float): Reliq.FloatResult<Reliq.MathViolation.UpperArithmeticRange>;
+    sub(value: Float): Reliq.FloatResult<Reliq.MathViolation.LowerArithmeticRange>;
+    mul(value: Float): Reliq.FloatResult<Reliq.MathViolation.ArithmeticRange>;
+    div(value: Float): Reliq.FloatResult<Reliq.MathViolation.ArithmeticRangeAndDivisionByZero>;
 };
 
-function Float<T1 extends Numeric>(_value: T1): FloatResultMap<T1> {
+function Float<T1 extends Reliq.Numeric>(_value: T1): Reliq.FloatResultMap<T1> {
+    let _n: number;
     /** @constructor */ {
+        if (typeof _value === "number") _n = _value;
+        else if (typeof _value === "bigint") _n = Number(_value);
+        else if (Reliq.isBrand(_value, "Float")) _n = _value.unwrap();
+        else _n = Number(_value.unwrap());
+        return Reliq.Ok({
+            eq,
+            lt
+        }) as any;
+    }
 
+    function eq(value: Float): boolean {
+        return _n === value.unwrap();
+    }
+
+    function lt(value: Float): boolean {
+        return _n < value.unwrap();
+    }
+
+    function add(value: Float): Reliq.FloatResult<Reliq.MathViolation.UpperArithmeticRange> {
+        let result: number = _n + value.unwrap();
+        if (result > Reliq.MAX_NUMBER) return Reliq.Err(Reliq.Error({
+            code: "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION",
+            message: Reliq.Some(
+                "\n" + "Arithmetic"
+            ),
+            payload: Reliq.None
+        }));
     }
 }
 

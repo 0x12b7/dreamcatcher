@@ -84,3 +84,5 @@ const OptionHandler: OptionHandler = (() => {
         return None;
     }
 })();
+
+export { OptionHandler };

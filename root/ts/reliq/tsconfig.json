@@ -6,7 +6,7 @@
 			"@root": ["src/mod"],
 			"@core": ["src/core/mod"],
 			"@math": ["src/math/mod"],
-			"@private": ["src/private/mod"]
+			"@internal": ["src/internal/mod"]
 		}
 	},
 	"include": ["src", "script"],
