@@ -53,7 +53,10 @@ type I8 =
  */
 function I8<T1 extends Reliq.Numeric>(_value: T1): Reliq.SignedIntegerResultMap<I8, T1>;
 function I8<T1 extends Reliq.Numeric>(_value: T1, _parser: Reliq.SignedIntegerParser): Reliq.SignedIntegerResultMap<I8, T1>;
-function I8<T1 extends Reliq.Numeric>(_0: T1, _1: Reliq.SignedIntegerParser = Reliq.SignedIntegerParser()): Reliq.SignedIntegerResultMap<I8, T1> {
+function I8<T1 extends Reliq.Numeric>(
+    _0: T1, 
+    _1: Reliq.SignedIntegerParser = Reliq.SignedIntegerParser()
+): Reliq.SignedIntegerResultMap<I8, T1> {
     let _value: bigint;
     let _parser: Reliq.SignedIntegerParser;
     /** @constructor */ {
