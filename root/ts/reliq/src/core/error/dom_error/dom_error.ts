@@ -1,79 +1,9 @@
-import { DomErrorCode } from "@root";
-import { Error } from "@root";
-
-// #region Dom Exception
-
-export type DomExceptionName =
-    | "EncodingError"
-    | "NotReadableError"
-    | "UnknownError"
-    | "ConstraintError"
-    | "DataError"
-    | "TransactionInactiveError"
-    | "ReadOnlyError"
-    | "VersionError"
-    | "OperationError"
-    | "NotAllowedError";
-
-export type DomExceptionCode =
-    | 1
-    | 3
-    | 4
-    | 5
-    | 7
-    | 8
-    | 9
-    | 11
-    | 12
-    | 13
-    | 14
-    | 17
-    | 18
-    | 19
-    | 20
-    | 21
-    | 22
-    | 23
-    | 24
-    | 25;
-
-let x = {
-    1: true,
-    3: true,
-    4: true,
-    5: true,
-    7: true,
-    8: true,
-    9: true,
-    11: true,
-    12: true,
-    13: true,
-    14: true,
-    17: true,
-    18: true,
-    19: true,
-    20: true,
-    21: true,
-    22: true,
-    23: true,
-    24: true,
-    25: true
-}[3]
-
-export const DomErrorNameToCodeMap: Record<DomExceptionName, DomErrorCode> = {
-    "EncodingError": "DOM.ERR_ENCODING",
-    "NotReadableError": "DOM.ERR_NOT_READABLE",
-    "UnknownError": "DOM.ERR_UNKNOWN",
-    "ConstraintError": "DOM.ERR_CONSTRAINT",
-    "DataError": "DOM.ERR_DATA",
-    "TransactionInactiveError": "DOM.ERR_TRANSACTION_INACTIVE",
-    "ReadOnlyError": "DOM.ERR_READ_ONLY",
-    "VersionError": "DOM.ERR_VERSION",
-    "OperationError": "DOM.ERR_OPERATION",
-    "NotAllowedError": "DOM.ERR_NOT_ALLOWED"
-};
-
-// #region Dom Error
+import {
+    type DomErrorCode,
+    Error,
+    Some,
+    None
+} from "@root";
 
 export type DomError = Error<DomErrorCode>;
 

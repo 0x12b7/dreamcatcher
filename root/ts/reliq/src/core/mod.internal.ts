@@ -1,5 +1,12 @@
-export * from "./error";
-export * from "./panic";
+export * from "./error/error";
+export * from "./error/panic";
+export * from "./error/dom_error/dom_error_code";
+export * from "./error/dom_error/dom_error";
+export * from "./error/dom_error/dom_exception/dom_exception_code_to_dom_error_code_map";
+export * from "./error/dom_error/dom_exception/dom_exception_name_to_dom_error_code_map";
+export * from "./error/dom_error/dom_exception/dom_exception_code";
+export * from "./error/dom_error/dom_exception/dom_exception_name";
+
 export * from "./guard/is_branded";
 export * from "./guard/is_err";
 export * from "./guard/is_none";

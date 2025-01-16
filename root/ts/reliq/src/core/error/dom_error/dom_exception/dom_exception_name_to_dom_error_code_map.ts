@@ -1,5 +1,7 @@
-import { DomExceptionName } from "@root";
-import { DomErrorCode } from "@root";
+import {
+    type DomExceptionName,
+    type DomErrorCode
+} from "@root";
 
 export const DomErrorNameToCodeMap: Record<DomExceptionName, DomErrorCode> = {
     "EncodingError": "DOM.ERR_ENCODING",
