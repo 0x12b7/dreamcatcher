@@ -1,23 +1,20 @@
 {
 	"name": "reliq",
+	"description": "",
 	"version": "2.0.0",
+	"license": "Apache-2.0",
+	"type": "module",
+	"types": "target/tslib/mod.d.cts",
 	"main": "target/tslib/mod.cjs",
+	"scripts": {
+		"build": "bun run script/build_script.ts",
+		"release": "bun run build && npm publish"
+	},
 	"devDependencies": {
 		"@types/bun": "1.1.14",
 		"tsup": "8.3.5"
 	},
 	"peerDependencies": {
 		"typescript": "5.7.2"
-	},
-	"description": "",
-	"license": "MIT",
-	"scripts": {
-		"build": "bun run script/build_script.ts",
-		"release": "bun run build && npm publish"
-	},
-	"type": "module",
-	"types": "target/tslib/mod.d.cts",
-	"dependencies": {
-		"axios": "1.7.9"
 	}
 }

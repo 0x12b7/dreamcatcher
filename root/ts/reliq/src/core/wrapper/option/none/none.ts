@@ -8,16 +8,57 @@ import {
     panic
 } from "@root";
 
+/**
+ * **Note**
+ * The absencee of a value or an "empty" state. The operation attempting to access the value
+ * should safely handle or terminate with an error.
+ */
 export type None = 
     & Branded<"None">
     & RecoveryWrapper<never>
     & Serializable
     & Displayable 
     & {
+
+    /**
+     * **Example**
+     * ```ts
+     *  None.some(); /// Always `false`.
+     * ```
+     */
     some(): this is Some<unknown>;
+
+    /**
+     * **Example**
+     * ```ts
+     *  None.none(); /// Always `true`.
+     * ```
+     */
     none(): this is None;
+    
+    /**
+     * **Warning**
+     * This method will cause a `panic` and terminate the program if called, as th state is `None`
+     * and there is no value to recover. It serves as an explicit error handling mechanism.
+     * 
+     * **Warning**
+     * You should call `expect` when you absolutely expect a value, but must not be `None`.
+     * Calling `expect` on a `None` results in a program failure.
+     * 
+     * **Example**
+     * ```ts
+     *  None.expect("This should not have happened, something I thought was true about my program is wrong, and this is a bug.");
+     * ```
+     */
     expect(message: string): never;
+    
+    /**
+     * 
+     *
+     */
     and(__: unknown): None;
+
+
     map(__: unknown): None;
     toResult<T1>(value: T1): Err<T1>;
 };
