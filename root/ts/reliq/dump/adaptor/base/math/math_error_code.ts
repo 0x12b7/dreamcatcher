@@ -1,4 +1,0 @@
-export type MathErrorCode =
-    | "MATH.ERR_ARITHMETIC_UNDERFLOW"
-    | "MATH.ERR_ARITHMETIC_OVERFLOW"
-    | "MATH.ERR_DIVISION_BY_ZERO";

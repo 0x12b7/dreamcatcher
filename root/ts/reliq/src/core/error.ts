@@ -3,12 +3,12 @@ import {
 } from "@root";
 
 /**
- * **Note**
+ * **NOTE**
  * A custom error with an optional message, and payload for stringly-typed error
  * objects.
  * 
  * 
- * **Example**
+ * **EXAMPLE**
  * ```typescript
  *  type CustomErrorCode =
  *      | "ERR_USER_NOT_FOUND"

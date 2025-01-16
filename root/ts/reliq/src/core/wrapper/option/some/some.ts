@@ -1,12 +1,14 @@
-import type { Branded } from "@root";
-import type { ValidatedWrapper } from "@root";
-import type { Serializable } from "@root";
-import type { Displayable } from "@root";
-import type { Function } from "@root";
-import type { Option } from "@root";
-import { None } from "@root";
-import { Ok } from "@root";
-import { StringHandler } from "@root";
+import {
+    type Branded,
+    type ValidatedWrapper,
+    type Serializable,
+    type Displayable,
+    type Function,
+    type Option,
+    StringHandler,
+    None,
+    Ok
+} from "@root";
 
 export type Some<T1> =
     & Branded<"Some">

@@ -1,9 +1,9 @@
-import type { Result } from "@root";
-import { isOk } from "@root";
-import { isErr } from "@root";
+import {
+    type Result,
+    isOk,
+    isErr
+} from "@root";
 
-function isResult(unknown: unknown): unknown is Result<unknown, unknown> {
+export function isResult(unknown: unknown): unknown is Result<unknown, unknown> {
     return isOk(unknown) || isErr(unknown);
 }
-
-export { isResult };

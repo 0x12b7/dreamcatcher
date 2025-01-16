@@ -4,9 +4,9 @@ import {
     type Serializable,
     type Displayable,
     type Function,
-    Ok,
     type Option,
     StringHandler,
+    Ok,
     None,
     isOption
 } from "@root";

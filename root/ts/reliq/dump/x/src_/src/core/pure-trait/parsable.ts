@@ -1,6 +1,0 @@
-import { TypeGuard } from "@root"
-import { Option } from "@root";
-
-export type Parsable = {
-    parse<T1>(guard: TypeGuard<T1>): Option<T1>;
-};

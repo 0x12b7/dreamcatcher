@@ -1,13 +1,15 @@
-import type { Closure } from "@root";
-import type { AsyncClosure } from "@root";
-import type { Result } from "@root";
-import type { OkValOfAll } from "@root";
-import type { ErrValOfAll } from "@root";
-import type { ResultArray } from "@root";
-import type { AsyncResult } from "@root";
-import { Unsafe } from "@root";
-import { Ok } from "@root";
-import { Err } from "@root";
+import {
+    type Closure,
+    type AsyncClosure,
+    type Result,
+    type OkValOfAll,
+    type ErrValOfAll,
+    type ResultArray,
+    type AsyncResult,
+    Unsafe,
+    Ok,
+    Err
+} from "@root";
 
 /**
  * **NOTE**

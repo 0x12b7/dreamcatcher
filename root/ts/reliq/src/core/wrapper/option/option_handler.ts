@@ -1,10 +1,12 @@
-import type { Option } from "@root";
-import type { OptionArray } from "@root";
-import type { SomeValOfAll } from "@root";
-import { Some } from "@root";
-import { None } from "@root";
+import {
+    type Option,
+    type OptionArray,
+    type SomeValOfAll,
+    Some,
+    None
+} from "@root";
 
-type OptionHandler = {
+export type OptionHandler = {
 
     /**
      * **NOTE**
@@ -58,7 +60,7 @@ type OptionHandler = {
     any<T1 extends OptionArray<unknown>>(...options: T1): Option<SomeValOfAll<T1>[number]>;
 };
 
-const OptionHandler: OptionHandler = (() => {
+export const OptionHandler: OptionHandler = (() => {
     /** @constructor */ {
         return { all, any };
     }
@@ -84,5 +86,3 @@ const OptionHandler: OptionHandler = (() => {
         return None;
     }
 })();
-
-export { OptionHandler };

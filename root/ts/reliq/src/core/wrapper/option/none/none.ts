@@ -53,8 +53,20 @@ export type None =
     expect(message: string): never;
     
     /**
+     * **Note** Performs a no-op operation as there's no value to combine or logically `and`.
+     * It returns the current `None` stat, representing that combining with `None` has no effect.
      * 
-     *
+     * **Example**
+     * ```ts
+     *  let option: Option<200>;
+     *  option
+     *      .and(status => {
+     *          /// ...
+     *      })
+     *      .and(() => {
+     *          /// ...
+     *      });
+     * ```
      */
     and(__: unknown): None;
 

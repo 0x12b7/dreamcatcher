@@ -14,7 +14,9 @@ export type BuildScript = {
 
 export function BuildScript(): BuildScript {
     /** @constructor */ {
-        return { run };
+        return {
+            run
+        };
     }
 
     async function run(): AsyncResult<void, Unsafe> {

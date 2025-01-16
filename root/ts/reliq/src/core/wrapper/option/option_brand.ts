@@ -1,3 +1,1 @@
-type OptionBrand = "Some" | "None";
-
-export type { OptionBrand };
+export type OptionBrand = "Some" | "None";

@@ -1,7 +1,9 @@
-import type { Wrapper } from "@root";
-import type { TypeGuard } from "@root";
+import {
+    type TypeGuard,
+    type Wrapper
+} from "@root";
 
-function isWrapper<T1>(unknown: unknown): unknown is Wrapper<T1> {
+export function isWrapper<T1>(unknown: unknown): unknown is Wrapper<T1> {
     let guard: TypeGuard<Wrapper<T1>> = (unknown: unknown): unknown is Wrapper<T1> => {
         return unknown !== null
             && unknown !== undefined
@@ -11,5 +13,3 @@ function isWrapper<T1>(unknown: unknown): unknown is Wrapper<T1> {
     };
     return guard(unknown);
 }
-
-export { isWrapper };

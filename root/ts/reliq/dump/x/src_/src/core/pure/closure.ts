@@ -1,1 +1,0 @@
-export type Closure<T1 extends Array<unknown>, T2> = (...payload: T1) => T2;
