@@ -1,4 +1,6 @@
-import type { MathErrorCode } from "./math_error_code";
+import {
+    type MathErrorCode
+} from "@root";
 
 export namespace MathViolation {
     export type UpperArithmeticRangeViolation = Extract<MathErrorCode, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">;
