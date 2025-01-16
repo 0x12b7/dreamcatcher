@@ -1,8 +1,12 @@
-import type { Err } from "@root";
-import { isBrand } from "@root";
+import {
+    type TypeGuard,
+    type Err,
+    isBranded
+} from "@root";
 
-function isErr(unknown: unknown): unknown is Err<unknown> {
-    return isBrand(unknown, "Err");
+export function isErr(unknown: unknown): unknown is Err<unknown> {
+    let guard: TypeGuard<Err<unknown>> = (unknown: unknown): unknown is Err<unknown> => {
+        return isBranded(unknown, "Err");
+    };
+    return guard(unknown);
 }
-
-export { isErr };

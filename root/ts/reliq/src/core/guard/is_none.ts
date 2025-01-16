@@ -1,8 +1,12 @@
-import type { None } from "@root";
-import { isBrand } from "@root";
+import {
+    type TypeGuard,
+    type None,
+    isBranded
+} from "@root";
 
-function isNone(unknown: unknown): unknown is None {
-    return isBrand(unknown, "None");
+export function isNone(unknown: unknown): unknown is None {
+    let guard: TypeGuard<None> = (unknown: unknown): unknown is None => {
+        return isBranded(unknown, "None");
+    };
+    return guard(unknown);
 }
-
-export { isNone };

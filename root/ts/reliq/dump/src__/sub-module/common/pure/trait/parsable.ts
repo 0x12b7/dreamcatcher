@@ -1,0 +1,11 @@
+import {
+    type TypeGuard
+} from "@common";
+
+import {
+    type Option
+} from "@core";
+
+export type Parsable = {
+    parse<T1>(guard: TypeGuard<T1>): Option<T1>;
+};

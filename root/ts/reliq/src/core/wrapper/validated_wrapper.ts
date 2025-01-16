@@ -1,4 +1,6 @@
-import type { Wrapper } from "@root";
+import {
+    type Wrapper
+} from "@root";
 
 export type ValidatedWrapper<T1> = 
     & Wrapper<T1>

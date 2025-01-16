@@ -3,10 +3,7 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@root": ["src/mod"],
-			"@core": ["src/core/mod"],
-			"@math": ["src/math/mod"],
-			"@internal": ["src/internal/mod"]
+			"@root": ["src/core/mod.internal.ts"],
 		}
 	},
 	"include": ["src", "script"],

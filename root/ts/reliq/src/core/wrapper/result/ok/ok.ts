@@ -1,16 +1,18 @@
-import type { Branded } from "@root";
-import type { ValidatedWrapper } from "@root";
-import type { Serializable } from "@root";
-import type { Displayable } from "@root";
-import type { Function } from "@root";
-import type { Option } from "@root";
-import type { Result } from "@root";
-import { Err } from "@root";
-import { Some } from "@root";
-import { panic } from "@root";
-import { toString as $toString } from "@root";
+import {
+    type Branded,
+    type ValidatedWrapper,
+    type Serializable,
+    type Displayable,
+    type Function,
+    type Option,
+    type Result,
+    StringHandler,
+    Some,
+    Err,
+    panic
+} from "@root";
 
-type Ok<T1> = 
+export type Ok<T1> = 
     & Branded<"Ok">
     & ValidatedWrapper<T1>
     & Serializable
@@ -26,7 +28,7 @@ type Ok<T1> =
     and<T2, T3>(operation: Function<T1, Result<T2, T3>>): Result<T2, T3>;
     map<T2>(operation: Function<T1, T2>): Ok<T2>;
     mapErr(__: unknown): Ok<T1>;
-    resolve(__: unknown): Ok<T1>;
+    restore(__: unknown): Ok<T1>;
     
     /**
      * 
@@ -41,7 +43,7 @@ type Ok<T1> =
     toOption(): Option<T1>;
 };
 
-function Ok<T1>(_value: T1): Ok<T1> {
+export function Ok<T1>(_value: T1): Ok<T1> {
     let _this: Ok<T1>;
 
     /** @constructor */ {
@@ -57,6 +59,7 @@ function Ok<T1>(_value: T1): Ok<T1> {
             and,
             map,
             mapErr,
+            restore,
             toOption,
             toString,
             display
@@ -110,17 +113,19 @@ function Ok<T1>(_value: T1): Ok<T1> {
         return _this;
     }
 
+    function restore(__: unknown): Ok<T1> {
+        return _this;
+    }
+
     function toOption(): Option<T1> {
         return Some(_value);
     }
 
     function toString(): string {
-        return type() + "(" + $toString(_value) + ")";
+        return type() + "(" + StringHandler().toString(_value) + ")";
     }
 
     function display(): void {
         return console.log(toString());
     }
 }
-
-export { Ok };

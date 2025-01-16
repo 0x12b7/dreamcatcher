@@ -1,40 +1,8 @@
-export * from "./core/async_closure";
-export * from "./core/async_function";
-export * from "./core/branded";
-export * from "./core/closure";
-export * from "./core/function";
-export * from "./core/is_branded";
-export * from "./core/is_wrapper";
-export * from "./core/maybe_async";
-export * from "./core/wrapper";
-export * from "./core/err/assertion/assert";
-export * from "./core/err/assertion/panic";
-export * from "./core/err/assertion/require";
-export * from "./core/err/assertion/restorable";
-export * from "./core/err/assertion/shorthand"; /***/
-export * from "./core/err/result/err/err_of_all";
-export * from "./core/err/result/err/err_of";
-export * from "./core/err/result/err/err_val_of_all";
-export * from "./core/err/result/err/err_val_of";
-export * from "./core/err/result/err/err";
-export * from "./core/err/result/none/none";
-export * from "./core/err/result/ok/ok_of_all";
-export * from "./core/err/result/ok/ok_of";
-export * from "./core/err/result/ok/ok_val_of_all";
-export * from "./core/err/result/ok/ok_val_of";
-export * from "./core/err/result/ok/ok";
-export * from "./core/err/result/option/async_option";
-export * from "./core/err/result/option/option_handler";
-export * from "./core/err/result/option/option";
-export * from "./core/err/result/result/async_result";
-export * from "./core/err/result/result/result_handler";
-export * from "./core/err/result/result/result";
-export * from "./core/err/result/some/some_of_all";
-export * from "./core/err/result/some/some_of";
-export * from "./core/err/result/some/some_val_of_all";
-export * from "./core/err/result/some/some_val_of";
-export * from "./core/err/result/some/some";
-export * from "./core/err/result/unsafe/unsafe";
-export * from "./core/err/result/shorthand"; /***/
-export * from "./core/util/clone";
-export * from "./core/util/to_string";
+export {
+    type AsyncClosure,
+    type AsyncFunction,
+    type Closure,
+    type Function,
+    type MaybeAsync,
+    type TypeGuard
+} from "@util-type";

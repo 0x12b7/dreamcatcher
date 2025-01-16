@@ -1,8 +1,12 @@
-import type { Ok } from "@root";
-import { isBrand } from "@root";
+import {
+    type TypeGuard,
+    type Ok,
+    isBranded
+} from "@root";
 
-function isOk(unknown: unknown): unknown is Ok<unknown> {
-    return isBrand(unknown, "Ok");
+export function isOk(unknown: unknown): unknown is Ok<unknown> {
+    let guard: TypeGuard<Ok<unknown>> = (unknown: unknown): unknown is Ok<unknown> => {
+        return isBranded(unknown, "Ok");
+    };
+    return guard(unknown);
 }
-
-export { isOk };

@@ -2,6 +2,45 @@
 Reliq is a TypeScript error-handling library inspired by Rust's error paradigms and the Ethereum Virtual Machine's (EVM) state management mechanisms. It combines a Rust-style `Result` approach with assertion-based programming to simplify and strengthen error handling in TypeScript.
 
 
+
+
+
+
+
+
+
+
+
+
+**Error Handling Conventions:**
+1. **Error Code Usage:**
+    - Always define a **consistent set of error codes** for your application or module.
+    - Use **string literal unions** to define error codes. This ensures type safety and allows for easy catching 
+ *      and identification of errors throughout the codebase.
+    - Error codes should be descriptive, concise, and follow a naming convention (e.g., prefixing errors with `ERR_` or similar).
+    - Do not use generic error codes (e.g., `"ERR_UNKNOWN"`); instead, be specific about the problem.
+
+    ```ts
+        
+    ```
+
+
+
+**When to use `expect`?**
+- I am certain that this will not throw and that I do not need to handle this.
+- I am testing.
+- I am writing a script.
+
+**When NOT to use `expect`?**
+- I think this error can be propagated and returned.
+- I can handle this error.
+- The entire application will
+
+
+
+
+
+
 ## Features
 - Resut-Style Error Handling.
 - Assertion-Based Approach.

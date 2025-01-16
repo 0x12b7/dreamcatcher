@@ -6,9 +6,9 @@ import type { Function } from "@root";
 import type { Option } from "@root";
 import { None } from "@root";
 import { Ok } from "@root";
-import { toString as $toString } from "@root";
+import { StringHandler } from "@root";
 
-type Some<T1> =
+export type Some<T1> =
     & Branded<"Some">
     & ValidatedWrapper<T1>
     & Serializable
@@ -79,7 +79,7 @@ type Some<T1> =
     toResult(__: unknown): Ok<T1>;
 };
 
-function Some<T1>(_value: T1): Some<T1> {
+export function Some<T1>(_value: T1): Some<T1> {
     /** @constructor */ {
         return {
             type,
@@ -138,13 +138,10 @@ function Some<T1>(_value: T1): Some<T1> {
     }
 
     function toString(): string {
-        return type() + "(" + $toString(_value) + ")";
+        return type() + "(" + StringHandler().toString(_value) + ")";
     }
 
     function display(): void {
         return console.log(toString());
     }
 }
-
-export { Some };
-

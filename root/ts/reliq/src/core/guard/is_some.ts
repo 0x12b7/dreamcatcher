@@ -1,8 +1,8 @@
-import type { Some } from "@root";
-import { isBrand } from "@root";
+import {
+    type Some,
+    isBranded
+} from "@root";
 
-function isSome(unknown: unknown): unknown is Some<unknown> {
-    return isBrand(unknown, "Some");
+export function isSome(unknown: unknown): unknown is Some<unknown> {
+    return isBranded(unknown, "Some");
 }
-
-export { isSome };

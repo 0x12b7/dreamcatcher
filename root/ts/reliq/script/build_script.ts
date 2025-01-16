@@ -1,7 +1,12 @@
-import type { AsyncResult } from "@root";
-import { Unsafe } from "@root";
-import { ResultHandler } from "@root";
-import { build } from "tsup";
+import {
+    type AsyncResult,
+    ResultHandler,
+    Unsafe
+} from "@root";
+
+import { 
+    build 
+} from "tsup";
 
 export type BuildScript = {
     run(): AsyncResult<void, Unsafe>
@@ -14,15 +19,15 @@ export function BuildScript(): BuildScript {
 
     async function run(): AsyncResult<void, Unsafe> {
         return await ResultHandler.wrapAsync(build, {
-            entry: ["src/mod.ts"],
+            entry: ["src/core/mod.ts"],
             outDir: "target/tslib",
-            format: ["cjs"],
+            format: "cjs",
+            sourcemap: "inline",
+            config: "tsconfig.json",
             bundle: true,
             dts: true,
-            sourcemap: "inline",
             clean: true,
-            minify: true,
-            config: "tsconfig.json"
+            minify: true
         });
     }
 }

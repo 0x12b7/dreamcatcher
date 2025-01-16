@@ -1,12 +1,14 @@
-import type { Branded } from "@root";
-import type { RecoveryWrapper } from "@root";
-import type { Serializable } from "@root";
-import type { Displayable } from "@root";
-import { Some } from "@root";
-import { Err } from "@root";
-import { panic } from "@root";
+import {
+    type Branded,
+    type RecoveryWrapper,
+    type Serializable,
+    type Displayable,
+    Some,
+    Err,
+    panic
+} from "@root";
 
-type None = 
+export type None = 
     & Branded<"None">
     & RecoveryWrapper<never>
     & Serializable
@@ -20,11 +22,11 @@ type None =
     toResult<T1>(value: T1): Err<T1>;
 };
 
-const None: None = (() => {
+export const None: None = (() => {
     let _this: None;
 
     /** @constructor */ {
-        return _this = {
+        return (_this = {
             type,
             some,
             none,
@@ -36,18 +38,18 @@ const None: None = (() => {
             toResult,
             toString,
             display
-        };
+        });
     }
     function type(): "None" {
-        return "None";
+        return ("None");
     }
     
     function some(): this is Some<unknown> {
-        return false;
+        return (false);
     }
 
     function none(): this is None {
-        return true;
+        return (true);
     }
 
     function expect(message: string): never {
@@ -59,7 +61,7 @@ const None: None = (() => {
     }
 
     function unwrapOr<T1>(fallback: T1): T1 {
-        return fallback;
+        return (fallback);
     }
 
     function and(__: unknown): None {
@@ -82,5 +84,3 @@ const None: None = (() => {
         return console.log(toString());
     }
 })();
-
-export { None };

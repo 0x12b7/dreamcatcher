@@ -1,34 +1,17 @@
-import type { Branded } from "@root";
-import type { RecoveryWrapper } from "@root";
-import type { Serializable } from "@root";
-import type { Displayable } from "@root";
-import type { Function } from "@root";
-import type { Option } from "@root";
-import type { Ok } from "@root";
-import { None } from "@root";
-import { isOption } from "@root";
-import { toString as $toString } from "@root";
+import {
+    type Branded,
+    type RecoveryWrapper,
+    type Serializable,
+    type Displayable,
+    type Function,
+    Ok,
+    type Option,
+    StringHandler,
+    None,
+    isOption
+} from "@root";
 
-
-
-/**
- * min
- * max
- * clamp
- * eq
- * ne
- * lt
- * lteq
- * gt
- * gteq
- * clone
- * 
- * separate
- * 
- * 
- */
-
-type Err<T1> = 
+export type Err<T1> = 
     & Branded<"Err">
     & RecoveryWrapper<T1>
     & Serializable
@@ -43,11 +26,11 @@ type Err<T1> =
     and(__: unknown): Err<T1>;
     map(__: unknown): Err<T1>;
     mapErr<T2>(operation: Function<T1, T2>): Err<T2>;
-    resolve<T2>(operation: Function<T1, T2>): Ok<T2>;
+    restore<T2>(operation: Function<T1, T2>): Ok<T2>;
     toOption(): Option<never>;
 };
 
-function Err<T1>(_value: T1): Err<T1> {
+export function Err<T1>(_value: T1): Err<T1> {
     let _this: Err<T1>;
     let _stack: string;
     
@@ -68,6 +51,7 @@ function Err<T1>(_value: T1): Err<T1> {
             and,
             map,
             mapErr,
+            restore,
             toOption,
             toString,
             display
@@ -118,7 +102,7 @@ function Err<T1>(_value: T1): Err<T1> {
             });
             throw value0.code + "\n" + stack();
         }
-        throw $toString(inspect()) + "\n" + stack();
+        throw StringHandler().toString(inspect()) + "\n" + stack();
     }
 
     function unwrapOr<T2>(alternative: T2): T2 {
@@ -137,19 +121,19 @@ function Err<T1>(_value: T1): Err<T1> {
         return Err(operation(inspect()));
     }
 
+    function restore<T2>(operation: Function<T1, T2>): Ok<T2> {
+        return Ok(operation(inspect()));
+    }
+
     function toOption(): Option<never> {
         return None;
     }
 
     function toString(): string {
-        return type() + "(" + $toString(inspect()) + ")" + "\n" + stack();
+        return type() + "(" + StringHandler().toString(inspect()) + ")" + "\n" + stack();
     }
 
     function display(): void {
         return console.log(toString());
     }
 }
-
-export { Err };
-
-

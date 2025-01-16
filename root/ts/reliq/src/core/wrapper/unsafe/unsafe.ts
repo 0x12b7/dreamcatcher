@@ -1,21 +1,23 @@
-import type { Branded } from "@root";
-import type { Wrapper } from "@root";
-import type { Parsable } from "@root";
-import type { TypeGuard } from "@root";
-import type { Option } from "@root";
-import { Some } from "@root";
-import { None } from "@root";
-import { toString as $toString } from "@root";
+import {
+    type Branded,
+    type Wrapper,
+    type Parsable,
+    type TypeGuard,
+    type Option,
+    Some,
+    None,
+    StringHandler
+} from "@root";
 
-type Unsafe =
+export type Unsafe =
     & Branded<"Unsafe">
-    & Wrapper<unknown>
+    & Pick<Wrapper<unknown>, "unwrap">
     & Parsable
     & {
     toString(): string;
 };
 
-function Unsafe(_value: unknown): Unsafe {
+export function Unsafe(_value: unknown): Unsafe {
     /** @constructor */ {
         return {
             type,
@@ -39,8 +41,6 @@ function Unsafe(_value: unknown): Unsafe {
     }
 
     function toString(): string {
-        return type() + "(" + $toString(unwrap()) + ")";
+        return type() + "(" + StringHandler().toString(unwrap()) + ")";
     }
 }
-
-export { Unsafe };

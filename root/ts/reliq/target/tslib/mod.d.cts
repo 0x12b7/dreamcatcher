@@ -1,78 +1,65 @@
 type AsyncClosure<T1 extends Array<unknown>, T2> = Closure<T1, T2>;
 
-type AsyncFunction<T1, T2> = Function$1<T1, Promise<T2>>;
-
-declare function clone<T1>(data: T1): Result<T1, DomError>;
+type AsyncFunction<T1, T2> = Function<T1, Promise<T2>>;
 
 type Closure<T1 extends Array<unknown>, T2> = (...payload: T1) => T2;
 
-type Function$1<T1, T2> = (payload: T1) => T2;
+type Function<T1, T2> = (payload: T1) => T2;
 
 type MaybeAsync<T1> = Promise<T1> | T1;
 
-declare function toString(unknown: unknown): string;
-
-type TypeGuard<T1> = (instance: unknown) => instance is T1;
-
-declare function isBranded<T1 extends string>(unknown: unknown, type: T1): unknown is Branded<T1>;
+type TypeGuard<T1> = (unknown: unknown) => unknown is T1;
 
 type Branded<T1 extends string> = {
     type(): T1;
 };
 
-type Clonable<T1> = {
-    clone(): T1;
-};
-
 type Displayable = {
-    toString(): string;
+    /**
+     *
+     * **Note**
+     * Useful for debugging purposes.
+     *
+     * **Example**
+     * ```typescript
+     *  function Displayable(): Displayable {
+     *      return { display };
+     *
+     *      function display(): void {
+     *          return console.log("Hello World");
+     *      }
+     *  }
+     *
+     *  let value: Displayable = Displayable();
+     *  value.display(); /// Hello World
+     * ```
+     */
+    display(): void;
 };
 
 type Parsable = {
     parse<T1>(guard: TypeGuard<T1>): Option<T1>;
 };
 
-type Error<T1 extends string, T2 extends Array<unknown> = []> = {
-    code: T1;
-    message: Option<string>;
-    payload: Option<T2>;
+type Sequence<T1> = {
+    at(position: bigint): Option<T1>;
+    length(): bigint;
+    concat(sequence: T1): T1;
+    pop(): T1;
+    push(item: T1): bigint;
+    push(items: T1): bigint;
+    shift(): T1;
+    unshift(item: T1): bigint;
+    unshift(...items: Array<T1>): bigint;
+    slice(position: bigint): Option<T1>;
+    slice(position: bigint, count: bigint): Option<T1>;
 };
-declare function Error<T1 extends string, T2 extends Array<unknown> = []>(_this: Error<T1, T2>): Error<T1, T2>;
 
-type DomErrorCode = "DOM.ERR_INDEX_SIZE" | "DOM.ERR_HIERARCHY_REQUEST" | "DOM.ERR_WRONG_DOCUMENT" | "DOM.ERR_INVALID_CHARACTER" | "DOM.ERR_NO_MODIFICATION_ALLOWED" | "DOM.ERR_NOT_FOUND" | "DOM.ERR_NOT_SUPPORTED" | "DOM.ERR_INVALID_STATE" | "DOM.ERR_ATTRIBUTE_IN_USE" | "DOM.ERR_SYNTAX" | "DOM.ERR_INVALID_MODIFICATION" | "DOM.ERR_NAMESPACE" | "DOM.ERR_INVALID_ACCESS" | "DOM.ERR_TYPE_MISMATCH" | "DOM.ERR_SECURITY" | "DOM.ERR_NETWORK" | "DOM.ERR_ABORT" | "DOM.ERR_URL_MISMATCH" | "DOM.ERR_QUOTA_EXCEEDED" | "DOM.ERR_TIMEOUT" | "DOM.ERR_INVALID_NODE_TYPE" | "DOM.ERR_DATA_CLONE" | "DOM.ERR_ENCODING" | "DOM.ERR_NOT_READABLE" | "DOM.ERR_UNKNOWN" | "DOM.ERR_CONSTRAINT" | "DOM.ERR_DATA" | "DOM.ERR_TRANSACTION_INACTIVE" | "DOM.ERR_READ_ONLY" | "DOM.ERR_VERSION" | "DOM.ERR_OPERATION" | "DOM.ERR_NOT_ALLOWED";
+type Serializable = {
+    toString(): string;
+};
 
-type DomError = Error<DomErrorCode>;
-declare function DomError(): DomError;
-declare function DomError(e: DOMException): DomError;
-
-type LegacyDomErrorCode = 1 | 3 | 4 | 5 | 7 | 8 | 9 | 11 | 12 | 13 | 14 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25;
-
-type LegacyDomErrorName = "EncodingError" | "NotReadableError" | "UnknownError" | "ConstraintError" | "DataError" | "TransactionInactiveError" | "ReadOnlyError" | "VersionError" | "OperationError" | "NotAllowedError";
-
-declare const DomErrorCodeToCodeMap: Record<LegacyDomErrorCode, DomErrorCode>;
-
-declare const DomErrorNameToCodeMap: Record<LegacyDomErrorName, DomErrorCode>;
-
-declare function panic<T1 extends string>(message: T1): never;
-declare function panic<T1 extends string>(message: T1, scope: Function): never;
-
-type WrapperBrand = OptionBrand | ResultBrand | UnsafeBrand;
-
-declare function isErr(unknown: unknown): unknown is Err<unknown>;
-
-declare function isNone(unknown: unknown): unknown is None;
-
-declare function isOk(unknown: unknown): unknown is Ok<unknown>;
-
-declare function isOption(unknown: unknown): unknown is Option<unknown>;
-
-declare function isResult(unknown: unknown): unknown is Result<unknown, unknown>;
-
-declare function isSome(unknown: unknown): unknown is Some<unknown>;
-
-declare function isWrapper<T1>(unknown: unknown): unknown is Wrapper<T1>;
-
-type FallbackWrapper<T1> = Wrapper<T1> & {
+type RecoveryWrapper<T1> = Wrapper<T1> & {
     unwrapOr<T2>(fallback: T2): T2;
 };
 
@@ -84,59 +71,95 @@ type Wrapper<T1> = {
     unwrap(): T1;
 };
 
-type ResultAndOptionBrandToWrapperMap<T1 extends "Some" | "None" | "Ok" | "Err", T2> = T1 extends "Some" ? _Some<T2> : T1 extends "None" ? _None : T1 extends "Ok" ? _Ok<T2> : T1 extends "Err" ? _Err<T2> : never;
-type _Some<T1> = Branded<"Some"> & Wrapper<T1> & ValidatedWrapper<T1> & Displayable & {
-    some(): this is Some<T1>;
-    none(): this is None;
-    value(): T1;
-    expect(__: unknown): T1;
-    unwrapOr(__: unknown): T1;
-    and<T2>(op: Function$1<T1, Option<T2>>): Option<T2>;
-    map<T2>(op: Function$1<T1, T2>): Some<T2>;
-    toResult(__: unknown): Ok<T1>;
+type AsyncOption<T1> = Promise<Option<T1>>;
+
+type OptionArray<T1> = Array<Option<T1>>;
+
+type OptionBrand = "Some" | "None";
+
+type OptionHandler = {
+    /**
+     * **NOTE**
+     * - Returns `None` if **any** `Option` is `None`.
+     *
+     * @example
+     *  let option0: Option<string> = Some("");
+     *  let option1: Option<7> = Some(7);
+     *  let option2: Option<5> = None;
+     *  let newOption: Option<[string, 7]> = OptionHandler.all(option0, option1, option2);
+     *  newOption.some(); /// false
+     *  newOption.none(); /// true
+     *
+     * @example
+     *  let option0: Option<string> = Some("");
+     *  let option1: Option<7> = Some(7);
+     *  let option2: Option<5> = Some(5);
+     *  let newOption: Option<[string, 7, 5]> = OptionHandler.all(option0, option1, option2);
+     *  newOption.some(); /// true
+     *  newOption.none(); /// false
+     *  newOption.map(values => {
+     *      console.log(values); /// ["", 7, 5]
+     *  });
+     */
+    all<T1 extends OptionArray<unknown>>(...options: T1): Option<SomeValOfAll<T1>>;
+    /**
+     * **NOTE**
+     * - Returns the first successful `Some` value encountered.
+     * - Returns `None` only if **all** options are `None`.
+     *
+     * @example
+     * let option0: Option<string> = None;
+     * let option1: Option<7> = None;
+     * let option2: Option<5> = None;
+     * let newOption: Option<never> = OptionHandler.any(option0, option1, option2);
+     * newOption.some(); /// false
+     * newOption.none(); /// true
+     *
+     * @example
+     *  let option0: Option<string> = None;
+     *  let option1: Option<7> = None;
+     *  let option2: Option<5> = Some(5);
+     *  let newOption: Option<5> = OptionHandler.any(option0, option1, option2);
+     *  newOption.some() /// true
+     *  newOption.none() /// false
+     *  newOption.map(values => {
+     *      console.log(value); /// 5
+     *  });
+     */
+    any<T1 extends OptionArray<unknown>>(...options: T1): Option<SomeValOfAll<T1>[number]>;
 };
-type _None = Branded<"None"> & Wrapper<never> & FallbackWrapper<never> & Displayable & {
+declare const OptionHandler: OptionHandler;
+
+/**
+ * **NOTE**
+ * Represents a wrapper that encapsulates an optional value.
+ * - `Some<T1>` - The presence of a value of type `T1`.
+ * - `None` - The absence of a value.
+ *
+ * **EXAMPLE**
+ * ```typescript
+ *  function foo(): Option<200> {
+ *      if () return Some(200);
+ *      return None;
+ *  }
+ *
+ *  let option: Option<200> = foo();
+ *  if (option.some()) {
+ *      let value: 200 = option.unwrapSafely();
+ *      /// ...
+ *  }
+ * ```
+ */
+type Option<T1> = Some<T1> | None;
+
+type None = Branded<"None"> & RecoveryWrapper<never> & Serializable & Displayable & {
     some(): this is Some<unknown>;
     none(): this is None;
     expect(message: string): never;
     and(__: unknown): None;
     map(__: unknown): None;
-    toResult<T1>(e: T1): Err<T1>;
+    toResult<T1>(value: T1): Err<T1>;
 };
-type _Ok<T1> = Branded<"Ok"> & Wrapper<T1> & ValidatedWrapper<T1> & Displayable & {
-    ok(): this is Ok<T1>;
-    err(): this is Err<unknown>;
-    val(): T1;
-    expect(__: unknown): T1;
-    expectErr(message: string): never;
-    unwrapOr(__: unknown): T1;
-    and<T2>(operation: Function$1<T1, Ok<T2>>): Ok<T2>;
-    and<T2>(operation: Function$1<T1, Err<T2>>): Result<T1, T2>;
-    and<T2, T3>(operation: Function$1<T1, Result<T2, T3>>): Result<T2, T3>;
-    map<T2>(operation: Function$1<T1, T2>): Ok<T2>;
-    mapErr(__: unknown): Ok<T1>;
-    toOption(): Option<T1>;
-};
-type _Err<T1> = Branded<"Err"> & Wrapper<T1> & FallbackWrapper<T1> & Displayable & {
-    ok(): this is Ok<unknown>;
-    err(): this is Err<T1>;
-    val(): T1;
-    stack(): string;
-    expect(message: string): never;
-    expectErr(__: unknown): T1;
-    and(__: unknown): Err<T1>;
-    map(__: unknown): Err<T1>;
-    mapErr<T2>(operation: Function$1<T1, T2>): Err<T2>;
-    toOption(): Option<never>;
-};
-
-type AsyncOption<T1> = Promise<Option<T1>>;
-
-type OptionBrand = "Some" | "None";
-
-type Option<T1> = Some<T1> | None;
-
-type None = ResultAndOptionBrandToWrapperMap<"None", never>;
 declare const None: None;
 
 type SomeOfAll<T1 extends Array<Option<unknown>>> = {
@@ -151,21 +174,175 @@ type SomeValOfAll<T1 extends Array<Option<unknown>>> = {
 
 type SomeValOf<T1 extends Option<unknown>> = T1 extends Some<infer T2> ? T2 : never;
 
-type Some<T1> = ResultAndOptionBrandToWrapperMap<"Some", T1>;
+type Some<T1> = Branded<"Some"> & ValidatedWrapper<T1> & Serializable & Displayable & {
+    /**
+     * **NOTE**
+     * - `TypeGuard` to check if the value is of the type `Some`.
+     * - Returns `true` because the current instance is `Some`.
+     *
+     * **EXAMPLE**
+     * ```typescript
+     *  let value: Some<number> = Some(20);
+     *  value.some(); /// true
+     * ```
+     */
+    some(): this is Some<T1>;
+    /**
+     *
+     * **EXAMPLE**
+     * ```typescript
+     *  let value: Some<number> = Some(20);
+     *  value.none(); /// false
+     * ```
+     */
+    none(): this is None;
+    /**
+     * **Warning**
+     * Unused method, present because of `Option` type inference.
+     *
+     */
+    expect(__: unknown): T1;
+    unwrapOr(__: unknown): T1;
+    /**
+     * **NOTE**
+     * Applies an operation to the value contained in the `Some<T1>` if it exists,
+     * returning a new `Option<T2>` resulting from the operation. If the current `Option`
+     * is `None`, this operation will not be executed, and `None` will be returned.
+     *
+     * **Example**
+     * ```typescript
+     *  let value: Option<number> = Some(200);
+     *  value
+     *      .and(length => {
+     *          if (length > 100) return Some("LARGE");
+     *          return None;
+     *      })
+     *      .and(value => {
+     *          console.log(value); /// LARGE
+     *      });
+     * ```
+     */
+    and<T2>(operation: Function<T1, Option<T2>>): Option<T2>;
+    /**
+     * **NOTE**
+     * Transforms the value contained in the `Some<T1>` to a new value of type `T2` using the provided `operation`.
+     * Returns a new `Some<T2>` containing the result of the transformation.
+     * - If the `Option` is `None`, the transformation is not applied and `None` is returned.
+     *
+     */
+    map<T2>(operation: Function<T1, T2>): Some<T2>;
+    toResult(__: unknown): Ok<T1>;
+};
 declare function Some<T1>(_value: T1): Some<T1>;
 
 type AsyncResult<T1, T2> = Promise<Result<T1, T2>>;
 
+type ResultArray<T1, T2> = Array<Result<T1, T2>>;
+
 type ResultBrand = "Ok" | "Err";
 
+/**
+ * **NOTE**
+ * A util `class` to handle `Result`.
+ */
 type ResultHandler = {
-    all<T1 extends Array<Result<unknown, unknown>>>(...wrappers: T1): Result<OkValOfAll<T1>, ErrValOfAll<T1>[number]>;
-    any<T1 extends Array<Result<unknown, unknown>>>(...wrappers: T1): Result<OkValOfAll<T1>[number], ErrValOfAll<T1>>;
+    /**
+     * **NOTE**
+     *
+     *
+     * **OUTCOME**
+     * Iterate through a `ResultArray` short circuit at the first `Err` or return
+     * a `Tuple` of all successful values. Will return as a `Result`.
+     *
+     * @example
+     * let r0: Result<number, "ERR_SOMETHING_WENT_WRONG_0">;
+     * let r1: Result<string, "ERR_SOMETHING_WENT_WRONG_1">;
+     * let r2: Result<500000, "ERR_SOMETHING_WENT_WRONG_2">;
+     * let r: Result<[number, string, 500000], "ERR_SOMETHING_WENT_WRONG_0" | "ERR_SOMETHING_WENT_WRONG_1" | "ERR_SOMETHING_WENT_WRONG_2"> = ResultHandler.all(r0, r1, r2);
+     */
+    all<T1 extends ResultArray<unknown, unknown>>(...results: T1): Result<OkValOfAll<T1>, ErrValOfAll<T1>[number]>;
+    /**
+     * **OUTCOME**
+     * Iterate through a `ResultArray` short circuit at the first `Ok` or return
+     * a `Tuple` of all errors. Will return as a `Result`.
+     *
+     * @example
+     *
+     */
+    any<T1 extends ResultArray<unknown, unknown>>(...results: T1): Result<OkValOfAll<T1>[number], ErrValOfAll<T1>>;
+    /**
+     * **OUTCOME**
+     * Wrap an unsafe operation which may throw and wrap the `unknown` error
+     * in an `Unsafe` wrapper.
+     *
+     * @example
+     *  let exampleR: Result<number, Unsafe> = ResultHandler.wrap(() => {
+     *      if () throw "ERR_SOMETHING_WENT_WRONG";
+     *      return 500;
+     *  });
+     *  exampleR.mapErr(unsafe => {
+     *      let stringO: Option<string> = unsafe.parse((unknown): unknown is string => {
+     *          if (
+     *              unknown !== null
+     *              && unknown !== undefined
+     *              && typeof unknown === "string"
+     *          ) return true;
+     *          else return false;
+     *      });
+     *      /// ...
+     *  });
+     */
     wrap<T1, T2, T3 extends Array<T2>>(operation: Closure<T3, T1>, ...payload: T3): Result<T1, Unsafe>;
-    wrapAsync<T1 extends Promise<unknown>, T2, T3 extends Array<T2>>(operation: AsyncClosure<T3, T1>, ...payload: T3): Promise<Result<Awaited<T1>, Unsafe>>;
+    /**
+     * **OUTCOME**
+     * Wrap an unsafe async operation which may throw and wrap the `unknown` error
+     * in an `Unsafe` wrapper.
+     *
+     * @example
+     *  let exampleR: Result<number, Unsafe> = await ResultHandler.wrapAsync(async () => {
+     *      /// Some async operation.
+     *      if () throw "ERR_SOMETHING_WENT_WRONG";
+     *      return 500;
+     *  });
+     *  exampleR.mapErr(unsafe => {
+     *      let stringO: Option<string> = unsafe.parse((unknown): unknown is string => {
+     *          if (
+     *              unknown !== null
+     *              && unknown !== undefined
+     *              && typeof unknown === "string"
+     *          ) return true;
+     *          else return false;
+     *      });
+     *      /// ...
+     *  });
+     */
+    wrapAsync<T1 extends Promise<unknown>, T2, T3 extends Array<T2>>(operation: AsyncClosure<T3, T1>, ...payload: T3): AsyncResult<Awaited<T1>, Unsafe>;
 };
 declare const ResultHandler: ResultHandler;
 
+/**
+ * **NOTE**
+ * A wrapper that encapsulates either a success `Ok<T1>` or failure `Err<T2>`.
+ *
+ * **NOTE**
+ * A `Result<T1, T2>` can be in one of two states.
+ * - `Ok<T1>` - A successful result with a value of type `T1`.
+ * - `Err<T2>` - A failure with an error or value of type `T2`.
+ *
+ * **EXAMPLE**
+ * ```typescript
+ *  function foo(): Result<200, 404> {
+ *      if () return Ok(200);
+ *      return Err(404);
+ *  }
+ *
+ *  let result: Result<200, 404> = foo();
+ *  if (result.ok()) {
+ *      let value: 200 = result.unwrapSafely();
+ *      /// ...
+ *  }
+ * ```
+ */
 type Result<T1, T2> = Ok<T1> | Err<T2>;
 
 type ErrOfAll<T1 extends Array<Result<unknown, unknown>>> = {
@@ -180,7 +357,19 @@ type ErrValOfAll<T1 extends Array<Result<unknown, unknown>>> = {
 
 type ErrValOf<T1 extends Result<unknown, unknown>> = T1 extends Err<infer T2> ? T2 : never;
 
-type Err<T1> = ResultAndOptionBrandToWrapperMap<"Err", T1>;
+type Err<T1> = Branded<"Err"> & RecoveryWrapper<T1> & Serializable & Displayable & {
+    ok(): this is Ok<unknown>;
+    err(): this is Err<T1>;
+    inspect(): T1;
+    stack(): string;
+    expect(message: string): never;
+    expectErr(__: unknown): T1;
+    and(__: unknown): Err<T1>;
+    map(__: unknown): Err<T1>;
+    mapErr<T2>(operation: Function<T1, T2>): Err<T2>;
+    restore<T2>(operation: Function<T1, T2>): Ok<T2>;
+    toOption(): Option<never>;
+};
 declare function Err<T1>(_value: T1): Err<T1>;
 
 type OkOfAll<T1 extends Array<Result<unknown, unknown>>> = {
@@ -195,16 +384,39 @@ type OkValOfAll<T1 extends Array<Result<unknown, unknown>>> = {
 
 type OkValOf<T1 extends Result<unknown, unknown>> = T1 extends Ok<infer T2> ? T2 : never;
 
-type Ok<T1> = ResultAndOptionBrandToWrapperMap<"Ok", T1>;
+type Ok<T1> = Branded<"Ok"> & ValidatedWrapper<T1> & Serializable & Displayable & {
+    ok(): this is Ok<T1>;
+    err(): this is Err<unknown>;
+    expect(__: unknown): T1;
+    expectErr(__: unknown): never;
+    unwrapOr(__: unknown): T1;
+    and<T2>(operation: Function<T1, Ok<T2>>): Ok<T2>;
+    and<T2>(operation: Function<T1, Err<T2>>): Result<T1, T2>;
+    and<T2, T3>(operation: Function<T1, Result<T2, T3>>): Result<T2, T3>;
+    map<T2>(operation: Function<T1, T2>): Ok<T2>;
+    mapErr(__: unknown): Ok<T1>;
+    restore(__: unknown): Ok<T1>;
+    /**
+     *
+     *
+     * **Example**
+     * ```
+     *  let result: Result<200, 404>
+     *      .toOption()
+     *      .unwrap();
+     * ```
+     */
+    toOption(): Option<T1>;
+};
 declare function Ok<T1>(_value: T1): Ok<T1>;
 
 type AsyncUnsafe = Promise<Unsafe>;
 
 type UnsafeBrand = "Unsafe";
 
-type Unsafe = Branded<"Unsafe"> & Wrapper<unknown> & Parsable & {
+type Unsafe = Branded<"Unsafe"> & Pick<Wrapper<unknown>, "unwrap"> & Parsable & {
     toString(): string;
 };
 declare function Unsafe(_value: unknown): Unsafe;
 
-export { type AsyncClosure, type AsyncFunction, type AsyncOption, type AsyncResult, type AsyncUnsafe, type Branded, type Clonable, type Closure, type Displayable, DomError, type DomErrorCode, DomErrorCodeToCodeMap, DomErrorNameToCodeMap, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error, type FallbackWrapper, type Function$1 as Function, type LegacyDomErrorCode, type LegacyDomErrorName, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, type Option, type OptionBrand, type Parsable, type Result, type ResultAndOptionBrandToWrapperMap, type ResultBrand, ResultHandler, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, type TypeGuard, Unsafe, type UnsafeBrand, type ValidatedWrapper, type Wrapper, type WrapperBrand, clone, isBranded, isErr, isNone, isOk, isOption, isResult, isSome, isWrapper, panic, toString };
+export { type AsyncClosure, type AsyncFunction, type AsyncOption, type AsyncResult, type AsyncUnsafe, type Branded, type Closure, type Displayable, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, type Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, type Option, type OptionArray, type OptionBrand, OptionHandler, type Parsable, type Result, type ResultArray, type ResultBrand, ResultHandler, type Sequence, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, type TypeGuard, type UnsafeBrand };
