@@ -4,6 +4,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@root": ["src/core/mod.internal.ts"],
+			"@root/common": ["src/common/mod.internal.ts"]
 		}
 	},
 	"include": ["src", "script"],
