@@ -1,18 +1,21 @@
-import { INTERNAL_ERROR_MESSAGE } from "@root/common";
-import { I8 } from "@root";
-import { I16 } from "@root";
-import { I32 } from "@root";
-import { I64 } from "@root";
-import { I128 } from "@root";
-import { I256 } from "@root";
-import { I } from "@root";
-import { U8 } from "@root";
-import { U16 } from "@root";
-import { U32 } from "@root";
-import { U64 } from "@root";
-import { U128 } from "@root";
-import { U256 } from "@root";
-import { U } from "@root";
+import { 
+    INTERNAL_ERROR_MESSAGE 
+} from "@root/common";
+import {
+    Float,
+    I8,
+    I16,
+    I32,
+    I64,
+    I128,
+    I256,
+    U8,
+    U16,
+    U32,
+    U64,
+    U128,
+    U256 
+} from "@root";
 
 export const MAX_256: bigint = 2n**256n - 1n;
 export const MIN_256: bigint = - MAX_256;
@@ -44,3 +47,13 @@ export const MAX_U_128: U128 = U128(MAX_128).expect("Invalid maximum U128 consta
 export const MIN_U_128: U128 = U128(0).expect("Invalid minimum U128 constant." + INTERNAL_ERROR_MESSAGE);
 export const MAX_U_64: U64 = U64(MAX_64).expect("Invalid maximum U64 constant." + INTERNAL_ERROR_MESSAGE);
 export const MIN_U_64: U64 = U64(0).expect("Invalid minimum U64 constant." + INTERNAL_ERROR_MESSAGE);
+export const MAX_U_32: U32 = U32(MAX_32).expect("Invalid maximum U32 constant." + INTERNAL_ERROR_MESSAGE);
+export const MIN_U_32: U32 = U32(0).expect("Invalid minimum U32 constant." + INTERNAL_ERROR_MESSAGE);
+export const MAX_U_16: U16 = U16(MAX_16).expect("Invalid maximum U16 constant." + INTERNAL_ERROR_MESSAGE);
+export const MIN_U_16: U16 = U16(0).expect("Invalid minimum U16 constant." + INTERNAL_ERROR_MESSAGE);
+export const MAX_U_8: U8 = U8(MAX_8).expect("Invalid maximum U8 constant." + INTERNAL_ERROR_MESSAGE);
+export const MIN_U_8: U8 = U8(0).expect("Invalid minimum U8 constant." + INTERNAL_ERROR_MESSAGE);
+export const MAX_NUMBER: number = Number.MAX_SAFE_INTEGER;
+export const MIN_NUMBER: number = Number.MIN_SAFE_INTEGER;
+export const MAX_FLOAT: Float = Float(MAX_NUMBER).expect("Invalid maximum float constant." + INTERNAL_ERROR_MESSAGE);
+export const MIN_FLOAT: Float = Float(MIN_NUMBER).expect("Invalid minimum float constant." + INTERNAL_ERROR_MESSAGE);

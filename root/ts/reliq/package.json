@@ -8,6 +8,7 @@
 	"main": "target/tslib/mod.cjs",
 	"scripts": {
 		"build": "bun run script/build_script.ts",
+		"link": "bun run script/link.ts",
 		"release": "bun run build && npm publish"
 	},
 	"devDependencies": {

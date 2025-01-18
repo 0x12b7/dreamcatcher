@@ -5,6 +5,7 @@ import {
 export namespace MathViolation {
     export type ArithmeticRange = UpperArithmeticRange | LowerArithmeticRange;
     export type ArithmeticRangeAndPrecision = ArithmeticRange | Precision;
+    export type ArithmeticRangeAndDivisionByZero = ArithmeticRange | DivisionByZero;
     export type UpperArithmeticRangeAndPrecision = Extract<MathErrorCode, "MATH.ERR_">;
     export type UpperArithmeticRange = Extract<MathErrorCode, "MATH.ERR_UPPER_ARITHMETIC_RANGE_VIOLATION">;
     export type LowerArithmeticRange = Extract<MathErrorCode, "MATH.ERR_LOWER_ARITHMETIC_RANGE_VIOLATION">;

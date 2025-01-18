@@ -4,9 +4,11 @@
 		"baseUrl": ".",
 		"paths": {
 			"@root": ["src/core/mod.internal.ts"],
-			"@root/common": ["src/common/mod.internal.ts"]
+			"@root/common": ["src/common/mod.internal.ts"],
+
+			"@node": ["src/node/mod.internal.ts"]
 		}
 	},
-	"include": ["src", "script"],
+	"include": ["src", "script", "network-error"],
 	"exclude": ["node_modules", "target/**/*", "dump"]
 }
