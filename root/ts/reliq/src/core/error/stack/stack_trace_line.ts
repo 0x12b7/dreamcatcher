@@ -55,6 +55,13 @@ export function StackTraceLine(_line: string): Result<StackTraceLine, StackTrace
 
     }
 
+    /**
+     * 
+     * ```ts
+     *  43 |> 
+     * ```
+     * 
+     */
     function toString(): string {
         
     }

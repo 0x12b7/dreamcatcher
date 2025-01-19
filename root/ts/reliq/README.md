@@ -5,9 +5,10 @@ Reliq is a TypeScript error-handling library inspired by Rust's error paradigms 
 
 
 
+A library for building unreasonably robust TypeScript code.
 
 
-
+Standard unwrap or unwrapOr changed to unlock and unlockOr. unwrap has been removed and result or option can no longer be thrown, use expect instead, this encourages better conventions. expect adds context and is not a free for all catch for everything. Use expect to make assertions about your code.
 
 
 

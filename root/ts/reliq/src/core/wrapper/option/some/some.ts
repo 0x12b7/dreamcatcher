@@ -142,5 +142,3 @@ export function Some<T1>(_value: T1): Some<T1> {
         return console.log(toString());
     }
 }
-
-let x = Some(500).unlock();

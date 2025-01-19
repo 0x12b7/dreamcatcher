@@ -3,7 +3,7 @@ import type { Serializable } from "@root";
 import type { Displayable } from "@root";
 import { Some, StackTrace } from "@root";
 import { Err } from "@root";
-import { Error as NativeError } from "@root";
+import { Error } from "@root";
 import { panic } from "@root";
 
 /**
@@ -56,7 +56,7 @@ export type None =
      *  let status: number = statusO.unwrapOr(404);
      * ```
      */
-    unwrapOr<T2>(fallback: T2): T2;
+    unlockOr<T2>(fallback: T2): T2;
     
     /**
      * **Note** Performs a no-op operation as there's no value to combine or logically `and`.
@@ -100,33 +100,28 @@ export const None: None = (() => {
     }
     
     function some(): this is Some<unknown> {
-        return (false);
+        return false;
     }
 
     function none(): this is None {
-        return (true);
+        return true;
     }
 
     function expect(message: string): never {
-        let e: Error = Error();
-        Error.captureStackTrace(e, expect);
-        let assertionE: AssertionError = NativeError({
-            code: "ERR_INVALID_ASSERTION",
-            message: Some(
-                "\n" + "Assertion Error:" +
-                "\n" +
-                "\n" + message +
-                "\n" +
-                "\n" + "An unrecoverable error has occured."
-            ),
+        panic(Error({
+            code: "ERR_INVALID_OPTION_STATE",
+            message: Some([
+                "\x1b[31m" + "Fatal Error: Attempted to unlock `None`." + "\x1b[0m",
+                "",
+                "Attempted to unlock an `Option` but no value contained."
+            ].join("\n")),
             payload: None,
-            stack: Some(StackTrace())
-        });
-        panic(assertionE);
+            stack: Some(StackTrace(expect))
+        }));
     }
 
-    function unwrapOr<T1>(fallback: T1): T1 {
-        return (fallback);
+    function unlockOr<T1>(fallback: T1): T1 {
+        return fallback;
     }
 
     function and(__: unknown): None {

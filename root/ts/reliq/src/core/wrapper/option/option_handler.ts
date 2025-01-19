@@ -71,7 +71,7 @@ export const OptionHandler: OptionHandler = (() => {
         while (i < options.length) {
             let option: Option<unknown> = options.at(i)!;
             if (option.none()) return option as None;
-            out.push(option.unwrapSafely());
+            out.push(option.unlock());
             i ++;
         }
         return Some(out as SomeValOfAll<T1>);

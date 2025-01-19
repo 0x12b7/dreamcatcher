@@ -29,11 +29,22 @@ export function StackTrace(
 
     /** @constructor */ {
         if (typeof _args0 === "string") _lines = _parse(_args0);
-        if (typeof _args0 === "function") _lines = _parse(localStackTrace(_args0));
+        if (typeof _args0 === "function") _lines = _parse(localStackTrace(_args0).unlockOr(""));
         if (Array.isArray(_args0)) _lines = _args0;
         return { toString, lines };
     }
 
+    /**
+     * **Example**
+     * ```ts
+     *  `
+     *  0 |> someFunction /path/to/file.js 10 15
+     *  1 |> <<< STACK_TRACE_LINE.ERR_LOCATION_UNAVAILABLE >>>
+     *  2 |> anotherFunction @ /path/to/otherfile.js 20 25
+     *  3 |> main @ /path/to/mainfile.js 30 35
+     *  `
+     * ```
+     */
     function toString(): string {
         let result: string = "";
         lines()

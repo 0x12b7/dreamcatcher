@@ -78,25 +78,6 @@ export function Err<T1>(_value: T1): Err<T1> {
         return inspect();
     }
 
-    function unwrap(): never {
-        let value0: T1 = inspect();
-        if (
-            value0 !== null
-            && value0 !== undefined
-            && typeof value0 === "object"
-            && "code" in value0
-            && "message" in value0
-            && typeof value0.code === "string"
-            && isOption(value0.message)
-        ) {
-            value0.message.map(message => {
-                throw value0.code + ":" + " " + message + "\n" + stack();
-            });
-            throw value0.code + "\n" + stack();
-        }
-        throw toString0(inspect()) + "\n" + stack();
-    }
-
     function unlockOr<T2>(alternative: T2): T2 {
         return alternative;
     }

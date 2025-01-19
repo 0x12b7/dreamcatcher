@@ -40,7 +40,7 @@ export function Ok<T1>(_value: T1): Ok<T1> {
             and,
             map,
             mapErr,
-            restore,
+            recover,
             toOption,
             toString,
             display
@@ -90,7 +90,7 @@ export function Ok<T1>(_value: T1): Ok<T1> {
         return _this;
     }
 
-    function restore(__: unknown): Ok<T1> {
+    function recover(__: unknown): Ok<T1> {
         return _this;
     }
 
