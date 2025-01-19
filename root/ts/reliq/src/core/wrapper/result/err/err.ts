@@ -1,19 +1,16 @@
-import {
-    type Branded,
-    type RecoveryWrapper,
-    type Serializable,
-    type Displayable,
-    type Function,
-    type Option,
-    StringHandler,
-    Ok,
-    None,
-    isOption
-} from "@root";
+import type { Serializable } from "@root";
+import type { Displayable } from "@root";
+import type { Function } from "@root";
+import type { Option } from "@root";
+import type { Result } from "@root";
+import { Some } from "@root";
+import { Ok } from "@root";
+import { None } from "@root";
+import { toString as toString0 } from "@root";
+
+/// unlock is not available use expect or inspect
 
 export type Err<T1> = 
-    & Branded<"Err">
-    & RecoveryWrapper<T1>
     & Serializable
     & Displayable
     & {
@@ -23,10 +20,11 @@ export type Err<T1> =
     stack(): string;
     expect(message: string): never;
     expectErr(__: unknown): T1;
+    unlockOr<T2>(fallback: T2): T2;
     and(__: unknown): Err<T1>;
     map(__: unknown): Err<T1>;
     mapErr<T2>(operation: Function<T1, T2>): Err<T2>;
-    restore<T2>(operation: Function<T1, T2>): Ok<T2>;
+    recover<T2>(operation: Function<T1, T2>): Ok<T2>;
     toOption(): Option<never>;
 };
 
@@ -39,27 +37,21 @@ export function Err<T1>(_value: T1): Err<T1> {
         Error.captureStackTrace(e, Err);
         _stack = e.stack ?? "";
         return _this = {
-            type,
             ok,
             err,
             inspect,
             stack,
             expect,
             expectErr,
-            unwrap,
-            unwrapOr,
+            unlockOr,
             and,
             map,
             mapErr,
-            restore,
+            recover,
             toOption,
             toString,
             display
         };
-    }
-
-    function type(): "Err" {
-        return "Err";
     }
 
     function ok(): this is Ok<unknown> {
@@ -102,10 +94,10 @@ export function Err<T1>(_value: T1): Err<T1> {
             });
             throw value0.code + "\n" + stack();
         }
-        throw StringHandler().toString(inspect()) + "\n" + stack();
+        throw toString0(inspect()) + "\n" + stack();
     }
 
-    function unwrapOr<T2>(alternative: T2): T2 {
+    function unlockOr<T2>(alternative: T2): T2 {
         return alternative;
     }
 
@@ -121,7 +113,7 @@ export function Err<T1>(_value: T1): Err<T1> {
         return Err(operation(inspect()));
     }
 
-    function restore<T2>(operation: Function<T1, T2>): Ok<T2> {
+    function recover<T2>(operation: Function<T1, T2>): Ok<T2> {
         return Ok(operation(inspect()));
     }
 
@@ -130,7 +122,7 @@ export function Err<T1>(_value: T1): Err<T1> {
     }
 
     function toString(): string {
-        return type() + "(" + StringHandler().toString(inspect()) + ")" + "\n" + stack();
+        return "Err" + "(" + toString0(inspect()) + ")" + "\n" + stack();
     }
 
     function display(): void {

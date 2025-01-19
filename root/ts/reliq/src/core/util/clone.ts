@@ -1,26 +1,26 @@
-import {
-    type Result,
-    type Option,
-    ResultHandler,
-    DomError
-} from "@root";
+import type { Result } from "@root";
+import { DomError } from "@root";
+import { wrap } from "@root";
 
-export function clone<T1>(data: T1): Result<T1, DomError> {
-    return ResultHandler.wrap(() => {
-        return structuredClone(data);
-    }).mapErr(unsafe => unsafe
-        .parse((instance): instance is DOMException => {
-            return instance !== null
-                && instance !== undefined
-                && typeof instance === "object"
-                && "name" in instance
-                && "code" in instance
-                && "message" in instance
-                && typeof instance.name === "string"
-                && typeof instance.code === "number"
-                && typeof instance.message === "string";
-        })
-        .toResult(undefined)
-        .map(exception => DomError(exception))
-        .restore(() => DomError()));
+export function clone<T1>(value: T1): Result<T1, DomError> {
+    return wrap(() => {
+        return structuredClone(value);
+    }).mapErr(unsafe => {
+        return unsafe
+            .parse((self): self is DOMException => {
+                return self !== null
+                    && self !== undefined
+                    && typeof self === "object"
+                    && "name" in self
+                    && "code" in self
+                    && "message" in self
+                    && typeof self.name === "string"
+                    && typeof self.code === "number"
+                    && typeof self.message === "string";
+            })
+            .map(exception => {
+                return DomError(exception);
+            })
+            .unwrapOr(DomError());
+    });
 }

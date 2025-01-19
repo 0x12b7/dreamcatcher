@@ -1,18 +1,13 @@
-import {
-    type Branded,
-    type ValidatedWrapper,
-    type Serializable,
-    type Displayable,
-    type Function,
-    type Option,
-    StringHandler,
-    None,
-    Ok
-} from "@root";
+import type { Branded } from "@root";
+import type { Serializable } from "@root";
+import type { Displayable } from "@root";
+import type { Function } from "@root";
+import type { Option } from "@root";
+import { None } from "@root";
+import { Ok } from "@root";
+import { toString as toString0 } from "@root";
 
 export type Some<T1> =
-    & Branded<"Some">
-    & ValidatedWrapper<T1>
     & Serializable
     & Displayable
     & {
@@ -47,7 +42,13 @@ export type Some<T1> =
      */
     expect(__: unknown): T1;
 
-    unwrapOr(__: unknown): T1;
+    /**
+     * **Note**
+     * Safely unlock the value within.
+     */
+    unlock(): T1;
+
+    unlockOr(__: unknown): T1;
 
     /**
      * **NOTE**
@@ -84,13 +85,11 @@ export type Some<T1> =
 export function Some<T1>(_value: T1): Some<T1> {
     /** @constructor */ {
         return {
-            type,
             some,
             none,
             expect,
-            unwrap,
-            unwrapOr,
-            unwrapSafely,
+            unlock,
+            unlockOr,
             and,
             map,
             toResult,
@@ -115,15 +114,11 @@ export function Some<T1>(_value: T1): Some<T1> {
         return _value;
     }
 
-    function unwrap(): T1 {
+    function unlock(): T1 {
         return _value;
     }
 
-    function unwrapOr(__: unknown): T1 {
-        return _value;
-    }
-
-    function unwrapSafely(): T1 {
+    function unlockOr(__: unknown): T1 {
         return _value;
     }
 
@@ -140,10 +135,12 @@ export function Some<T1>(_value: T1): Some<T1> {
     }
 
     function toString(): string {
-        return type() + "(" + StringHandler().toString(_value) + ")";
+        return type() + "(" + toString0(_value) + ")";
     }
 
     function display(): void {
         return console.log(toString());
     }
 }
+
+let x = Some(500).unlock();

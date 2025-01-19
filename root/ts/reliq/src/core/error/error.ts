@@ -1,5 +1,6 @@
 import {
-    type Option
+    type Option,
+    StackTrace
 } from "@root";
 
 /**
@@ -28,6 +29,7 @@ export type Error<T1 extends string, T2 = unknown> = {
     code: T1;
     message: Option<string>;
     payload: Option<T2>;
+    stack: Option<StackTrace>;
 };
 
 export function Error<T1 extends string, T2 = unknown>(_this: Error<T1, T2>): Error<T1, T2> {

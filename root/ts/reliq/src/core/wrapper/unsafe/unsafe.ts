@@ -1,14 +1,12 @@
-import {
-    type Branded,
-    type Wrapper,
-    type Parsable,
-    type Serializable,
-    type TypeGuard,
-    type Option,
-    Some,
-    None,
-    StringHandler
-} from "@root";
+import type { Branded } from "@root";
+import type { Wrapper } from "@root";
+import type { Parsable } from "@root";
+import type { Serializable } from "@root";
+import type { TypeGuard } from "@root";
+import type { Option } from "@root";
+import { Some } from "@root";
+import { None } from "@root";
+import { toString as toString0 } from "@root";
 
 export type Unsafe =
     & Branded<"Unsafe">
@@ -40,6 +38,6 @@ export function Unsafe(_value: unknown): Unsafe {
     }
 
     function toString(): string {
-        return `${ type() } (${ StringHandler().toString(unwrap())} )`;
+        return `${ type() } (${ toString0(unwrap())} )`;
     }
 }

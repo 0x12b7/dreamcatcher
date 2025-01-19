@@ -1,12 +1,10 @@
-import {
-    type Branded,
-    type RecoveryWrapper,
-    type Serializable,
-    type Displayable,
-    Some,
-    Err,
-    panic
-} from "@root";
+import type { AssertionError } from "@root";
+import type { Serializable } from "@root";
+import type { Displayable } from "@root";
+import { Some, StackTrace } from "@root";
+import { Err } from "@root";
+import { Error as NativeError } from "@root";
+import { panic } from "@root";
 
 /**
  * **Note**
@@ -14,8 +12,6 @@ import {
  * should safely handle or terminate with an error.
  */
 export type None = 
-    & Branded<"None">
-    & RecoveryWrapper<never>
     & Serializable
     & Displayable 
     & {
@@ -51,6 +47,16 @@ export type None =
      * ```
      */
     expect(message: string): never;
+
+    /**
+     * 
+     * **Example**
+     * ```ts
+     *  let statusO: Option<200>;
+     *  let status: number = statusO.unwrapOr(404);
+     * ```
+     */
+    unwrapOr<T2>(fallback: T2): T2;
     
     /**
      * **Note** Performs a no-op operation as there's no value to combine or logically `and`.
@@ -72,6 +78,7 @@ export type None =
 
 
     map(__: unknown): None;
+
     toResult<T1>(value: T1): Err<T1>;
 };
 
@@ -79,22 +86,17 @@ export const None: None = (() => {
     let _this: None;
 
     /** @constructor */ {
-        return (_this = {
-            type,
+        return _this = {
             some,
             none,
             expect,
-            unwrap,
-            unwrapOr,
+            unlockOr,
             and,
             map,
             toResult,
             toString,
             display
-        });
-    }
-    function type(): "None" {
-        return ("None");
+        };
     }
     
     function some(): this is Some<unknown> {
@@ -106,11 +108,21 @@ export const None: None = (() => {
     }
 
     function expect(message: string): never {
-        panic(message, expect);
-    }
-
-    function unwrap(): never {
-        panic(type());
+        let e: Error = Error();
+        Error.captureStackTrace(e, expect);
+        let assertionE: AssertionError = NativeError({
+            code: "ERR_INVALID_ASSERTION",
+            message: Some(
+                "\n" + "Assertion Error:" +
+                "\n" +
+                "\n" + message +
+                "\n" +
+                "\n" + "An unrecoverable error has occured."
+            ),
+            payload: None,
+            stack: Some(StackTrace())
+        });
+        panic(assertionE);
     }
 
     function unwrapOr<T1>(fallback: T1): T1 {
@@ -130,7 +142,7 @@ export const None: None = (() => {
     }
 
     function toString(): string {
-        return type();
+        return "None";
     }
 
     function display(): void {
