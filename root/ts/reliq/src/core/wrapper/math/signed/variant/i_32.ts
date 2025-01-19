@@ -1,9 +1,13 @@
 import {
-    type SignedIntegerResultMap,
-    type Numeric
+    type Wrapper,
+    type Numeric,
+    type Branded
 } from "@root";
 
-export type I32 = {
+export type I32 = 
+    & Branded<"I32">
+    & Wrapper<bigint>
+    & {
 
 };
 

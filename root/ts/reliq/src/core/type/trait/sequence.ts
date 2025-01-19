@@ -4,6 +4,10 @@ import {
 } from "@root";
 
 export type Sequence<T1> = {
+    has(item: T1): boolean;
+    has(item: T1, fromPosition: bigint): boolean;
+    positionOf(value: T1): Option<bigint>;
+    positionOf(value: T1, fromPosition: bigint): Option<bigint>;
     at(position: bigint): Option<T1>;
     length(): bigint;
     concat(sequence: T1): T1;

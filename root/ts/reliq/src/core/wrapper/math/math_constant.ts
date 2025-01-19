@@ -1,6 +1,6 @@
 import { 
     INTERNAL_ERROR_MESSAGE 
-} from "@root/common";
+} from "@root";
 import {
     Float,
     I8,

@@ -193,3 +193,5 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
         return result;
     }
 }
+
+Vec([500, 500]);

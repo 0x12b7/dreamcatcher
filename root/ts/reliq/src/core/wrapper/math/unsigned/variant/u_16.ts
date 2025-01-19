@@ -1,9 +1,10 @@
-import { type Branded } from "@root";
+import { type Branded, type Wrapper } from "@root";
 import { type Numeric } from "@root";
 import { type UnsignedIntegerResultMap } from "@root";
 
 export type U16 = 
     & Branded<"U16">
+    & Wrapper<bigint>
     & {
 
 };

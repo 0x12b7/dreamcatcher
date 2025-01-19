@@ -1,9 +1,9 @@
 /** 
- * **WARNING**
- * - Does not support circular references and circular objects will result in `[object Object]`.
+ * **Warning**
+ * Does not support circular references and circular objects will result in `[object Object]`.
  * 
- * @example
- *  ```typescript
+ * **Example**
+ *  ```ts
  *  console.log(toString(42));          /// 42
  *  console.log(toString(true));        /// true
  *  console.log(toString(null));        /// null
@@ -36,7 +36,7 @@
  *                                      /// }
  *  ```
  */
-function toString(unknown: unknown): string {
+export function toString(unknown: unknown): string {
     if (unknown === null || unknown === undefined || typeof unknown !== "object") return String(unknown);
     try {
         return JSON.stringify(unknown);
@@ -44,5 +44,3 @@ function toString(unknown: unknown): string {
     catch {}
     return "[object Object]";
 }
-
-export { toString };

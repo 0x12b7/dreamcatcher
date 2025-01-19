@@ -2,6 +2,7 @@ import {
     type Branded,
     type Wrapper,
     type Parsable,
+    type Serializable,
     type TypeGuard,
     type Option,
     Some,
@@ -11,11 +12,9 @@ import {
 
 export type Unsafe =
     & Branded<"Unsafe">
-    & Pick<Wrapper<unknown>, "unwrap">
+    & Wrapper<unknown>
     & Parsable
-    & {
-    toString(): string;
-};
+    & Serializable;
 
 export function Unsafe(_value: unknown): Unsafe {
     /** @constructor */ {
@@ -41,6 +40,6 @@ export function Unsafe(_value: unknown): Unsafe {
     }
 
     function toString(): string {
-        return type() + "(" + StringHandler().toString(unwrap()) + ")";
+        return `${ type() } (${ StringHandler().toString(unwrap())} )`;
     }
 }
