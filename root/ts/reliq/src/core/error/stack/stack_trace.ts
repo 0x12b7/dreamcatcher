@@ -1,4 +1,5 @@
 import {
+    Ok,
     type ResultArray,
     type Serializable,
     type StackTraceLineError
@@ -13,7 +14,7 @@ import {
 export type StackTrace = 
     & Serializable
     & {
-    lines(): Array<StackTraceLine>;
+    lines(): ResultArray<StackTraceLine, StackTraceLineError>;
 };
 
 export function StackTrace(_location: Function): StackTrace;
@@ -25,12 +26,14 @@ export function StackTrace(
         | Function 
         | string
 ): StackTrace {
-    let _lines: ResultArray<StackTraceLine, StackTraceLineError>;
+    let _linesR: ResultArray<StackTraceLine, StackTraceLineError>;
 
     /** @constructor */ {
-        if (typeof _args0 === "string") _lines = _parse(_args0);
-        if (typeof _args0 === "function") _lines = _parse(localStackTrace(_args0).unlockOr(""));
-        if (Array.isArray(_args0)) _lines = _args0;
+        if (typeof _args0 === "string") _linesR = _parse(_args0);
+        if (typeof _args0 === "function") _linesR = _parse(localStackTrace(_args0).unwrapOr(""));
+        if (Array.isArray(_args0)) _linesR = _args0.map(line => {
+            return Ok(line);
+        });
         return { toString, lines };
     }
 
@@ -68,7 +71,7 @@ export function StackTrace(
     }
 
     function lines(): ResultArray<StackTraceLine, StackTraceLineError> {
-        return _lines;
+        return _linesR;
     }
 
     function _parse(stack: string): ResultArray<StackTraceLine, StackTraceLineError> {
@@ -81,7 +84,9 @@ export function StackTrace(
                 return line.length > 0;
             })
             .map(line => {
-                return StackTraceLine(line);
+                /// Warning
+                /// This is ok because it is only for display purposes.
+                return StackTraceLine((line as any));
             });
     }
 }

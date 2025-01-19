@@ -103,7 +103,7 @@ const ResultHandler: ResultHandler = (() => {
         let i: number = 0;
         while (i < results.length) {
             let result: Result<unknown, unknown> = results.at(i)!;
-            if (result.ok()) out.push(result.unwrapSafely());
+            if (result.ok()) out.push(result.unlock());
             else return result as Err<ErrValOfAll<T1>[number]>;
             i ++;
         }

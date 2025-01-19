@@ -56,7 +56,7 @@ export type None =
      *  let status: number = statusO.unwrapOr(404);
      * ```
      */
-    unlockOr<T2>(fallback: T2): T2;
+    unwrapOr<T2>(fallback: T2): T2;
     
     /**
      * **Note** Performs a no-op operation as there's no value to combine or logically `and`.
@@ -90,7 +90,7 @@ export const None: None = (() => {
             some,
             none,
             expect,
-            unlockOr,
+            unwrapOr,
             and,
             map,
             toResult,
@@ -111,7 +111,7 @@ export const None: None = (() => {
         panic(Error({
             code: "ERR_INVALID_OPTION_STATE",
             message: Some([
-                "\x1b[31m" + "Fatal Error: Attempted to unlock `None`." + "\x1b[0m",
+                "\x1b[31m" + "Fatal Error: Attempted to unwrap `None`." + "\x1b[0m",
                 "",
                 "Attempted to unlock an `Option` but no value contained."
             ].join("\n")),
@@ -120,7 +120,7 @@ export const None: None = (() => {
         }));
     }
 
-    function unlockOr<T1>(fallback: T1): T1 {
+    function unwrapOr<T1>(fallback: T1): T1 {
         return fallback;
     }
 

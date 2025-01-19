@@ -44,11 +44,13 @@ export type Some<T1> =
 
     /**
      * **Note**
-     * Safely unlock the value within.
+     * Only successful values can be unwrapped unlike `rust`, this method is only available on a safe wrapper, it won't be available if it will throw.
+     * 
+     * 
      */
-    unlock(): T1;
+    unwrap(): T1;
 
-    unlockOr(__: unknown): T1;
+    unwrapOr(__: unknown): T1;
 
     /**
      * **NOTE**
@@ -69,7 +71,7 @@ export type Some<T1> =
      *      });
      * ```
      */
-    and<T2>(operation: Function<T1, Option<T2>>): Option<T2>;
+    and<T2>(task: Function<T1, Option<T2>>): Option<T2>;
     
     /**
      * **NOTE**
@@ -78,7 +80,9 @@ export type Some<T1> =
      * - If the `Option` is `None`, the transformation is not applied and `None` is returned.
      * 
      */
-    map<T2>(operation: Function<T1, T2>): Some<T2>;
+    map<T2>(task: Function<T1, T2>): Some<T2>;
+
+    
     toResult(__: unknown): Ok<T1>;
 };
 
@@ -88,8 +92,8 @@ export function Some<T1>(_value: T1): Some<T1> {
             some,
             none,
             expect,
-            unlock,
-            unlockOr,
+            unwrap,
+            unwrapOr,
             and,
             map,
             toResult,
@@ -114,11 +118,11 @@ export function Some<T1>(_value: T1): Some<T1> {
         return _value;
     }
 
-    function unlock(): T1 {
+    function unwrap(): T1 {
         return _value;
     }
 
-    function unlockOr(__: unknown): T1 {
+    function unwrapOr(__: unknown): T1 {
         return _value;
     }
 

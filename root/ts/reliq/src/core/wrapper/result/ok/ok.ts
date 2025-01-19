@@ -3,7 +3,8 @@ import type { Displayable } from "@root";
 import type { Function } from "@root";
 import type { Option } from "@root";
 import type { Result } from "@root";
-import { Some } from "@root";
+import { Error, None, StackTrace } from "@root";
+import { panic, Some } from "@root";
 import { Err } from "@root";
 import { toString as toString0 } from "@root";
 
@@ -64,7 +65,14 @@ export function Ok<T1>(_value: T1): Ok<T1> {
     }
 
     function expectErr(message: string): never {
-        panic(message, expectErr);
+        panic(Error({
+            code: "",
+            message: Some([
+                message
+            ].join("\n")),
+            payload: None,
+            stack: Some(StackTrace(expectErr))
+        }));
     }
 
     function unlock(): T1 {

@@ -1,99 +1,88 @@
-import type { Result } from "@root";
-import { Error } from "@root";
-import { Ok } from "@root";
-import { Err } from "@root";
+import type { Option } from "@root";
+import type { Serializable } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
-import type { Serializable } from "@root";
-
-export type StackTraceLineErrorCode =
-    | "STACK_TRACE_LINE.ERR_LOCATION_UNAVAILABLE"
-    | "STACK_TRACE_LINE.ERR_PATH_UNAVAILABLE"
-    | "STACK_TRACE_LINE.ERR_LINE_NUMBER_UNAVAILABLE"
-    | "STACK_TRACE_LINE.ERR_COLUMN_NUMBER_UNAVAILABLE";
-
-export type StackTraceLineError = Error<StackTraceLineErrorCode>;
 
 export type StackTraceLine = 
     & Serializable 
     & {
-    location(): string;
-    path(): string;
-    line(): bigint;
-    column(): bigint;
+    toString(line: bigint): string;
+    location(): Option<string>;
+    path(): Option<string>;
+    line(): Option<bigint>;
+    column(): Option<bigint>;
 };
 
-export function StackTraceLine(_line: string): Result<StackTraceLine, StackTraceLineError> {
-    let _location: string;
-    let _path: string;
-    let _line$: bigint;
-    let _column: bigint;
+/**
+ * ***Note***
+ * Designed to parse stack trace line ie. "at someFunction (/path/to/file.js:10:15)".
+ * 
+ * ***Warning***
+ * Use only for string representation or for display purposes, There are no guarantees
+ * that the string representations or properties will be parsed correctly due to several
+ * edge cases.
+*/
+export function StackTraceLine(_line: `at ${ string } (${ string })`): StackTraceLine {
+    let _locationO: Option<string>;
+    let _pathO: Option<string>;
+    let _lineO: Option<bigint>;
+    let _columnO: Option<bigint>;
 
     /** @constructor */ {
-        let sections: Array<string> = _line.split(" ");
-        let location: string | null = sections.at(0) || null;
-        let path: string | null = sections.at(1) || null;
-        let lineR: Result<[bigint, bigint], StackTraceLineError> = _parseLine(_line);
-        if (lineR.err()) return lineR;
-        _line$ = lineR.unlock()[0];
-        _column = lineR.unlock()[1];
-
-        if (!location) return Err(Error({
-            code: "STACK_TRACE_LINE.ERR_LOCATION_UNAVAILABLE",
-            message: Some(
-                "Unable to parse location."
-            ),
-            payload: None
-        }));
-        if (!path) return Err(Error({
-            code: "STACK_TRACE_LINE.ERR_PATH_UNAVAILABLE",
-            message: Some(
-                "Unable to parse path."
-            ),
-            payload: None
-        }));
-
+        _locationO = None;
+        _pathO = None;
+        _lineO = None;
+        _columnO = None;
+        let elements: Array<string> = _line.split(" ");
+        let firstElement: string | undefined = elements.shift();
+        if (firstElement && firstElement.trim().length !== 0) {
+            let secondElement: string | undefined = elements.shift();
+            let thirdElement: string | undefined = elements.shift();
+            if (secondElement && secondElement.trim().length !== 0) _locationO = Some(secondElement);
+            if (thirdElement && thirdElement.trim().length !== 0) {
+                let thirdElements: Array<string> = thirdElement
+                    .replaceAll("(", "")
+                    .replaceAll(")", "")
+                    .split(":");
+                let firstThirdElement: string | undefined = thirdElements.shift();
+                let lastThirdElement: string | undefined = thirdElements.at(thirdElements.length - 1);
+                let secondToLastThirdElement: string | undefined = thirdElements.at(thirdElements.length - 2);
+                if (firstThirdElement && firstThirdElement.trim().length !== 0) _pathO = Some(firstThirdElement);
+                if (lastThirdElement && lastThirdElement.trim().length !== 0) _columnO = Some(BigInt(lastThirdElement));
+                if (secondToLastThirdElement && secondToLastThirdElement.trim().length !== 0) _lineO = Some(BigInt(secondToLastThirdElement));
+            }
+        }
+        return { toString, location, path, line, column };
     }
 
-    /**
-     * 
-     * ```ts
-     *  43 |> 
-     * ```
-     * 
-     */
-    function toString(): string {
-        
+    function toString(): string;
+    function toString(line: bigint): string;
+    function toString(
+        args0?: bigint
+    ): string {
+        let line: string = "";
+        let missing: string = "???";
+        let string0: string = _locationO.unwrapOr(missing);
+        let string1: string = _pathO.unwrapOr(missing);
+        let string2: string | bigint = _lineO.unwrapOr(missing);
+        let string3: string | bigint = _columnO.unwrapOr(missing);
+        if (args0) line = args0 + " |>";
+        return `${ line } ${ string0 } ${ string1 } ${ string2 } ${ string3 }`;
     }
 
-    function _parseLine(path: string): Result<[bigint, bigint], StackTraceLineError> {
-        let shards: Array<string> = [];
-        let string: string = "";
-        shards = path
-            .replaceAll("(", "")
-            .replaceAll(")", "")
-            .split("/");
-        string = shards.at(shards.length - 1) || "";
-        if (!string) return Err(Error({
-            code: "STACK_TRACE_LINE.ERR_COLUMN_NUMBER_UNAVAILABLE",
-            message: Some("Column number unavailable."),
-            payload: None
-        }));
-        shards = string.split(":") || [];
-        let last0: string = shards.at(shards.length - 1) || "";
-        let last1: string = shards.at(shards.length - 2) || "";
-        if (!last0) return Err(Error({
-            code: "STACK_TRACE_LINE.ERR_COLUMN_NUMBER_UNAVAILABLE",
-            message: Some("Column number unavailable."),
-            payload: None
-        }));
-        if (!last1) return Err(Error({
-            code: "STACK_TRACE_LINE.ERR_LINE_NUMBER_UNAVAILABLE",
-            message: Some("Line number unavailable."),
-            payload: None
-        }));
-        return Ok([BigInt(last0), BigInt(last1)]);
+    function location(): Option<string> {
+        return _locationO;
+    }
+
+    function path(): Option<string> {
+        return _pathO;
+    }
+
+    function line(): Option<bigint> {
+        return _lineO;
+    }
+
+    function column(): Option<bigint> {
+        return _columnO;
     }
 }
-
-StackTraceLine("at someFunction (/path/to/file.js:10:15)")
