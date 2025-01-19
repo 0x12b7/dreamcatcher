@@ -1,11 +1,15 @@
 import { Err, Error, None, Ok, Some, type Numeric } from "@root";
 import { type Branded } from "@root";
 import { type Wrapper } from "@root";
-import { type FloatResult } from "@root";
 import { MIN_FLOAT } from "@root";
 import { MAX_FLOAT } from "@root";
 import { NumericParser } from "@root";
 import { isBranded } from "@root";
+import type { MathError } from "@root";
+import type { Result } from "@root";
+
+
+export type FloatR = Result<Float, MathError>;
 
 export type Float = 
     & Branded<"Float">
@@ -13,7 +17,7 @@ export type Float =
     & {
     max(): Float;
     min(): Float;
-    eq(value: Float): boolean;
+    eq(value: Numeric): boolean;
     lt(value: Float): boolean;
     gt(value: Float): boolean;
     lteq(value: Float): boolean;
@@ -26,7 +30,7 @@ export type Float =
      * **Return**
      * * `UpperArithmeticRangeViolation`.
      */
-    add(value: Float): FloatResult;
+    add(value: Float): FloatR;
 
     /**
      * **Range**
@@ -35,7 +39,7 @@ export type Float =
      * **Return**
      * * `LowerArithmeticRangeViolation`.
      */
-    sub(value: Float): FloatResult;
+    sub(value: Float): FloatR;
     
     /**
      * **Range**
@@ -45,7 +49,7 @@ export type Float =
      * * `UpperArithmeticRangeViolation`.
      * * `LowerArithmeticRangeViolation`.
      */
-    mul(value: Float): FloatResult;
+    mul(value: Float): FloatR;
 
     /**
      * **Range**
@@ -56,7 +60,7 @@ export type Float =
      * * `LowerArithmeticRangeViolation`.
      * * `DivisionByZero`.
      */
-    div(value: Float): FloatResult;
+    div(value: Float): FloatR;
 };
 
 /**
@@ -67,13 +71,13 @@ export type Float =
  * * `UpperArithmeticRangeViolation`.
  * * `LowerArithmeticRangeViolation`.
  */
-export function Float<T1 extends Numeric>(_value: T1, _parser: NumericParser = NumericParser()): FloatResult {
+export function Float<T1 extends Numeric>(_value: T1, _parser: NumericParser = NumericParser()): FloatR {
     let _n: number;
 
     /** @constructor */ {
         let parserR = _parser
             .parseAsNumber(_value)
-            .toResult()
+            .toResult(None)
             .mapErr(() => {
                 return Error({
                     code: "MATH.ERR_UNSAFE_CONVERSION",
@@ -134,8 +138,22 @@ export function Float<T1 extends Numeric>(_value: T1, _parser: NumericParser = N
         return MIN_FLOAT;
     }
 
-    function eq(value: Float): boolean {
-        return _n === value.unwrap();
+    function eq(value: Numeric): Result<boolean, MathError> {
+        return _parser
+            .parseAsNumber(value)
+            .toResult(undefined)
+            .mapErr<MathError>(() => {
+                return Error({
+                    code: "MATH.ERR_UNSAFE_CONVERSION",
+                    message: Some(
+                        ""
+                    ),
+                    payload: None
+                })
+            })
+            .map((value: number) => {
+                return _n === value;
+            });
     }
 
     function lt(value: Float): boolean {
@@ -154,5 +172,15 @@ export function Float<T1 extends Numeric>(_value: T1, _parser: NumericParser = N
         return _n >= value.unwrap();
     }
 
+    function add(value: Float): FloatR {
+        return Float(_n + value.unwrap());
+    }
 
+    function sub(value: Float): FloatR {
+        return Float(_n - value.unwrap());
+    }
+
+    function mul(value: Float): FloatR {
+        return Float(_n * value.unwrap());
+    }
 }

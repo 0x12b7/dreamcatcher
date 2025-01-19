@@ -34,7 +34,7 @@ export * from "./util/string/string_handler.ts";
 export * from "./util/to_string.ts";
 export * from "./wrapper/ds/vec.ts";
 export * from "./wrapper/math/float/float.ts";
-export * from "./wrapper/math/float/float_result.ts";
+export * from "./wrapper/math/float/float_r.ts";
 export * from "./wrapper/math/integer.ts";
 export * from "./wrapper/math/math_constant.ts";
 export * from "./wrapper/math/math_error.ts";
