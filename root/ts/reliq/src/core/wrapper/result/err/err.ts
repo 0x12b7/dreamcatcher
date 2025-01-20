@@ -20,7 +20,7 @@ export type Err<T1> =
     stack(): string;
     expect(message: string): never;
     expectErr(__: unknown): T1;
-    unlockOr<T2>(fallback: T2): T2;
+    unwrapOr<T2>(fallback: T2): T2;
     and(__: unknown): Err<T1>;
     map(__: unknown): Err<T1>;
     mapErr<T2>(operation: Function<T1, T2>): Err<T2>;
@@ -43,7 +43,7 @@ export function Err<T1>(_value: T1): Err<T1> {
             stack,
             expect,
             expectErr,
-            unlockOr,
+            unwrapOr,
             and,
             map,
             mapErr,
@@ -78,7 +78,7 @@ export function Err<T1>(_value: T1): Err<T1> {
         return inspect();
     }
 
-    function unlockOr<T2>(alternative: T2): T2 {
+    function unwrapOr<T2>(alternative: T2): T2 {
         return alternative;
     }
 

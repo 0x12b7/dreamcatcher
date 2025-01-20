@@ -16,8 +16,8 @@ export type Ok<T1> =
     err(): this is Err<unknown>;
     expect(__: unknown): T1;
     expectErr(__: unknown): never;
-    unlock(): T1;
-    unlockOr(__: unknown): T1;
+    unwrap(): T1;
+    unwrapOr(__: unknown): T1;
     recover(__: unknown): Ok<T1>;
     and<T2>(task: Function<T1, Ok<T2>>): Ok<T2>;
     and<T2>(task: Function<T1, Err<T2>>): Result<T1, T2>;

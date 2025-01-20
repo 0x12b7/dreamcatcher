@@ -1,1 +1,0 @@
-export type Size<T1 extends number, T2 extends Array<any> = []> = T2 extends { length: T1 } ? T2 : Size<T1, [...T2, any]>;
