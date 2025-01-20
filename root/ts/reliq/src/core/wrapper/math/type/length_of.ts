@@ -1,0 +1,1 @@
+export type LengthOf<T1 extends Array<any>> = T1 extends { length: infer T2 } ? T2 : never;

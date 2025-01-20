@@ -1,20 +1,11 @@
-import {
-    Ok,
-    type ResultArray,
-    type Serializable,
-    type StackTraceLineError
-} from "@root";
-import {
-    StackTraceLine
-} from "@root";
-import {
-    localStackTrace
-} from "@root";
+import type { Serializable } from "@root";
+import { StackTraceLine } from "@root";
+import { localStackTrace } from "@root";
 
 export type StackTrace = 
     & Serializable
     & {
-    lines(): ResultArray<StackTraceLine, StackTraceLineError>;
+    lines(): Array<StackTraceLine>
 };
 
 export function StackTrace(_location: Function): StackTrace;
@@ -26,14 +17,12 @@ export function StackTrace(
         | Function 
         | string
 ): StackTrace {
-    let _linesR: ResultArray<StackTraceLine, StackTraceLineError>;
+    let _lines: Array<StackTraceLine>;
 
     /** @constructor */ {
-        if (typeof _args0 === "string") _linesR = _parse(_args0);
-        if (typeof _args0 === "function") _linesR = _parse(localStackTrace(_args0).unwrapOr(""));
-        if (Array.isArray(_args0)) _linesR = _args0.map(line => {
-            return Ok(line);
-        });
+        if (typeof _args0 === "string") _lines = _parse(_args0);
+        if (typeof _args0 === "function") _lines = _parse(localStackTrace(_args0).unwrapOr(""));
+        if (Array.isArray(_args0)) _lines = _args0;
         return { toString, lines };
     }
 
@@ -51,30 +40,20 @@ export function StackTrace(
     function toString(): string {
         let result: string = "";
         lines()
-            .map(lineR => {
-                return lineR
-                    .map(line => {
-                        return line.toString();
-                    })
-                    .mapErr(lineE => {
-                        return `<<< ${ lineE.code } >>>`;
-                    })
-                    .recover(line => {
-                        return line;
-                    })
-                    .unlock();
+            .map((line, position) => {
+                return line.toString(BigInt(position));
             })
             .forEach(line => {
-                result += line + "\n";
+                return result += line;
             });
         return result;
     }
 
-    function lines(): ResultArray<StackTraceLine, StackTraceLineError> {
-        return _linesR;
+    function lines(): Array<StackTraceLine> {
+        return _lines;
     }
 
-    function _parse(stack: string): ResultArray<StackTraceLine, StackTraceLineError> {
+    function _parse(stack: string): Array<StackTraceLine> {
         return stack
             .split("\n")
             .map(line => {
@@ -91,8 +70,10 @@ export function StackTrace(
     }
 }
 
-Stack(`Error: Something went wrong
-    at someFunction (/path/to/file.js:10:15)
-    <<< STACK_TRACE_LINE.ERR_LOCATION_UNAVAILABLEE >>>
-    at anotherFunction (/path/to/otherfile.js:20:25)
-    at main (/path/to/mainfile.js:30:35)`);
+StackTrace(`
+    Error: Something went wrong
+        at someFunction (/path/to/file.js:10:15)
+        <<< STACK_TRACE_LINE.ERR_LOCATION_UNAVAILABLEE >>>
+        at anotherFunction (/path/to/otherfile.js:20:25)
+        at main (/path/to/mainfile.js:30:35)
+`);
