@@ -20,7 +20,7 @@ export type Err<T1> =
     stack(): string;
     expect(message: string): never;
     expectErr(__: unknown): T1;
-    unwrapOr<T2>(fallback: T2): T2;
+    unlockOr<T2>(fallback: T2): T2;
     and(__: unknown): Err<T1>;
     map(__: unknown): Err<T1>;
     mapErr<T2>(operation: Function<T1, T2>): Err<T2>;

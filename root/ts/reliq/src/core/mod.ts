@@ -8,7 +8,7 @@ export {
 
     type Branded,
     type Displayable,
-    type Parsable,
+    type ParsableWrapper as Parsable,
     type Sequence,
     type Serializable,
 

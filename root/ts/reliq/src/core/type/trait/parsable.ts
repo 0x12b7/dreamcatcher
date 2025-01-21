@@ -1,19 +1,43 @@
-import {
-    type TypeGuard,
-    type Option
-} from "@root";
+import type { TypeGuard } from "@root";
+import type { Option } from "@root";
 
-export type Parsable  = {
+/**
+ * ***Brief***
+ * A type-safe abstraction for wrapping a value, allowing validation and transformation 
+ * through user-defined type guard functions. Enables runtime type validation and conditional parsing.
+ * 
+ * ***Example***
+ * ```ts
+ *  function isNumber(unknown: unknown): unknown is number {
+ *      return typeof unknown === "number";
+ *  }
+ * 
+ *  let parsable: Parsable;
+ *  parsable
+ *      .parse(isNumber)
+ *      .map(number => {
+ *          /// Will only be executed if wrapped value is a `number`.
+ *          /// ...
+ *      });
+ * ```
+ */
+export type ParsableWrapper  = {
 
     /**
-     * **Example**
+     * ***Brief***
+     * The `parse` method allows transforming and validating a wrapped value using a type guard.
+     * 
+     * ***Example***
      * ```ts
-     *  let isNumber: TypeGuard<number>;
+     *  function isNumber(unknown: unknown): unknown is number {
+     *      return typeof unknown === "number";
+     *  }
+     * 
      *  let parsable: Parsable;
      *  parsable
      *      .parse(isNumber)
      *      .map(number => {
-     *          /// Will only be executed if parsable wraps or is a `number`.
+     *          /// Will only be executed if wrapped value is a `number`.
      *          /// ...
      *      });
      * ```

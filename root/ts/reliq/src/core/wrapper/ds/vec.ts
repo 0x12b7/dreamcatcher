@@ -1,27 +1,21 @@
 import type { Closure } from "@root";
 import type { Wrapper } from "@root";
-import type { Polymorph } from "@root";
-import type { MutableCollection } from "@root";
-import type { Span } from "@root";
-import type { Index } from "@root";
+import type { SequenceIsh } from "@root";
 import type { Sequence } from "@root";
-import { Option } from "@root";
+import type { Option } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
 
 export type Vec<T1> =
     & Wrapper<Array<T1>>
-    & Polymorph<T1>
-    & MutableCollection<T1>
-    & Span<T1>
-    & Index<T1>
     & Sequence<T1>;
 
-export function Vec<T1>(_v: Array<T1>): Vec<T1> {
-    let _instance: Vec<T1>;
+export function Vec<T1>(_value: SequenceIsh<T1>): Vec<T1> {
+    let _this: Vec<T1>;
+    let _inner: Array<T1>;
 
     /** @constructor */ {
-        _instance = {
+        _this = {
             unwrap,
             toArray,
             toString,
@@ -43,36 +37,38 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
             sort,
             map
         };
-        return _instance;
+        return _this;
     }
 
+
     function unwrap(): Array<T1> {
-        return _v;
+        return _value;
     }
+
 
     function toArray(): Array<T1> {
         return [... unwrap()];
     }
 
     function toString(): string {
-        return _v.toString();
+        return _value.toString();
     }
 
     function toLocaleString(): string {
-        return _v.toLocaleString();
+        return _value.toLocaleString();
     }
 
-    function concat(item: T1): Vec<T1>;
-    function concat(... items: Array<T1>): Vec<T1>;
+    function concat(value: T1): Vec<T1>;
+    function concat(... values: Array<T1>): Vec<T1>;
     function concat(... items: Array<T1>): Vec<T1> {
-        return Vec(_v.concat(... items));
+        return Vec(_value.concat(... items));
     }
 
     function pop(): Option<T1> {
         let item: 
             | T1 
             | undefined 
-            = _v.pop();
+            = _value.pop();
         if (item) return Some(item);
         return None;
     }
@@ -80,20 +76,20 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
     function push(item: T1): bigint;
     function push(... items: Array<T1>): bigint;
     function push(... items: Array<T1>): bigint {
-        let n: number = _v.push(... items);
+        let n: number = _value.push(... items);
         return BigInt(n);
     }
 
     function reverse(): Vec<T1> {
-        _v.reverse();
-        return _instance;
+        _value.reverse();
+        return _this;
     }
 
     function shift(): Option<T1> {
         let x: 
             | T1 
             | undefined 
-            = _v.shift();
+            = _value.shift();
         if (x) return Some(x);
         return None;
     }
@@ -101,7 +97,7 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
     function unshift(item: T1): bigint;
     function unshift(... items: Array<T1>): bigint;
     function unshift(... items: Array<T1>): bigint {
-        let n: number = _v.unshift(... items);
+        let n: number = _value.unshift(... items);
         return BigInt(n);
     }
 
@@ -111,17 +107,17 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
         k: bigint, 
         deleteCount?: bigint
     ): Vec<T1> {
-        let x: Array<T1> = _v.splice(Number(k), deleteCount ? Number(deleteCount) : undefined);
+        let x: Array<T1> = _value.splice(Number(k), deleteCount ? Number(deleteCount) : undefined);
         return Vec(x);
     }
 
     function length(): bigint {
-        let n: number = _v.length;
+        let n: number = _value.length;
         return BigInt(n);
     }
 
     function at(k: bigint): Option<T1> {
-        let x: T1 | undefined = _v.at(Number(k));
+        let x: T1 | undefined = _value.at(Number(k));
         if (x) return Some(x);
         return None;
     }
@@ -132,7 +128,7 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
         v: T1,
         k0?: bigint
     ): boolean {
-        return _v.includes(v, Number(k0));
+        return _value.includes(v, Number(k0));
     }
 
     function positionOf(v: T1): Option<bigint>;
@@ -141,7 +137,7 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
         v: T1,
         fromPosition?: bigint
     ): Option<bigint> {
-        let n: number = _v.indexOf(v, fromPosition ? Number(fromPosition) : undefined);
+        let n: number = _value.indexOf(v, fromPosition ? Number(fromPosition) : undefined);
         if (n === -1) return None;
         return Some(BigInt(n));
     }
@@ -150,7 +146,7 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
         let x:
             | T1
             | undefined 
-            = _v.find((v, k) => op(v, BigInt(k)));
+            = _value.find((v, k) => op(v, BigInt(k)));
         if (x) return Some(x);
         return None;
     }
@@ -160,7 +156,7 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
     function join(
         separator?: string
     ): string {
-        return _v.join();
+        return _value.join();
     }
 
     function slice(): Vec<T1>;
@@ -170,7 +166,7 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
         startPosition?: bigint,
         endPosition?: bigint
     ): Vec<T1> {
-        let x: Array<T1> = _v.slice(startPosition ? Number(startPosition) : undefined, endPosition ? Number(endPosition) : undefined);
+        let x: Array<T1> = _value.slice(startPosition ? Number(startPosition) : undefined, endPosition ? Number(endPosition) : undefined);
         return Vec(x);
     }
 
@@ -180,18 +176,16 @@ export function Vec<T1>(_v: Array<T1>): Vec<T1> {
         op?: Closure<[item0: T1, item1: T1], bigint>
     ): Vec<T1> {
         if (op) {
-            let x: Array<T1> = _v.sort((x, y) => Number(op(x, y)));
+            let x: Array<T1> = _value.sort((x, y) => Number(op(x, y)));
             return Vec(x);
         }
-        let x: Array<T1> = _v.sort();
+        let x: Array<T1> = _value.sort();
         return Vec(x);
     }
 
     function map<T2>(op: Closure<[item: T1, position: bigint], T2>): Vec<T2> {
         let result: Vec<T2> = Vec([]);
-        _v.map((v, k) => result.push(op(v, BigInt(k))));
+        _value.map((v, k) => result.push(op(v, BigInt(k))));
         return result;
     }
 }
-
-Vec([500, 500]);

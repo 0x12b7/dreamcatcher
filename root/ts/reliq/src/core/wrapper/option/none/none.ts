@@ -1,85 +1,147 @@
-import type { AssertionError } from "@root";
-import type { Serializable } from "@root";
-import type { Displayable } from "@root";
 import { Some, StackTrace } from "@root";
 import { Err } from "@root";
 import { Error } from "@root";
 import { panic } from "@root";
 
 /**
- * **Note**
- * The absencee of a value or an "empty" state. The operation attempting to access the value
- * should safely handle or terminate with an error.
+ * ***Brief***
+ * The absence of a value or an "empty" state.
+ * 
+ * ***Warning***
+ * Any operation attempting to access an `Option` must safely handle the `None` state or terminate with an error.
+ * 
+ * ***Example***
+ * ```ts
+ *  function foo(key: string): Option<number>;
+ * 
+ *  /// `map` the option and perform an operation if the value is available.
+ *  foo("Bar").map(number => {   
+ *      /// ...
+ *  });
+ *  
+ *  /// `unlockOr` to default to a safe value.
+ *  foo("Bar").unlockOr(0);
+ * 
+ *  /// Safely chain operations together and short circuit at the first invalid state.
+ *  foo("Bar")
+ *      .and(() => None)
+ *      .and(() => console.log("This will not run because the last operation ended with `None`."));
+ * ```
  */
-export type None = 
-    & Serializable
-    & Displayable 
-    & {
+export type None = {
 
     /**
-     * **Example**
+     * ***Brief***
+     * `some` checks if the current instance is `Some`.
+     * 
+     * ***Example***
      * ```ts
-     *  None.some(); /// Always `false`.
+     *  let option: Option<200>;
+     *  if (option.some()) {
+     *      /// `option` is `Some<200>`.
+     *      /// ...
+     *  }
      * ```
      */
     some(): this is Some<unknown>;
 
     /**
-     * **Example**
+     * ***Brief***
+     * `none` checks if the current instance is `None`.
+     * 
+     * ***Example***
      * ```ts
-     *  None.none(); /// Always `true`.
+     *  let option: Option<200>;
+     *  if (option.none()) {
+     *      /// `option` is `None`.
+     *      /// ...
+     *  }
      * ```
      */
     none(): this is None;
     
     /**
-     * **Warning**
-     * This method will cause a `panic` and terminate the program if called, as th state is `None`
-     * and there is no value to recover. It serves as an explicit error handling mechanism.
+     * ***Brief***
+     * `expect` terminates the program with `panic` when the `Option` is `None`.
      * 
-     * **Warning**
-     * You should call `expect` when you absolutely expect a value, but must not be `None`.
-     * Calling `expect` on a `None` results in a program failure.
+     * ***Note***
+     * * Use `expect` when you are confident that an `Option` is `Some`. 
+     * * Unlike `unlock`, it can be invoked directly on an `Option` without requiring additional handling.
      * 
-     * **Example**
+     * ***Warning***
+     * Reserved for unrecoverable errors, where a missing value will halt execution or result in a critical issue.
+     * 
+     * ***Example***
      * ```ts
-     *  None.expect("This should not have happened, something I thought was true about my program is wrong, and this is a bug.");
+     *  let option: Option<200>;
+     *  let status: number = option.expect("This is a bug.");
      * ```
      */
     expect(message: string): never;
 
     /**
+     * ***Brief***
+     * Safely retrieves the `Some` or `fallback` value when `None`.
      * 
      * **Example**
      * ```ts
-     *  let statusO: Option<200>;
-     *  let status: number = statusO.unwrapOr(404);
+     *  let option: Option<200> = None;
+     *  let status: number = option.unlockOr(404);
+     *  console.log(status); /// 404.
      * ```
      */
-    unwrapOr<T2>(fallback: T2): T2;
+    unlockOr<T2>(fallback: T2): T2;
     
     /**
-     * **Note** Performs a no-op operation as there's no value to combine or logically `and`.
-     * It returns the current `None` stat, representing that combining with `None` has no effect.
+     * ***Brief***
+     * `and` chains operations conditionally. 
      * 
-     * **Example**
+     * ***Note***
+     * If the current instance is `None`, subsequent operations are skipped and `None` is returned.
+     * 
+     * ***Example***
      * ```ts
-     *  let option: Option<200>;
+     *  let option: Option<200> = Some(200);
      *  option
      *      .and(status => {
-     *          /// ...
+     *          return None;
      *      })
      *      .and(() => {
+     *          /// Not run because `Option` is `None`.
      *          /// ...
      *      });
      * ```
      */
     and(__: unknown): None;
 
-
+    /**
+     * ***Brief***
+     * `map` performs a no-op operation when the `Option` is `None`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200> = None;
+     *  option.map(value => {
+     *      /// Not run because `Option` is `None`.
+     *      /// ...
+     *  });
+     * ```
+     */
     map(__: unknown): None;
 
-    toResult<T1>(value: T1): Err<T1>;
+    /**
+     * ***Brief***
+     * `toResult` converts `None` into an `Err` result containing the provided error value.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200>;
+     *  option
+     *      .toResult("Something went wrong because ...")
+     *      /// ...
+     * ```
+     */
+    toResult<T1>(e: T1): Err<T1>;
 };
 
 export const None: None = (() => {
@@ -90,12 +152,10 @@ export const None: None = (() => {
             some,
             none,
             expect,
-            unwrapOr,
+            unlockOr,
             and,
             map,
-            toResult,
-            toString,
-            display
+            toResult
         };
     }
     
@@ -120,7 +180,7 @@ export const None: None = (() => {
         }));
     }
 
-    function unwrapOr<T1>(fallback: T1): T1 {
+    function unlockOr<T1>(fallback: T1): T1 {
         return fallback;
     }
 
@@ -134,13 +194,5 @@ export const None: None = (() => {
 
     function toResult<T1>(value: T1): Err<T1> {
         return Err(value);
-    }
-
-    function toString(): string {
-        return "None";
-    }
-
-    function display(): void {
-        return console.log(toString());
     }
 })();

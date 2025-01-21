@@ -1,7 +1,6 @@
 import type { Branded } from "@root";
 import type { Wrapper } from "@root";
-import type { Parsable } from "@root";
-import type { Serializable } from "@root";
+import type { ParsableWrapper } from "@root";
 import type { TypeGuard } from "@root";
 import type { Option } from "@root";
 import { Some } from "@root";
@@ -11,7 +10,7 @@ import { toString as toString0 } from "@root";
 export type Unsafe =
     & Branded<"Unsafe">
     & Wrapper<unknown>
-    & Parsable
+    & ParsableWrapper
     & Serializable;
 
 export function Unsafe(_value: unknown): Unsafe {

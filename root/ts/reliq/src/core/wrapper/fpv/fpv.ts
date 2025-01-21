@@ -16,7 +16,19 @@ export type Fpv<T1 extends bigint = 2n> =
     & {
     precision(): T1;
     representation(): bigint;
+
+    /**
+     * ***Warning***
+     * Extremely large amounts may cause the program to panic due to insufficient memory. The capacity is
+     * based on the memory available.
+     */
     add(value: FpvIsh<T1>): Fpv<T1>;
+    
+    /**
+     * ***Warning***
+     * Extremely large amounts may cause the program to panic due to insufficient memory. The capacity is
+     * based on the memory available.
+     */
     sub(value: FpvIsh<T1>): Fpv<T1>;
     mul(value: FpvIsh<T1>): Fpv<T1>;
     div(value: FpvIsh<T1>): Result<Fpv<T1>, FpvError>;

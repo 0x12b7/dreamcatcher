@@ -28,10 +28,7 @@ export function panic<T1 extends string>(
             .recover(() => {
                 return stack = localStackTrace(location)
                     .toResult(undefined)
-                    .recover(() => {
-                        return "";
-                    })
-                    .unlock();
+                    .unlockOr("");
             });
         let eStandard: Error = Error();
         eStandard.name = code;

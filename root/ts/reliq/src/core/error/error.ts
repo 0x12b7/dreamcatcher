@@ -1,7 +1,5 @@
-import {
-    type Option,
-    StackTrace
-} from "@root";
+import type { Option } from "@root";
+import { StackTrace } from "@root";
 
 /**
  * **NOTE**
