@@ -3,7 +3,7 @@ import { StackTrace } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
 
-export type Error<T1 extends string, T2 = unknown> = {
+export type Error<T1 extends string, T2 = void> = {
     /**
      * ***Brief***
      * The unique identifier for this error.
@@ -15,7 +15,7 @@ export type Error<T1 extends string, T2 = unknown> = {
      * A human-readable message that explains the nature of the error.
      * 
      * ***Note***
-     * This field can be `None` if the error doesn't have a message or if it's not necessary to convey any specific information.
+     * This field can be `None` if it's not necessary to convey any specific information.
      */
     message: Option<string>;
 
@@ -42,10 +42,10 @@ export type Error<T1 extends string, T2 = unknown> = {
  * ***Note***
  * This is a general-purpose error structure to manage domain-specific error codes and provide better context.
  */
-export function Error<T1 extends string, T2 = void>(_code: T1): Error<T1, T2>;
-export function Error<T1 extends string, T2 = void>(_code: T1, _message: string): Error<T1, T2>;
-export function Error<T1 extends string, T2 = void>(_code: T1, _message: string, _payload: T2): Error<T1, T2>;
 export function Error<T1 extends string, T2 = void>(_this: Error<T1, T2>): Error<T1, T2>;
+export function Error<T1 extends string, T2 = void>(_code: T1, _message: string, _payload: T2): Error<T1, T2>;
+export function Error<T1 extends string, T2 = void>(_code: T1, _message: string): Error<T1, T2>;
+export function Error<T1 extends string, T2 = void>(_code: T1): Error<T1, T2>;
 export function Error<T1 extends string, T2 = void>(
     _args0: Error<T1, T2> | T1,
     _args1?: string,

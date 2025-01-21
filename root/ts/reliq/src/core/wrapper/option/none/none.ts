@@ -150,15 +150,13 @@ export const None: None = (() => {
     }
 
     function expect(message: string): never {
-        panic(Error({
+        panic(Error<"ERR_INVALID_OPTION_STATE">({
             code: "ERR_INVALID_OPTION_STATE",
             message: Some([
-                "\x1b[31m" + "Fatal Error: Attempted to unwrap `None`." + "\x1b[0m",
-                "",
-                "Attempted to unlock an `Option` but no value contained."
-            ].join("\n")),
+
+            ].join("\N")),
             payload: None,
-            stack: Some(StackTrace(expect))
+            stack: StackTrace(expect)
         }));
     }
 

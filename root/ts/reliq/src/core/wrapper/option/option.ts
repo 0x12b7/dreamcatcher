@@ -28,6 +28,3 @@ export type Option<T1> = Some<T1> | None;
 
 
 let x: Option<string>;
-
-
-x.unlockOr()
