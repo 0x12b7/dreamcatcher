@@ -6,6 +6,18 @@ type _T1OrErrorT1<T1 extends string> = T1 | Error0<T1>;
 /**
  * ***Brief***
  * `panic` throws an error with optional message and stack trace location.
+ * 
+ * ***Example***
+ * ```ts
+ *  panic(Error("MATH.ERR_DIVISION_BY_ZERO"));
+ *  panic(Error({
+ *      code: "MATH.ERR_DIVISION_BY_ZERO",
+ *      message: Some("Math: Cannot divide by zero."),
+ *      payload: None,
+ *      stack: StackTrace(...)
+ *  }));
+ *  panic("An unrecoverable error has occured.");
+ * ```
  */
 export function panic<T1 extends string>(e: Error0<T1>): never;
 export function panic<T1 extends string>(message: T1): never;

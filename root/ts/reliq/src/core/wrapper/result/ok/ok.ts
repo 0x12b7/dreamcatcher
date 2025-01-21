@@ -258,8 +258,8 @@ export function Ok<T1>(_value: T1): Ok<T1> {
         return task(unlock());
     }
 
-    function map<T2>(operation: Function<T1, T2>): Ok<T2> {
-        return Ok(operation(unlock()));
+    function map<T2>(task: Function<T1, T2>): Ok<T2> {
+        return Ok(task(unlock()));
     }
 
     function mapErr(__: unknown): Ok<T1> {

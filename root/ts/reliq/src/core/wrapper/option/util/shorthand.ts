@@ -1,4 +1,4 @@
-import { OptionHandler } from "@root";
+import { Option } from "@root";
 
-export const allO = OptionHandler.all;
-export const anyO = OptionHandler.any;
+export const allO = Option.all;
+export const anyO = Option.any;

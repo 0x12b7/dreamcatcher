@@ -1,8 +1,11 @@
 /** 
- * **Warning**
+ * ***Brief***
+ * Converts `unknown` to `string`.
+ * 
+ * ***Warning***
  * Does not support circular references and circular objects will result in `[object Object]`.
  * 
- * **Example**
+ * ***Example***
  *  ```ts
  *  console.log(toString(42));          /// 42
  *  console.log(toString(true));        /// true
