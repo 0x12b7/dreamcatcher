@@ -1,4 +1,5 @@
-import { Some, StackTrace } from "@root";
+import { StackTrace } from "@root";
+import { Some } from "@root";
 import { Err } from "@root";
 import { Error } from "@root";
 import { panic } from "@root";
@@ -106,7 +107,7 @@ export type None = {
 
     /**
      * ***Brief***
-     * `toResult` converts `None` into an `Err` result containing the provided error value.
+     * `toResult` converts an `Option` into a `Result` with the `Err` result containing the provided error value.
      * 
      * ***Example***
      * ```ts

@@ -54,12 +54,26 @@ export type Some<T1> = {
      */
     expect(__: unknown): T1;
 
-    
+    /**
+     * ***Brief***
+     * Safely retrieves the value, available only for `Some` after handling `None`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200>;
+     *  option
+     *      .toResult(undefined)
+     *      .recover(() => {
+     *          /// ...
+     *      })
+     *      .unlock();
+     * ```
+     */
     unlock(): T1;
 
     /**
      * ***Brief***
-     * Safely retrievesddd the `fallback` value when `None`.
+     * Safely retrieves the `Some` or `fallback` value when `None`.
      * 
      * **Example**
      * ```ts
@@ -69,11 +83,63 @@ export type Some<T1> = {
      * ```
      */
     unlockOr(__: unknown): T1;
+
+    /**
+     * ***Brief***
+     * `and` chains operations conditionally. 
+     * 
+     * ***Note***
+     * If the current instance is `None`, subsequent operations are skipped and `None` is returned.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200> = Some(200);
+     *  option
+     *      .and(status => {
+     *          return None;
+     *      })
+     *      .and(() => {
+     *          /// Not run because `Option` is `None`.
+     *          /// ...
+     *      });
+     * ```
+     */
     and<T2>(task: Function<T1, Option<T2>>): Option<T2>;
+
+    /**
+     * ***Brief***
+     * `map` performs a no-op operation when the `Option` is `None`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200> = None;
+     *  option.map(value => {
+     *      /// Not run because `Option` is `None`.
+     *      /// ...
+     *  });
+     * ```
+     */
     map<T2>(task: Function<T1, T2>): Some<T2>;
+
+    /**
+     * ***Brief***
+     * `toResult` converts an `Option` into a `Result` with the `Err` result containing the provided error value.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200>;
+     *  option
+     *      .toResult("Something went wrong because ...")
+     *      /// ...
+     * ```
+     */
     toResult(__: unknown): Ok<T1>;
 };
 
+/**
+ * ***Brief***
+ * Represents a value that exists `Some` within an `Option`.
+ */
 export function Some<T1>(_value: T1): Some<T1> {
     /** @constructor */ {
         return {
