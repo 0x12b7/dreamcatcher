@@ -2,7 +2,7 @@ import type { Wrapper } from "@root";
 
 /**
  * ***Brief***
- * Represents a "locked" value which can be unlocked to retrieve the actual value. 
+ * Represents an unlocked wrapper which can be unlocked to retrieve its value. 
  */
 export type UnlockedWrapper<T1> =
     & Omit<Wrapper<T1>, "unwrap">

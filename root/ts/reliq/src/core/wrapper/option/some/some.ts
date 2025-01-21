@@ -1,9 +1,12 @@
 import type { Function } from "@root";
 import type { Option } from "@root";
+import type { UnlockedWrapper } from "@root";
 import { None } from "@root";
 import { Ok } from "@root";
 
-export type Some<T1> = {
+export type Some<T1> = 
+    & UnlockedWrapper<T1>
+    & {
 
     /**
      * ***Brief***
@@ -25,12 +28,6 @@ export type Some<T1> = {
      * Reserved for unrecoverable errors, where a missing value will halt execution or result in a critical issue.
      */
     expect(__: unknown): T1;
-
-    /**
-     * ***Brief***
-     * Safely retrieves the value, available only for `Some` after handling `None`.
-     */
-    unlock(): T1;
 
     /**
      * ***Brief***

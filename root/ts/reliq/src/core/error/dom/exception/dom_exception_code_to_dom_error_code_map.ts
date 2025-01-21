@@ -1,7 +1,5 @@
-import {
-    type DomExceptionCode,
-    type DomErrorCode
-} from "@root";
+import type { DomExceptionCode } from "@root";
+import type { DomErrorCode } from "@root";
 
 export const DomExceptionCodeToDomErrorCodeMap: Record<DomExceptionCode, DomErrorCode> = {
     1: "DOM.ERR_INDEX_SIZE",
