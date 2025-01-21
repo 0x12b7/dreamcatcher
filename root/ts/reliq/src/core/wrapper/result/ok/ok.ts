@@ -1,29 +1,209 @@
-import type { Serializable } from "@root";
-import type { Displayable } from "@root";
 import type { Function } from "@root";
 import type { Option } from "@root";
 import type { Result } from "@root";
-import { Error, None, StackTrace } from "@root";
-import { panic, Some } from "@root";
+import { Error } from "@root";
 import { Err } from "@root";
-import { toString as toString0 } from "@root";
+import { Some } from "@root";
+import { panic } from "@root";
 
-export type Ok<T1> =
-    & Serializable
-    & Displayable
-    & {
+export type Ok<T1> = {
+
+    /**
+     * ***Brief***
+     * `ok` checks if the current instance is `Ok`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n>;
+     *  if (result.ok()) {
+     *      let value: 200n = result.unlock();
+     *      /// ...
+     *  }
+     * ```
+     */
     ok(): this is Ok<T1>;
+
+    /**
+     * ***Brief***
+     * `err` checks if the current instance is `Err`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n>;
+     *  if (result.err()) {
+     *      let e: 404n = result.inspect();
+     *      /// ...
+     *  }
+     * ```
+     */
     err(): this is Err<unknown>;
+
+    /**
+     * ***Brief***
+     * `expect` terminates with `panic` if the `Result` is `Err`.
+     * 
+     * ***Warning***
+     * Reserved for debugging or unrecoverable errors.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n>;
+     *  let status: 200n = result.expect("This is unexpected and unrecoverable.");
+     * ```
+     */
     expect(__: unknown): T1;
+
+    /**
+     * ***Brief***
+     * Ensures that the `Result` is an `Err` and retrieves the error value inside.
+     * 
+     * ***Warning***
+     * Reserved for debugging or unrecoverable errors.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n>;
+     *  let status: 404n = result.expectErr("This is unexpected and unrecoverable.");
+     * ```
+    */
     expectErr(__: unknown): never;
+
+    /**
+     * ***Brief***
+     * Safely retrieves the value, available only for `Ok` after handling `Err`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n>;
+     *  if (result.ok()) {
+     *      let status: 200n = result.unlock();
+     *      /// ...
+     *  }
+     * ```
+     */
     unlock(): T1;
+
+    /**
+     * ***Brief***
+     * Retrieves the value of an `Ok`, or falls back to the provided value if it’s an `Err`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n> = Err(404n);
+     *  let status: 200n = result.unlockOr(200n);
+     *  console.log(status); /// 200n.
+     * ```
+     */
     unlockOr(__: unknown): T1;
+
+    /**
+     * ***Brief***
+     * Recovers from the current error by applying a recovery function, transforming the `Err` into an `Ok`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n> = Err(404n);
+     *  let status: 200n = result
+     *      .recover(() => {
+     *          return 200n;
+     *      })
+     *      .unlock();
+     * ```
+     */
     recover(__: unknown): Ok<T1>;
+
+    /**
+     * ***Brief***
+     * Applies a transformation to the `Ok` value and returns an `Err` instance with the transformed value.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n> = Ok(200n);
+     *  let e: 404n = result
+     *      .degrade(() => {
+     *          return 404n;
+     *      })
+     *      .inspect();
+     *  console.log(e); /// 404n.
+     * ```
+     */
+    degrade<T2>(task: Function<T1, T2>): Err<T2>;
+
+    /**
+     * ***Brief***
+     * Chains an operation until the first `Err` is encountered.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n> = Err(404n);
+     *  result
+     *      .and(value => {
+     *          /// Task is skipped because `Result` is an `Err`.
+     *          /// ...
+     *          return Ok(value + 1n);
+     *      })
+     *      .and(value => {
+     *          /// Task is skipped because `Result` is an `Err`.
+     *          /// ...
+     *      });
+     * ```
+     */
     and<T2>(task: Function<T1, Ok<T2>>): Ok<T2>;
     and<T2>(task: Function<T1, Err<T2>>): Result<T1, T2>;
     and<T2, T3>(task: Function<T1, Result<T2, T3>>): Result<T2, T3>;
+
+    /**
+     * ***Brief***
+     * Transforms the `Ok` value if present, but if this is already an `Err`, it remains unchanged.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result0: Result<200n, 404n> = Ok(200n);
+     *  let result1: Result<201n, 404n> = result.map(value => {
+     *      /// Task is run because `Result` is `Ok`.
+     *      /// ...
+     *      return value + 1n;
+     *  });
+     * ```
+     */
     map<T2>(task: Function<T1, T2>): Ok<T2>;
+
+    /**
+     * ***Brief***
+     * Transforms the error contained in the `Err` using the provided `task` function.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n> = Err(404n);
+     *  result
+     *      .mapErr(e => {
+     *          return e + 1n;
+     *      })
+     *      .inspect(); /// 405n.
+     * ```
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n> = Ok(200n);
+     *  result
+     *      .mapErr(e => {
+     *          /// Task is run because `Result` is `Ok`.
+     *          /// ...
+     *      });
+     * ```
+     */
     mapErr(__: unknown): Ok<T1>;
+
+    /**
+     * ***Brief***
+     * Converts a `Result<T1, T2>` to an `Option<T1>`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let result: Result<200n, 404n>;
+     *  let option: Option<200n> = result.toOption();
+     * ```
+     */
     toOption(): Option<T1>;
 };
 
@@ -42,14 +222,9 @@ export function Ok<T1>(_value: T1): Ok<T1> {
             map,
             mapErr,
             recover,
-            toOption,
-            toString,
-            display
+            degrade,
+            toOption
         };
-    }
-
-    function type(): "Ok" {
-        return "Ok";
     }
 
     function ok(): this is Ok<T1> {
@@ -61,18 +236,11 @@ export function Ok<T1>(_value: T1): Ok<T1> {
     }
 
     function expect(__: unknown): T1 {
-        return _value;
+        return unlock();
     }
 
     function expectErr(message: string): never {
-        panic(Error({
-            code: "",
-            message: Some([
-                message
-            ].join("\n")),
-            payload: None,
-            stack: Some(StackTrace(expectErr))
-        }));
+        panic(Error("", message));
     }
 
     function unlock(): T1 {
@@ -80,18 +248,18 @@ export function Ok<T1>(_value: T1): Ok<T1> {
     }
 
     function unlockOr(__: unknown): T1 {
-        return _value;
+        return unlock();
     }
 
-    function and<T2>(operation: Function<T1, Ok<T2>>): Ok<T2>;
-    function and<T2>(operation: Function<T1, Err<T2>>): Result<T1, T2>;
-    function and<T2, T3>(operation: Function<T1, Result<T2, T3>>): Result<T2, T3>;
-    function and<T2, T3>(operation: Function<T1, Result<T2, T3>>): Result<T2, T3> {
-        return operation(_value);
+    function and<T2>(task: Function<T1, Ok<T2>>): Ok<T2>;
+    function and<T2>(task: Function<T1, Err<T2>>): Result<T1, T2>;
+    function and<T2, T3>(task: Function<T1, Result<T2, T3>>): Result<T2, T3>;
+    function and<T2, T3>(task: Function<T1, Result<T2, T3>>): Result<T2, T3> {
+        return task(unlock());
     }
 
     function map<T2>(operation: Function<T1, T2>): Ok<T2> {
-        return Ok(operation(_value));
+        return Ok(operation(unlock()));
     }
 
     function mapErr(__: unknown): Ok<T1> {
@@ -102,18 +270,11 @@ export function Ok<T1>(_value: T1): Ok<T1> {
         return _this;
     }
 
+    function degrade<T2>(task: Function<T1, T2>): Err<T2> {
+        return Err(task(unlock()));
+    }
+
     function toOption(): Option<T1> {
-        return Some(_value);
-    }
-
-    function toString(): string {
-        return type() + "(" + toString0(_value) + ")";
-    }
-
-    function display(): void {
-        return console.log(toString());
+        return Some(unlock());
     }
 }
-
-
-

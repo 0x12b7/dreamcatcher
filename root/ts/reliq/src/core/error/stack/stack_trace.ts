@@ -21,7 +21,7 @@ export function StackTrace(
 
     /** @constructor */ {
         if (typeof _args0 === "string") _lines = _parse(_args0);
-        if (typeof _args0 === "function") _lines = _parse(localStackTrace(_args0).unwrapOr(""));
+        if (typeof _args0 === "function") _lines = _parse(localStackTrace(_args0).unlockOr(""));
         if (Array.isArray(_args0)) _lines = _args0;
         return { toString, lines };
     }

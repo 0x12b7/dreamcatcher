@@ -3,7 +3,7 @@ import { StackTrace } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
 
-export type Error<T1 extends string, T2 = void> = {
+export type Error<T1 extends string, T2 = unknown> = {
     /**
      * ***Brief***
      * The unique identifier for this error.
@@ -13,18 +13,12 @@ export type Error<T1 extends string, T2 = void> = {
     /**
      * ***Brief***
      * A human-readable message that explains the nature of the error.
-     * 
-     * ***Note***
-     * This field can be `None` if it's not necessary to convey any specific information.
      */
     message: Option<string>;
 
     /**
      * ***Brief***
      * An optional value that can hold additional data or context related to the error.
-     * 
-     * ***Note***
-     * This field can be `None` when there is no additional information to provide.
      */
     payload: Option<T2>;
 
@@ -42,11 +36,11 @@ export type Error<T1 extends string, T2 = void> = {
  * ***Note***
  * This is a general-purpose error structure to manage domain-specific error codes and provide better context.
  */
-export function Error<T1 extends string, T2 = void>(_this: Error<T1, T2>): Error<T1, T2>;
-export function Error<T1 extends string, T2 = void>(_code: T1, _message: string, _payload: T2): Error<T1, T2>;
-export function Error<T1 extends string, T2 = void>(_code: T1, _message: string): Error<T1, T2>;
-export function Error<T1 extends string, T2 = void>(_code: T1): Error<T1, T2>;
-export function Error<T1 extends string, T2 = void>(
+export function Error<T1 extends string, T2 = unknown>(_this: Error<T1, T2>): Error<T1, T2>;
+export function Error<T1 extends string, T2 = unknown>(_code: T1, _message: string, _payload: T2): Error<T1, T2>;
+export function Error<T1 extends string, T2 = unknown>(_code: T1, _message: string): Error<T1, T2>;
+export function Error<T1 extends string, T2 = unknown>(_code: T1): Error<T1, T2>;
+export function Error<T1 extends string, T2 = unknown>(
     _args0: Error<T1, T2> | T1,
     _args1?: string,
     _args2?: T2

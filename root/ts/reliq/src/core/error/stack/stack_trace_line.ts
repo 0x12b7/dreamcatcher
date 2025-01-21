@@ -6,21 +6,48 @@ import { None } from "@root";
 export type StackTraceLine = 
     & Serializable 
     & {
+
+    /**
+     * ***Brief***
+     * `toString` returns a string representation of the stack trace line, either as the formatted version or with a specific line number.
+     */
     toString(line: bigint): string;
+
+    /**
+     * ***Brief***
+     * The parsed `location` (such as the function name) from the stack trace line.
+     * 
+     */
     location(): Option<string>;
+
+    /**
+     * ***Brief***
+     * The parsed file `path` from the stack trace.
+     */
     path(): Option<string>;
+
+    /**
+     * ***Brief***
+     * The `line` number where the error occurred.
+     */
     line(): Option<bigint>;
+
+    /**
+     * ***Brief***
+     * The `column` number where the error occurred.
+     */
     column(): Option<bigint>;
 };
 
 /**
- * ***Note***
- * Designed to parse stack trace line ie. "at someFunction (/path/to/file.js:10:15)".
+ * ***Brief***
+ * Parses a stack trace line in the form `"at functionName (/path/to/file.js:line:column)"`.
  * 
  * ***Warning***
- * Use only for string representation or for display purposes, There are no guarantees
- * that the string representations or properties will be parsed correctly due to several
- * edge cases.
+ * Intended for display only—parsing. 
+ * 
+ * ***Warning***
+ * May parse incorrectly on edge cases.
 */
 export function StackTraceLine(_line: `at ${ string } (${ string })`): StackTraceLine {
     let _locationO: Option<string>;
@@ -60,14 +87,14 @@ export function StackTraceLine(_line: `at ${ string } (${ string })`): StackTrac
     function toString(
         args0?: bigint
     ): string {
-        let line: string = "";
+        let line_: string = "";
         let missing: string = "???";
-        let string0: string = _locationO.unwrapOr(missing);
-        let string1: string = _pathO.unwrapOr(missing);
-        let string2: string | bigint = _lineO.unwrapOr(missing);
-        let string3: string | bigint = _columnO.unwrapOr(missing);
-        if (args0) line = args0 + " |>";
-        return `${ line } ${ string0 } ${ string1 } ${ string2 } ${ string3 }`;
+        let string0: string = location().unlockOr(missing);
+        let string1: string = path().unlockOr(missing);
+        let string2: string | bigint = line().unlockOr(missing);
+        let string3: string | bigint = column().unlockOr(missing);
+        if (args0) line_ = args0 + " |>";
+        return `${ line_ } ${ string0 } ${ string1 } ${ string2 } ${ string3 }`;
     }
 
     function location(): Option<string> {
