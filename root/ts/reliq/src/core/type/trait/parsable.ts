@@ -3,15 +3,18 @@ import type { Option } from "@root";
 
 /**
  * ***Brief***
- * A type-safe abstraction for wrapping a value, allowing validation and transformation 
- * through user-defined type guard functions. Enables runtime type validation and conditional parsing.
- * ```
+ * A type-safe abstraction, enabling validation and transformation through user-defined type guard functions.
  */
-export type ParsableWrapper  = {
+export type Parsable  = {
 
     /**
      * ***Brief***
-     * `parse` allows validating a wrapped value using a type guard.
+     * `parse` validates the value using a provided type guard function.
+     * 
+     * ***Example***
+     * ```ts
+     *  
+     * ```
      */
     parse<T1>(guard: TypeGuard<T1>): Option<T1>;
 };

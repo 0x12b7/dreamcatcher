@@ -1,13 +1,9 @@
 
 /**
- * **Note**
- * A utility type for creating branded types with a unique string literal `T1`.
+ * ***Brief***
+ * Utility type for creating branded types with a unique string literal identifier `T1`.
  * 
- * **Where**
- * * `T1` is a string literal used as the unique identifier (brand).
- * 
- * **Example**
- * Defining two distinct branded types with unique identifiers:
+ * ***Example***
  * ```ts
  *  type Foo = 
  *      & Branded<"Foo">
@@ -30,14 +26,10 @@
 export type Branded<T1 extends string> = {
 
     /**
-     * **Note**
-     * A type-level marker method that specifies the unique type identifier `T1`.
-     * 
-     * **Warning**
-     * Branding conflicts can occur if different modules reuse the same string literal for `T1`.
-     * 
-     * **Example**
-     * Defining two distinct branded types with unique identifiers:
+     * ***Brief***
+     * Type-level marker method specifying the unique type identifier `T1`.
+     *
+     * ***Example***
      * ```ts
      *  type Foo = 
      *      & Branded<"Foo">

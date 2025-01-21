@@ -30,6 +30,15 @@ export type Fpv<T1 extends bigint = 2n> =
      * 
      * ***Warning***
      * Extremely large values may cause the program to panic due to insufficient memory.
+     * 
+     * ***Example***
+     * ```ts
+     *  let value: bigint = Fpv(200n)
+     *      .expect("Failed to initialize Fpv.")
+     *      .add(100n)
+     *      .unwrap();
+     *  console.log(value); /// 300n === 3.00
+     * ```
      */
     add(value: FpvIsh<T1>): Fpv<T1>;
     
@@ -39,6 +48,15 @@ export type Fpv<T1 extends bigint = 2n> =
      * 
      * ***Warning***
      * Extremely large values may cause the program to panic due to insufficient memory.
+     * 
+     * ***Example***
+     * ```ts
+     *  let value: bigint = Fpv(200n)
+     *      .expect("Failed to initialize Fpv.")
+     *      .sub(100n)
+     *      .unwrap();
+     *  console.log(value); /// 100n === 1.00
+     * ```
      */
     sub(value: FpvIsh<T1>): Fpv<T1>;
 
@@ -48,6 +66,15 @@ export type Fpv<T1 extends bigint = 2n> =
      * 
      * ***Warning***
      * Extremely large values may cause the program to panic due to insufficient memory.
+     * 
+     * ***Example***
+     * ```ts
+     *  let value: bigint = Fpv(200n)
+     *      .expect("Failed to initialize Fpv.")
+     *      .mul(50n) /// 0.50
+     *      .unwrap();
+     *  console.log(value); /// 100n === 1.00
+     * ```
      */
     mul(value: FpvIsh<T1>): Fpv<T1>;
 
@@ -60,6 +87,15 @@ export type Fpv<T1 extends bigint = 2n> =
      * 
      * ***Warning***
      * If dividing by zero, an error will be returned.
+     * 
+     * ***Example***
+     * ```ts
+     *  let value: bigint = Fpv(200n)
+     *      .expect("Failed to initialize Fpv.")
+     *      .div(50n) /// 0.50
+     *      .unwrap();
+     *  console.log(value); /// 400n === 4.00
+     * ```
      */
     div(value: FpvIsh<T1>): Result<Fpv<T1>, FpvError>;
 };
@@ -85,12 +121,10 @@ export function Fpv<T1 extends bigint = 2n>(_fpv: FpvIsh<T1>, _precision: T1 = (
             div
         });
     }
-
     
     function unwrap(): bigint {
         return _value;
     }
-
 
     function precision(): T1 {
         return _precision;
@@ -131,7 +165,7 @@ export function Fpv<T1 extends bigint = 2n>(_fpv: FpvIsh<T1>, _precision: T1 = (
     }
 
     function _wrap(task: Closure<[], bigint>): Fpv<T1> {
-        return Fpv<T1>(task()).expect("" + INTERNAL_ERROR_MESSAGE);
+        return Fpv<T1>(task()).expect("Fpv: Failed to wrap the task result into an Fpv." + INTERNAL_ERROR_MESSAGE);
     }
 
     function _unwrap(fpv: FpvIsh<T1>): bigint {

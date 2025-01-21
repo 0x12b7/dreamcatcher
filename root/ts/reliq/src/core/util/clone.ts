@@ -2,6 +2,21 @@ import type { Result } from "@root";
 import { DomError } from "@root";
 import { wrap } from "@root";
 
+/**
+ * ***Brief***
+ * Creates a deep clone of the provided value using the structuredClone API.
+ * 
+ * ***Example***
+ * ```ts
+ *  clone()
+ *      .resolve(e => {
+ *          if (e.code === "DOM.ERR_DATA_CLONE") {
+ *              /// ...
+ *          }
+ *      })
+ *      .unlock();
+ * ```
+ */
 export function clone<T1>(value: T1): Result<T1, DomError> {
     return wrap(() => {
         return structuredClone(value);
@@ -21,6 +36,6 @@ export function clone<T1>(value: T1): Result<T1, DomError> {
             .map(exception => {
                 return DomError(exception);
             })
-            .unwrapOr(DomError());
+            .unlockOr(DomError());
     });
 }
