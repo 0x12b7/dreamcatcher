@@ -3,9 +3,19 @@ import type { Option } from "@root";
 
 /**
  * ***Brief***
- * A type-safe abstraction, enabling validation and transformation through user-defined type guard functions.
+ * A type-safety trait, enabling validation and transformation through user-defined type guard functions.
+ * 
+ * ***Example***
+ * ```ts
+ *  let foo: Parsable;
+ *  foo
+ *      .parse((inst): inst is bigint => typeof inst === "bigint")
+ *      .map(int => {
+ *          /// ...
+ *      });
+ * ```
  */
-export type Parsable  = {
+export type Parsable = {
 
     /**
      * ***Brief***
@@ -13,7 +23,12 @@ export type Parsable  = {
      * 
      * ***Example***
      * ```ts
-     *  
+     *  let foo: Parsable;
+     *  foo
+     *      .parse((inst): inst is bigint => typeof inst === "bigint")
+     *      .map(int => {
+     *          /// ...
+     *      });
      * ```
      */
     parse<T1>(guard: TypeGuard<T1>): Option<T1>;

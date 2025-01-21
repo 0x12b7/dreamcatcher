@@ -1,3 +1,12 @@
 import type { Closure } from "@root";
 
-export type AsyncClosure<T1 extends Array<unknown>, T2> = Closure<T1, T2>;
+/**
+ * ***Brief***
+ * A type alias for a closure that supports asynchronous operations.
+ * 
+ * ***Example***
+ * ```ts
+ *  const fetch: AsyncClosure<[string], unknown> = async (url: string) => /// ...;
+ * ```
+ */
+export type AsyncClosure<T1 extends Array<unknown>, T2> = Closure<T1, Promise<T2>>;

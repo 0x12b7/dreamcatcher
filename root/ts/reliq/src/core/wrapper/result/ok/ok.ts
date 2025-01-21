@@ -1,4 +1,5 @@
 import type { Function } from "@root";
+import type { UnlockedWrapper } from "@root";
 import type { Option } from "@root";
 import type { Result } from "@root";
 import { Error } from "@root";
@@ -6,7 +7,9 @@ import { Err } from "@root";
 import { Some } from "@root";
 import { panic } from "@root";
 
-export type Ok<T1> = {
+export type Ok<T1> = 
+    & UnlockedWrapper<T1>
+    & {
 
     /**
      * ***Brief***
@@ -67,21 +70,6 @@ export type Ok<T1> = {
      * ```
     */
     expectErr(__: unknown): never;
-
-    /**
-     * ***Brief***
-     * Safely retrieves the value, available only for `Ok` after handling `Err`.
-     * 
-     * ***Example***
-     * ```ts
-     *  let result: Result<200n, 404n>;
-     *  if (result.ok()) {
-     *      let status: 200n = result.unlock();
-     *      /// ...
-     *  }
-     * ```
-     */
-    unlock(): T1;
 
     /**
      * ***Brief***

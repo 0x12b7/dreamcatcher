@@ -1,4 +1,3 @@
-
 /**
  * ***Brief***
  * Utility type for creating branded types with a unique string literal identifier `T1`.
