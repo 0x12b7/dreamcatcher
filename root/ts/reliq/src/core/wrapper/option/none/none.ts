@@ -3,31 +3,6 @@ import { Err } from "@root";
 import { Error } from "@root";
 import { panic } from "@root";
 
-/**
- * ***Brief***
- * The absence of a value or an "empty" state.
- * 
- * ***Warning***
- * Any operation attempting to access an `Option` must safely handle the `None` state or terminate with an error.
- * 
- * ***Example***
- * ```ts
- *  function foo(key: string): Option<number>;
- * 
- *  /// `map` the option and perform an operation if the value is available.
- *  foo("Bar").map(number => {   
- *      /// ...
- *  });
- *  
- *  /// `unlockOr` to default to a safe value.
- *  foo("Bar").unlockOr(0);
- * 
- *  /// Safely chain operations together and short circuit at the first invalid state.
- *  foo("Bar")
- *      .and(() => None)
- *      .and(() => console.log("This will not run because the last operation ended with `None`."));
- * ```
- */
 export type None = {
 
     /**
@@ -144,6 +119,13 @@ export type None = {
     toResult<T1>(e: T1): Err<T1>;
 };
 
+/**
+ * ***Brief***
+ * The absence of a value or an "empty" state.
+ * 
+ * ***Warning***
+ * Any operation attempting to access an `Option` must safely handle the `None` state or terminate with an error.
+ */
 export const None: None = (() => {
     let _this: None;
 
