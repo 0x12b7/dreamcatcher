@@ -1,34 +1,68 @@
+import { readFileSync } from "fs";
 import { writeFileSync } from "fs";
 import { readdirSync } from "fs";
 import { join } from "path";
 import { relative } from "path";
 
-/// Note to self this is an awesome idea, I'm going to make a
-/// manager for this.
-
 /** @script */
-let rootDirectoryPath: string = __dirname;
-let modDirectoryPath: string = join(rootDirectoryPath, "../src/core");
-let modFilePath: string = join(modDirectoryPath, "mod.internal.ts");
-let filePaths: Array<string> = _lookUpFiles(modDirectoryPath);
+let root: string = __dirname;
+let moduleFolder: string = join(root, "../src/core");
+let moduleFile: string = join(moduleFolder, "mod.internal.ts");
+let sorted: Array<string> = [];
+let set: Array<Array<string>> = [];
 let output: string = "";
-filePaths.forEach(filePath => {
-    if (filePath.includes("mod")) return;
-    let relativePath: string = relative(modDirectoryPath, filePath).replace(/\\/g, "/");
-    output += _import("./" + relativePath) + "\n";
+_typeScriptFiles(moduleFolder).forEach(file => {
+    let raise: bigint = 0n;
+    try {
+        raise = _raise(file);
+    }
+    catch {}
+    set[Number(raise)] ??= [];
+    set[Number(raise)].push(file);
     return;
 });
-writeFileSync(modFilePath, output);
-
-function _lookUpFiles(directory: string): Array<string> {
-    let paths: Array<string> = [];
-    readdirSync(directory, { withFileTypes: true }).forEach(value => {
-        let path: string = join(directory, value.name);
-        if (value.isDirectory()) return paths = paths.concat(_lookUpFiles(path));
-        if (value.isFile() && path.endsWith(".ts")) return paths.push(path);
+set.forEach(files => {
+    files.forEach(file => {
+        sorted.push(file);
         return;
     });
-    return paths;
+    return;
+});
+sorted
+    .reverse()
+    .forEach(file => {
+        if (file.includes("mod")) return;
+        let path: string = relative(moduleFolder, file).replace(/\\/g, "/");
+        output += _import("./" + path) + "\n";
+        return;
+    });
+writeFileSync(moduleFile, output);
+
+function _typeScriptFiles(moduleFolder: string): Array<string> {
+    let result: Array<string> = [];
+    readdirSync(moduleFolder, { withFileTypes: true }).forEach(item => {
+        let path: string = join(moduleFolder, item.name);
+        let isFolder: boolean = item.isDirectory();
+        let isFile: boolean = item.isFile();
+        let isTypeScriptFile: boolean = isFile && path.endsWith(".ts");
+        if (isFolder) return result.push(... _typeScriptFiles(path));
+        if (isTypeScriptFile) return result.push(path);
+        return;
+    });
+    return result;
+}
+
+function _raise(typeScriptPath: string): bigint {
+    let tk: Array<string> = readFileSync(typeScriptPath, { encoding: "utf8" })
+        .split(";")
+        .at(0)
+        ?.replaceAll('"', "")
+        ?.split(" ") || [];
+    if (tk.length !== 2) return 0n;
+    let el0: string = tk[0];
+    let el1: string = tk[1];
+    if (el0 !== "raise") return 0n;
+    return BigInt(el1);
 }
 
 function _import(filePath: string): string {
