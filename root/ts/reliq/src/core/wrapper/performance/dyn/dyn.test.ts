@@ -25,5 +25,5 @@ let carD: Dyn<Car> = Car();
 carD.expect("DynTest: Instance not allocated.");
 carD = carD.deAlloc();
 carD
-    .toResult(404n)
+    .toResult(undefined)
     .expectErr("DynTest: Instance was deallocated but still available.");

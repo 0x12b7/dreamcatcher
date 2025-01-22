@@ -228,7 +228,7 @@ type Ok<T1> = UnlockedWrapper<T1> & {
      *  let status: 404n = result.expectErr("This is unexpected and unrecoverable.");
      * ```
     */
-    expectErr(__: unknown): never;
+    expectErr(message: string): never;
     /**
      * ***Brief***
      * Retrieves the value of an `Ok`, or falls back to the provided value if it’s an `Err`.
@@ -639,9 +639,22 @@ type Dyn<T1> = Alloc<T1> | DeAlloc<T1>;
  *  );
  *
  *  let car: Dyn<Car> = Car("ModelF");
- *  car.deAlloc();
+ *  car = car.deAlloc();
  *  car.map(car => {
  *      /// Will not run because `car` has been deallocated.
+ *      /// ...
+ *  });
+ * ```
+ *
+ * ***Example***
+ * ```ts
+ *  /// Warning.
+ *  let car: Dyn<Car> = Car("ModelB");
+ *  car.deAlloc();
+ *  car.map(car => {
+ *      /// Will run because the car must be updated to the new state.
+ *      /// Always assign the `deAlloc` result a new `Dyn` wrapper or
+ *      /// itself.
  *      /// ...
  *  });
  * ```

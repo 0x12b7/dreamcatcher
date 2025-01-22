@@ -32,6 +32,7 @@ sorted
     .reverse()
     .forEach(file => {
         if (file.includes("mod")) return;
+        if (file.includes("test.ts")) return;
         let path: string = relative(moduleFolder, file).replace(/\\/g, "/");
         output += _import("./" + path) + "\n";
         return;
