@@ -579,6 +579,38 @@ type Err<T1> = {
  */
 declare function Err<T1>(_value: T1): Err<T1>;
 
+type RefTask<T1> = Closure<[new: T1, old: T1], void>;
+
+type RefDelTask = Closure<[], void>;
+
+type Ref<T1> = Wrapper<T1> & {
+    /**
+     * ***Brief***
+     * Mutates the internal value of the `Ref` instance.
+     */
+    mut(value: T1): Ref<T1>;
+    /**
+     * ***Brief***
+     * Registers a callback that is invoked whenever the value changes.
+     *
+     * ***Example***
+     * ```ts
+     *  let ref: Ref<bigint> = Ref(200n);
+     *  ref.onChange(value => {
+     *      /// ...
+     *      return;
+     *  });
+     *  ref.mut(404n);
+     * ```
+     */
+    onChange(task: RefTask<T1>): RefDelTask;
+};
+/**
+ * ***Brief***
+ * Wrapper that supports mutation and change tracking.
+ */
+declare function Ref<T1>(_value: T1): Ref<T1>;
+
 /**
  * ***Brief***
  * A dynamic wrapper for resource allocation and deallocation.
@@ -1382,4 +1414,4 @@ type DomError = Error<DomErrorCode>;
 declare function DomError(): DomError;
 declare function DomError(_e: DOMException): DomError;
 
-export { Alloc, type AsyncClosure, type AsyncFunction, type Branded, type Closure, DeAlloc, DomError, type DomErrorCode, Dyn, type DynConstructor, type DynWrapper, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error, Fpv, type FpvError, type FpvErrorCode, type FpvIsh, type Function$1 as Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, type Parsable, Result, type ResultHandler, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, StackTrace, StackTraceLine, type TypeGuard, Unsafe, allO, allR, anyO, anyR, clone, isBranded, panic, toString, wrap, wrapAsync };
+export { Alloc, type AsyncClosure, type AsyncFunction, type Branded, type Closure, DeAlloc, DomError, type DomErrorCode, Dyn, type DynConstructor, type DynWrapper, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error, Fpv, type FpvError, type FpvErrorCode, type FpvIsh, type Function$1 as Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, type Parsable, Ref, type RefDelTask, type RefTask, Result, type ResultHandler, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, StackTrace, StackTraceLine, type TypeGuard, Unsafe, allO, allR, anyO, anyR, clone, isBranded, panic, toString, wrap, wrapAsync };

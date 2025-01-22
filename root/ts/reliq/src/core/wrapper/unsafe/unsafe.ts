@@ -4,7 +4,6 @@ import type { TypeGuard } from "@root";
 import type { Option } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
-import { toString as toString0 } from "@root";
 
 export type Unsafe =
     & Wrapper<unknown>
