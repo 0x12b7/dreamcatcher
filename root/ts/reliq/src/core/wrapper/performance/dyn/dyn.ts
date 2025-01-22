@@ -26,7 +26,13 @@ export type Dyn<T1> = Alloc<T1> | DeAlloc<T1>;
  * 
  *  const Car: DynConstructor<Car, [_model: string]> = Dyn(
  *      (_model: string) => {
- *          /// ...
+ *          constructor {
+ *              return { drive };
+ *          }
+ * 
+ *          function drive(): void {
+ *              return "Vroom.";
+ *          }
  *      },
  *      car => {
  *          /// Reset car or any tasks before it is made available again.
