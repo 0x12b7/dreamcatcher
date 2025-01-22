@@ -42,9 +42,22 @@ export type Dyn<T1> = Alloc<T1> | DeAlloc<T1>;
  *  );
  * 
  *  let car: Dyn<Car> = Car("ModelF");
- *  car.deAlloc();
+ *  car = car.deAlloc();
  *  car.map(car => {
  *      /// Will not run because `car` has been deallocated.
+ *      /// ...
+ *  });
+ * ```
+ * 
+ * ***Example***
+ * ```ts
+ *  /// Warning.
+ *  let car: Dyn<Car> = Car("ModelB");
+ *  car.deAlloc();
+ *  car.map(car => {
+ *      /// Will run because the car must be updated to the new state.
+ *      /// Always assign the `deAlloc` result a new `Dyn` wrapper or
+ *      /// itself.
  *      /// ...
  *  });
  * ```
@@ -92,7 +105,7 @@ export function Dyn<T1, T2 extends Array<unknown>>(_constructor: Closure<T2, T1>
                         /// If the key is available then it is allocated.
                         _key = None;
                         _recyle(key, _onDeAlloc(_this.expect("Dyn: Could not deallocate resource but the key was available." + INTERNAL_ERROR_MESSAGE)));
-                        return
+                        return;
                     });
                 return _this = DeAlloc({ deAlloc });
             }

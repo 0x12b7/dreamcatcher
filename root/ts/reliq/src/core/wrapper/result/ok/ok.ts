@@ -69,7 +69,7 @@ export type Ok<T1> =
      *  let status: 404n = result.expectErr("This is unexpected and unrecoverable.");
      * ```
     */
-    expectErr(__: unknown): never;
+    expectErr(message: string): never;
 
     /**
      * ***Brief***
@@ -232,7 +232,7 @@ export function Ok<T1>(_value: T1): Ok<T1> {
     }
 
     function expectErr(message: string): never {
-        panic(Error("", message));
+        panic(Error("PANIC", message));
     }
 
     function unlock(): T1 {
