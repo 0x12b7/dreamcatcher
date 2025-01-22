@@ -1,3 +1,5 @@
+"raise 1";
+
 import type { OptionHandler } from "@root";
 import type { SomeValOfAll } from "@root";
 import { Some } from "@root";

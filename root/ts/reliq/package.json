@@ -9,6 +9,7 @@
 	"scripts": {
 		"build": "bun run script/build_script.ts",
 		"link": "bun run script/link.ts",
+		"blink": "bun run link && bun run build",
 		"release": "bun run build && npm publish"
 	},
 	"devDependencies": {

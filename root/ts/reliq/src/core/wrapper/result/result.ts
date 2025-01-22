@@ -1,3 +1,5 @@
+"raise 1";
+
 import type { ErrValOfAll } from "@root";
 import type { OkValOfAll } from "@root";
 import type { ResultHandler } from "@root";
