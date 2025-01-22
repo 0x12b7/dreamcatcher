@@ -1,5 +1,15 @@
 # Reliq
+### TypeScript for ridiculously robust code.
+
+
+###### v2 Changes
+* `Option` and `Result` can no longer `unwrap` instead they must either be handled or `expect`.
+
+
+
 Reliq is a TypeScript error-handling library inspired by Rust's error paradigms and the Ethereum Virtual Machine's (EVM) state management mechanisms. It combines a Rust-style `Result` approach with assertion-based programming to simplify and strengthen error handling in TypeScript.
+
+
 
 
 

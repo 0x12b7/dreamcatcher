@@ -1248,23 +1248,13 @@ type AsyncFunction<T1, T2> = Function$1<T1, Promise<T2>>;
  */
 type AsyncClosure<T1 extends Array<unknown>, T2> = Closure<T1, Promise<T2>>;
 
-declare function isWrapper<T1>(unknown: unknown): unknown is Wrapper<T1>;
-
-declare function isSome(unknown: unknown): unknown is Some<unknown>;
-
-declare function isResult(unknown: unknown): unknown is Result<unknown, unknown>;
-
-declare function isOption(unknown: unknown): unknown is Option<unknown>;
-
-declare function isOk(unknown: unknown): unknown is Ok<unknown>;
-
-declare function isNone(unknown: unknown): unknown is None;
-
-declare function isErr(unknown: unknown): unknown is Err<unknown>;
-
 /**
- * **WARNING**
- * Only use this check if you are sure the branded type will have a specific property (`type`) and enforce the expected value logic.
+ * ***Brief***
+ * A utility function to check if an `unknown` value conforms to a specific branded type.
+ *
+ * ***Warning***
+ * Be cautious about brand collisions that may occur if multiple modules
+ * or contexts define similar branded types.
  */
 declare function isBranded<T1 extends string>(unknown: unknown, type: T1): unknown is Branded<T1>;
 
@@ -1379,4 +1369,4 @@ type DomError = Error<DomErrorCode>;
 declare function DomError(): DomError;
 declare function DomError(_e: DOMException): DomError;
 
-export { Alloc, type AsyncClosure, type AsyncFunction, type Branded, type Closure, DeAlloc, DomError, type DomErrorCode, Dyn, type DynConstructor, type DynWrapper, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error, Fpv, type FpvError, type FpvErrorCode, type FpvIsh, type Function$1 as Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, type Parsable, Result, type ResultHandler, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, StackTrace, StackTraceLine, type TypeGuard, Unsafe, allO, allR, anyO, anyR, clone, isBranded, isErr, isNone, isOk, isOption, isResult, isSome, isWrapper, panic, toString, wrap, wrapAsync };
+export { Alloc, type AsyncClosure, type AsyncFunction, type Branded, type Closure, DeAlloc, DomError, type DomErrorCode, Dyn, type DynConstructor, type DynWrapper, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error, Fpv, type FpvError, type FpvErrorCode, type FpvIsh, type Function$1 as Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, type Parsable, Result, type ResultHandler, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, StackTrace, StackTraceLine, type TypeGuard, Unsafe, allO, allR, anyO, anyR, clone, isBranded, panic, toString, wrap, wrapAsync };

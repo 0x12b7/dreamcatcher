@@ -31,14 +31,7 @@ export {
 
 
 export {
-    isBranded,
-    isErr,
-    isNone,
-    isOk,
-    isOption,
-    isResult,
-    isSome,
-    isWrapper
+    isBranded
 } from "@root";
 
 
