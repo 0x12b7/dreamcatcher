@@ -1,8 +1,11 @@
 import type { Function } from "@root";
 import type { Option } from "@root";
 import { StackTrace } from "@root";
+import { Error } from "@root";
 import { Ok } from "@root";
 import { None } from "@root";
+import { Some } from "@root";
+import { panic } from "@root";
 
 export type Err<T1> = {
 
@@ -117,7 +120,7 @@ export type Err<T1> = {
 
     /**
      * ***Brief***
-     * Chains an operation until the first `Err` is encountered.
+     * Chains an task until the first `Err` is encountered.
      * 
      * ***Example***
      * ```ts
@@ -226,7 +229,10 @@ export type Err<T1> = {
 
 /**
  * ***Brief***
- * The `Err` type represents an error in a `Result`, with tools for handling, chaining, and integration with `Ok` and `Option`.
+ * The failed state of a `Result`.
+ * 
+ * ***Warning***
+ * Any operation attempting to access a `Result` must safely handle the `Err` state or terminate with an error.
  */
 export function Err<T1>(_value: T1): Err<T1> {
     let _this: Err<T1>;
@@ -268,7 +274,19 @@ export function Err<T1>(_value: T1): Err<T1> {
     }
 
     function expect(message: string): never {
-        throw message + "\n" + stack();
+        let e: T1 = inspect();
+        let codeO: Option<string> = None;
+        if (e !== null && e !== undefined && typeof e === "object" && "code" in e && typeof e.code === "string") codeO = Some(e.code);
+        panic(Error({
+            code: codeO.unlockOr("ERR_TRIED_UNWRAP_ERR"),
+            message: Some([
+                "Fatal Error" + " >>> " + "Tried to unwrap an error value.",
+                "",
+                message
+            ].join("\n")),
+            payload: None,
+            stack: stack()
+        }));
     }
 
     function expectErr(__: unknown): T1 {

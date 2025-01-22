@@ -1,15 +1,10 @@
-import {
-    type AsyncResult,
-    ResultHandler,
-    Unsafe
-} from "@root";
-
-import { 
-    build 
-} from "tsup";
+import type { Result } from "@root";
+import { wrapAsync } from "@root";
+import { Unsafe } from "@root";
+import { build } from "tsup";
 
 export type BuildScript = {
-    run(): AsyncResult<void, Unsafe>
+    run(): Promise<Result<void, Unsafe>>;
 };
 
 export function BuildScript(): BuildScript {
@@ -19,8 +14,8 @@ export function BuildScript(): BuildScript {
         };
     }
 
-    async function run(): AsyncResult<void, Unsafe> {
-        return await ResultHandler.wrapAsync(build, {
+    async function run(): Promise<Result<void, Unsafe>> {
+        return await wrapAsync(build, {
             entry: ["src/core/mod.ts"],
             outDir: "target/tslib",
             format: "cjs",
@@ -37,4 +32,4 @@ export function BuildScript(): BuildScript {
 /** @script */
 (await BuildScript()
     .run())
-    .unwrap();
+    .expect("Failed to complete build script.");

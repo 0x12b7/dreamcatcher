@@ -12,7 +12,7 @@
  *  console.log(toString(null));        /// null
  *  console.log(toString(undefined));   /// undefined
  * 
- *  console.log(toString("example"));
+ *  console.log(toString("example"));   /// example
  * 
  *  let object: {
  *      color: string;

@@ -3,19 +3,35 @@ import type { SomeValOfAll } from "@root";
 
 /**
  * ***Brief***
- * The `OptionHandler` type provides utility methods for working with multiple `Option` values.
+ * Utility class for handling tasks within `Option`.
  */
 export type OptionHandler = {
 
     /**
      * ***Brief***
-     * Returns `None` if **any** `Option` is `None`.
+     * Iterates through an array of `Option`, short-circuiting at the first `None`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let o0: Option<200n>;
+     *  let o1: Option<201n>;
+     *  let o2: Option<202n>;
+     *  let o: Option<[200n, 201n, 202n]> = Option.all([o0, o1, o2]);
+     * ```
      */
     all<T1 extends Array<Option<unknown>>>(options: T1): Option<SomeValOfAll<T1>>;
     
     /**
      * ***Brief***
-     * Returns the first successful `Some` value.
+     * Iterates through an array of `Option`, short-circuiting at the first `Some`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let o0: Option<200n>;
+     *  let o1: Option<201n>;
+     *  let o2: Option<202n>;
+     *  let o: Option<200n | 201n | 202n> = Option.any([o0, o1, o2]);
+     * ```
      */
     any<T1 extends Array<Option<unknown>>>(options: T1): Option<SomeValOfAll<T1>[number]>;
 };

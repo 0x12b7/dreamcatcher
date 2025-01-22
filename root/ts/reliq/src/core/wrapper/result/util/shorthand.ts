@@ -1,6 +1,6 @@
-import { ResultHandler } from "@root";
+import { Result } from "@root";
 
-export const allR = ResultHandler.all;
-export const anyR = ResultHandler.any;
-export const wrap = ResultHandler.wrap;
-export const wrapAsync = ResultHandler.wrapAsync;
+export const allR = Result.all;
+export const anyR = Result.any;
+export const wrap = Result.wrap;
+export const wrapAsync = Result.wrapAsync;

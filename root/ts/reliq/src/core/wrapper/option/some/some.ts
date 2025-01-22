@@ -11,55 +11,114 @@ export type Some<T1> =
     /**
      * ***Brief***
      * `some` checks if the current instance is `Some`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n>;
+     *  if (option.some()) {
+     *      let value: 200n = option.unlock();
+     *      /// ...
+     *  }
+     * ```
      */
     some(): this is Some<T1>;
 
     /**
      * ***Brief***
      * `none` checks if the current instance is `None`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n>;
+     *  if (option.none()) {
+     *      /// `Option` cannot `unlock` because it is `None`.
+     *      /// ...
+     *  }
+     * ```
      */
     none(): this is None;
 
     /**
      * ***Brief***
-     * `expect` terminates the program with `panic` when the `Option` is `None`.
+     * `expect` terminates with `panic` if the `Option` is `None`.
      * 
      * ***Warning***
-     * Reserved for unrecoverable errors, where a missing value will halt execution or result in a critical issue.
+     * Reserved for debugging or unrecoverable errors.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n>;
+     *  let status: 200n = option.expect("This is unexpected and unrecoverable.");
+     * ```
      */
     expect(__: unknown): T1;
 
     /**
      * ***Brief***
-     * Safely retrieves the `Some` or `fallback` value when `None`.
+     * Retrieves the value of a `Some`, or falls back to the provided value if it’s `None`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n> = None;
+     *  let status: 200n = option.unlockOr(200n);
+     *  console.log(status); /// 200n.
+     * ```
      */
     unlockOr(__: unknown): T1;
 
     /**
      * ***Brief***
-     * `and` chains operations conditionally. 
+     * Chains an task until the first `None` is encountered.
      * 
-     * ***Note***
-     * If the current instance is `None`, subsequent operations are skipped and `None` is returned.
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n> = None;
+     *  option
+     *      .and(value => {
+     *          /// Task is skipped because `Option` is `None`.
+     *          /// ...
+     *          return Some(value + 1n);
+     *      })
+     *      .and(value => {
+     *          /// Task is skipped because `Option` is `None`.
+     *          /// ...
+     *      });
+     * ```
      */
     and<T2>(task: Function<T1, Option<T2>>): Option<T2>;
 
     /**
      * ***Brief***
-     * `map` performs a no-op operation when the `Option` is `None`.
+     * Transforms the `Some` value if present, but if this is already an `None`, it remains unchanged.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option0: Option<200n> = Some(200n);
+     *  let option1: Option<201n> = option.map(value => {
+     *      /// Task is run because `Option` is `Some`.
+     *      /// ...
+     *      return value + 1n;
+     *  });
+     * ```
      */
     map<T2>(task: Function<T1, T2>): Some<T2>;
 
     /**
      * ***Brief***
-     * `toResult` converts an `Option` into a `Result` with the `Err` result containing the provided error value.
+     * Converts an `Option<T1>` to a `Result<T1, T2>`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n>;
+     *  let result: Result<200n, 404n> = option.toResult(404n);
+     * ```
      */
     toResult(__: unknown): Ok<T1>;
 };
 
 /**
  * ***Brief***
- * Represents a value that exists `Some` within an `Option`.
+ * The value within an `Option`.
  */
 export function Some<T1>(_value: T1): Some<T1> {
     /** @constructor */ {

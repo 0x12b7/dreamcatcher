@@ -119,7 +119,7 @@ export type Ok<T1> =
 
     /**
      * ***Brief***
-     * Chains an operation until the first `Err` is encountered.
+     * Chains an task until the first `Err` is encountered.
      * 
      * ***Example***
      * ```ts
@@ -195,6 +195,10 @@ export type Ok<T1> =
     toOption(): Option<T1>;
 };
 
+/**
+ * ***Brief***
+ * The successful value within a `Result`.
+ */
 export function Ok<T1>(_value: T1): Ok<T1> {
     let _this: Ok<T1>;
 

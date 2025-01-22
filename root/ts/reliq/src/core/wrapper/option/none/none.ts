@@ -1,4 +1,3 @@
-import { StackTrace } from "@root";
 import { Some } from "@root";
 import { Err } from "@root";
 import { Error } from "@root";
@@ -9,48 +8,107 @@ export type None = {
     /**
      * ***Brief***
      * `some` checks if the current instance is `Some`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n>;
+     *  if (option.some()) {
+     *      let value: 200n = option.unlock();
+     *      /// ...
+     *  }
+     * ```
      */
     some(): this is Some<unknown>;
 
     /**
      * ***Brief***
      * `none` checks if the current instance is `None`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n>;
+     *  if (option.none()) {
+     *      /// `Option` cannot `unlock` because it is `None`.
+     *      /// ...
+     *  }
+     * ```
      */
     none(): this is None;
     
     /**
      * ***Brief***
-     * `expect` terminates the program with `panic` when the `Option` is `None`.
+     * `expect` terminates with `panic` if the `Option` is `None`.
      * 
      * ***Warning***
-     * Reserved for unrecoverable errors, where a missing value will halt execution or result in a critical issue.
+     * Reserved for debugging or unrecoverable errors.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n>;
+     *  let status: 200n = option.expect("This is unexpected and unrecoverable.");
+     * ```
      */
     expect(message: string): never;
 
     /**
      * ***Brief***
-     * Safely retrieves the `Some` or `fallback` value when `None`.
+     * Retrieves the value of a `Some`, or falls back to the provided value if it’s `None`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n> = None;
+     *  let status: 200n = option.unlockOr(200n);
+     *  console.log(status); /// 200n.
+     * ```
      */
     unlockOr<T2>(fallback: T2): T2;
     
     /**
      * ***Brief***
-     * `and` chains operations conditionally. 
+     * Chains an task until the first `None` is encountered.
      * 
-     * ***Note***
-     * If the current instance is `None`, subsequent operations are skipped and `None` is returned.
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n> = None;
+     *  option
+     *      .and(value => {
+     *          /// Task is skipped because `Option` is `None`.
+     *          /// ...
+     *          return Some(value + 1n);
+     *      })
+     *      .and(value => {
+     *          /// Task is skipped because `Option` is `None`.
+     *          /// ...
+     *      });
+     * ```
      */
     and(__: unknown): None;
 
     /**
      * ***Brief***
-     * `map` performs a no-op operation when the `Option` is `None`.
+     * Transforms the `Some` value if present, but if this is already an `None`, it remains unchanged.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option0: Option<200n> = Some(200n);
+     *  let option1: Option<201n> = option.map(value => {
+     *      /// Task is run because `Option` is `Some`.
+     *      /// ...
+     *      return value + 1n;
+     *  });
+     * ```
      */
     map(__: unknown): None;
 
     /**
      * ***Brief***
-     * `toResult` converts an `Option` into a `Result` with the `Err` result containing the provided error value.
+     * Converts an `Option<T1>` to a `Result<T1, T2>`.
+     * 
+     * ***Example***
+     * ```ts
+     *  let option: Option<200n>;
+     *  let result: Result<200n, 404n> = option.toResult(404n);
+     * ```
      */
     toResult<T1>(e: T1): Err<T1>;
 };
@@ -86,14 +144,7 @@ export const None: None = (() => {
     }
 
     function expect(message: string): never {
-        panic(Error<"ERR_INVALID_OPTION_STATE">({
-            code: "ERR_INVALID_OPTION_STATE",
-            message: Some([
-                message
-            ].join("\N")),
-            payload: None,
-            stack: StackTrace(expect)
-        }));
+        panic(Error("NONE.ERR_MISSING_VALUE", message));
     }
 
     function unlockOr<T1>(fallback: T1): T1 {
