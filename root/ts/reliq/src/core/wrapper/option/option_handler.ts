@@ -15,6 +15,8 @@ export type OptionHandler = {
 
     isNone(unknown: unknown): unknown is None;
 
+    flag<T1>(value: T1 | null | undefined): Option<T1>;
+
     /**
      * ***Brief***
      * Iterates through an array of `Option`, short-circuiting at the first `None`.

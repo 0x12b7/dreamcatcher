@@ -1,8 +1,7 @@
 import type { BrandedStruct } from "@root";
-import type { Option } from "@root";
-import { StackTrace } from "@root";
-import { Some } from "@root";
-import { None } from "@root";
+import { ErrorHandler, panic } from "@root";
+import { Option } from "@root";
+import { flag } from "@root";
 
 export type Error<T1 extends string, T2 = unknown> = 
     & BrandedStruct<"Error">
@@ -30,7 +29,7 @@ export type Error<T1 extends string, T2 = unknown> =
      * ***Brief***
      * The stack trace associated with the error.
      */
-    stack: StackTrace;
+    stack: string;
 };
 
 /**
@@ -40,30 +39,28 @@ export type Error<T1 extends string, T2 = unknown> =
  * ***Note***
  * This is a general-purpose error structure to manage domain-specific error codes and provide better context.
  */
-export function Error<T1 extends string, T2 = unknown>(_this: Error<T1, T2>): Error<T1, T2>;
-export function Error<T1 extends string, T2 = unknown>(_code: T1, _message: string, _payload: T2): Error<T1, T2>;
-export function Error<T1 extends string, T2 = unknown>(_code: T1, _message: string): Error<T1, T2>;
-export function Error<T1 extends string, T2 = unknown>(_code: T1): Error<T1, T2>;
-export function Error<T1 extends string, T2 = unknown>(
-    _args0: Error<T1, T2> | T1,
-    _args1?: string,
-    _args2?: T2
-): Error<T1, T2> {
+export function Error<T1 extends string, T2 = unknown>({
+    _code,
+    _message,
+    _payload,
+    _stack,
+    _handler=ErrorHandler 
+}: _ErrorPayload<T1, T2>): Error<T1, T2> {
     /** @constructor */ {
-        if (typeof _args0 === "object") return _args0;
-        let code: string = _args0;
-        let messageO: Option<string> = None;
-        let message0: string | undefined = _args1;
-        if (message0) messageO = Some(message0);
-        let payloadO: Option<T2> = None;
-        let payload0: T2 | undefined = _args2;
-        if (payload0) payloadO = Some(payload0);
-        return Error({
+        return {
             type: "Error",
-            code: code,
-            message: messageO,
-            payload: payloadO,
-            stack: StackTrace(Error)
-        }) as Error<T1, T2>; /// This is okay because the type of `code` is `T1`.
+            code: _code,
+            message: flag(_message),
+            payload: flag(_payload),
+            stack: flag(_stack).unlockOr(_handler.parseStackTrace(Error))
+        };
     }
 }
+
+type _ErrorPayload<T1, T2> = {
+    _code: T1;
+    _message?: string;
+    _payload?: T2;
+    _stack?: string;
+    _handler?: ErrorHandler;
+};

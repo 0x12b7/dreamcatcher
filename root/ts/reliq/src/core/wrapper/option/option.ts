@@ -15,7 +15,7 @@ export type Option<T1> = Some<T1> | None;
 
 export const Option: OptionHandler = (() => {
     /** @constructor */ {
-        return { isOption, isSome, isNone, all, any };
+        return { isOption, isSome, isNone, flag, all, any };
     }
 
     function isOption(unknown: unknown): unknown is Option<unknown> {
@@ -28,6 +28,12 @@ export const Option: OptionHandler = (() => {
 
     function isNone(unknown: unknown): unknown is None {
         return isBranded(unknown, "None");
+    }
+
+    function flag<T1>(value: T1 | null | undefined): Option<T1> {
+        if (value === null) return None;
+        if (value === undefined) return None;
+        return Some((value as T1));
     }
 
     function all<T1 extends Array<Option<unknown>>>(options: T1): Option<SomeValOfAll<T1>> {
