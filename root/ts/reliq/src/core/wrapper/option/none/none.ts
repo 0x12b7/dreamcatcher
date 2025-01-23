@@ -152,7 +152,7 @@ export const None: None = (() => {
     }
 
     function expect(message: string): never {
-        panic(Error({ _code: "ERR_MISSING_VALUE", _message: message }));
+        panic(Error("ERR_VALUE_REQUIRED", message));
     }
 
     function unlockOr<T1>(fallback: T1): T1 {

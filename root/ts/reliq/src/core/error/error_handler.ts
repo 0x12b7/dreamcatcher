@@ -4,11 +4,11 @@ import type { TypeGuard } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
 import { Error as CustomError } from "@root";
+import { flag } from "@root";
 import { isBranded } from "@root";
 
 export type ErrorHandler = {
-    matchError<T1 extends string>(unknown: unknown, code: T1): unknown is CustomError<T1, unknown>;
-    matchError<T1 extends string>(unknown: unknown, code: T1, task: Closure<[e: CustomError<T1, unknown>], void>): unknown is CustomError<T1, unknown>;
+    matchError<T1 extends string>(unknown: unknown, code?: T1, task?: Closure<[e: CustomError<T1, unknown>], void>): unknown is CustomError<T1, unknown>;
     localStackTrace(location: Function): Option<string>;
     parseStackTrace(locationOrStack: Function | string): string;
     convertToStandardError<T1 extends string, T2 = unknown>(e: CustomError<T1, T2>): Error;
@@ -24,17 +24,35 @@ export const ErrorHandler: ErrorHandler = (() => {
         };
     }
 
+    function matchError(unknown: unknown): unknown is CustomError<any, unknown>;
+    function matchError(unknown: unknown, task: Closure<[e: CustomError<any, unknown>], void>): unknown is CustomError<any, unknown>;
     function matchError<T1 extends string>(unknown: unknown, code: T1): unknown is CustomError<T1, unknown>;
-    function matchError<T1 extends string>(unknown: unknown, code: T1, task: Closure<[e: CustomError<T1, unknown>], void>): unknown is CustomError<T1, unknown>;
-    function matchError<T1 extends string>(unknown: unknown, code: T1, task?: Closure<[e: CustomError<T1, unknown>], void>): unknown is CustomError<T1, unknown> | void {
+    function matchError<T1 extends string>(unknown: unknown, code: T1, task: Closure<[e: CustomError<any, unknown>], void>): unknown is CustomError<T1, unknown>;
+    function matchError<T1 extends string = any>(
+        p0: unknown,
+        p1?: T1 | Closure<[e: CustomError<any, unknown>], void>,
+        p2?: Closure<[e: CustomError<any, unknown>], void>
+    ): p0 is CustomError<T1, unknown> {
+
+        
         let guard: TypeGuard<CustomError<T1>> = (unknown): unknown is CustomError<T1> => {
-            return unknown !== null
+            let match: boolean = false;
+            match =
+                unknown !== null
                 && unknown !== undefined
                 && typeof unknown === "object"
-                && "code" in unknown
-                && typeof unknown.code === "string"
-                && unknown.code === code
                 && isBranded(unknown, "Error");
+            return flag(code)
+                .map(() => {
+                    let match0: boolean = false;
+                    match0 =
+                        match
+                        && "code" in (unknown as any)
+                        && typeof (unknown as any).code === "string"
+                        && (unknown as any).code === code;
+                    return match0;
+                })
+                .unlockOr(match);
         }
         if (!guard(unknown)) return false;
         if (task) task(unknown);
@@ -67,7 +85,8 @@ export const ErrorHandler: ErrorHandler = (() => {
     }
 
     function _parseStack(stack: string): string {
-        return stack
+        let result: string = "";
+        stack
             .split("\n")
             .map(line => {
                 return _matchLine<string>(
@@ -89,9 +108,11 @@ export const ErrorHandler: ErrorHandler = (() => {
             .map(([locationO, pathO, lineO, columnO]) => {
                 return _representLine(locationO, pathO, lineO, columnO);
             })
-            .reduce((result, line) => {
-                return result += line;
+            .forEach(line => {
+                result += line;
+                return;
             });
+        return result;
     }
 
     function _parseLine(line: string): [location: Option<string>, path: Option<string>, line: Option<bigint>, column: Option<bigint>] {

@@ -1,5 +1,5 @@
 import type { BrandedStruct } from "@root";
-import { ErrorHandler, panic } from "@root";
+import { ErrorHandler } from "@root";
 import { Option } from "@root";
 import { flag } from "@root";
 
@@ -39,28 +39,49 @@ export type Error<T1 extends string, T2 = unknown> =
  * ***Note***
  * This is a general-purpose error structure to manage domain-specific error codes and provide better context.
  */
-export function Error<T1 extends string, T2 = unknown>({
-    _code,
-    _message,
-    _payload,
-    _stack,
-    _handler=ErrorHandler 
-}: _ErrorPayload<T1, T2>): Error<T1, T2> {
+export function Error<T1 extends string, T2 = unknown>(_configuration: {
+    code: T1;
+    message?: string;
+    payload?: T2;
+    stack?: string;
+    handler?: ErrorHandler;
+}): Error<T1, T2>;
+export function Error<T1 extends string, T2 = unknown>(_code: T1, _message?: string, _payload?: T2): Error<T1, T2>;
+export function Error<T1 extends string, T2 = unknown>(
+    _p0: {
+        code: T1;
+        message?: string;
+        payload?: T2;
+        stack?: string;
+        handler?: ErrorHandler;
+    } | T1,
+    _p1?: string,
+    _p2?: T2
+): Error<T1, T2> {
     /** @constructor */ {
+        if (typeof _p0 === "object") {
+            let configuration: {
+                code: T1;
+                message?: string;
+                payload?: T2;
+                stack?: string;
+                handler?: ErrorHandler;
+            } = _p0;
+            let handler: ErrorHandler = flag(configuration.handler).unlockOr(ErrorHandler);
+            return {
+                type: "Error",
+                code: configuration.code,
+                message: flag(configuration.message),
+                payload: flag(configuration.payload),
+                stack: flag(configuration.stack).unlockOr(handler.parseStackTrace(Error))
+            };
+        }
         return {
             type: "Error",
-            code: _code,
-            message: flag(_message),
-            payload: flag(_payload),
-            stack: flag(_stack).unlockOr(_handler.parseStackTrace(Error))
+            code: _p0,
+            message: flag(_p1),
+            payload: flag(_p2),
+            stack: ErrorHandler.parseStackTrace(Error)
         };
     }
 }
-
-type _ErrorPayload<T1, T2> = {
-    _code: T1;
-    _message?: string;
-    _payload?: T2;
-    _stack?: string;
-    _handler?: ErrorHandler;
-};

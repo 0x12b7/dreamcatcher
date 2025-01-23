@@ -1,6 +1,6 @@
 import type { Function } from "@root";
 import type { Option } from "@root";
-import { StackTrace } from "@root";
+import { ErrorHandler } from "@root";
 import { Error } from "@root";
 import { Ok } from "@root";
 import { None } from "@root";
@@ -74,7 +74,7 @@ export type Err<T1> = {
      *  }
      * ```
      */
-    stack(): StackTrace;
+    stack(): string;
 
     /**
      * ***Brief***
@@ -235,12 +235,13 @@ export type Err<T1> = {
  * ***Warning***
  * Any operation attempting to access a `Result` must safely handle the `Err` state or terminate with an error.
  */
-export function Err<T1>(_value: T1): Err<T1> {
+export function Err<T1>(_value: T1, _handler?: ErrorHandler): Err<T1> {
     let _this: Err<T1>;
-    let _stack: StackTrace;
+    let _stack: string;
     
     /** @constructor */ {
-        _stack = StackTrace(Err);
+        _handler ??= ErrorHandler;
+        _stack = _handler.parseStackTrace(Err);
         return _this = {
             ok,
             err,
@@ -270,12 +271,16 @@ export function Err<T1>(_value: T1): Err<T1> {
         return _value;
     }
 
-    function stack(): StackTrace {
+    function stack(): string {
         return _stack;
     }
 
     function expect(message: string): never {
         let e: T1 = inspect();
+        _handler?.matchError<any>(e, undefined, () => {
+            
+        });
+
         let codeO: Option<string> = None;
         let messageO: Option<string> = None;
         let stackO: Option<StackTrace> = None;
@@ -299,7 +304,7 @@ export function Err<T1>(_value: T1): Err<T1> {
                 }
             }
             if ("stack" in e) {
-                if (typeof e.stack === "string") stackO = Some(StackTrace(e.stack));
+                if (typeof e.stack === "string") stackO = Some();
                 else {
                     wrap(() => {
                         let value: unknown = (e.stack as any);
@@ -367,5 +372,3 @@ export function Err<T1>(_value: T1): Err<T1> {
         return None;
     }
 }
-
-

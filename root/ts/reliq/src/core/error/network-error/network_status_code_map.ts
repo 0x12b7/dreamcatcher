@@ -1,7 +1,7 @@
 import type { NetworkResponseCode } from "@root";
 import type { NetworkErrorCode } from "@root";
 
-export type NetworkStatusCodeMap = {
+export type NetworkErrorCodeMap = {
     100: "NETWORK.INFO_CONTINUE";
     101: "NETWORK.INFO_SWITCHING_PROTOCOLS";
     102: "NETWORK.INFO_PROCESSING";

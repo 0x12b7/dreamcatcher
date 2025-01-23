@@ -12,8 +12,6 @@ export {
 
 
 export {
-    StackTraceLine,
-    StackTrace,
     Error,
     panic,
 } from "@root";
