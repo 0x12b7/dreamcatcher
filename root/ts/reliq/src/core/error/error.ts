@@ -1,9 +1,13 @@
+import type { BrandedStruct } from "@root";
 import type { Option } from "@root";
 import { StackTrace } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
 
-export type Error<T1 extends string, T2 = unknown> = {
+export type Error<T1 extends string, T2 = unknown> = 
+    & BrandedStruct<"Error">
+    & {
+
     /**
      * ***Brief***
      * The unique identifier for this error.
@@ -55,6 +59,7 @@ export function Error<T1 extends string, T2 = unknown>(
         let payload0: T2 | undefined = _args2;
         if (payload0) payloadO = Some(payload0);
         return Error({
+            type: "Error",
             code: code,
             message: messageO,
             payload: payloadO,

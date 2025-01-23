@@ -56,29 +56,7 @@ export function StackTraceLine(_line: `at ${ string } (${ string })`): StackTrac
     let _columnO: Option<bigint>;
 
     /** @constructor */ {
-        _locationO = None;
-        _pathO = None;
-        _lineO = None;
-        _columnO = None;
-        let elements: Array<string> = _line.split(" ");
-        let firstElement: string | undefined = elements.shift();
-        if (firstElement && firstElement.trim().length !== 0) {
-            let secondElement: string | undefined = elements.shift();
-            let thirdElement: string | undefined = elements.shift();
-            if (secondElement && secondElement.trim().length !== 0) _locationO = Some(secondElement);
-            if (thirdElement && thirdElement.trim().length !== 0) {
-                let thirdElements: Array<string> = thirdElement
-                    .replaceAll("(", "")
-                    .replaceAll(")", "")
-                    .split(":");
-                let firstThirdElement: string | undefined = thirdElements.shift();
-                let lastThirdElement: string | undefined = thirdElements.at(thirdElements.length - 1);
-                let secondToLastThirdElement: string | undefined = thirdElements.at(thirdElements.length - 2);
-                if (firstThirdElement && firstThirdElement.trim().length !== 0) _pathO = Some(firstThirdElement);
-                if (lastThirdElement && lastThirdElement.trim().length !== 0) _columnO = Some(BigInt(lastThirdElement));
-                if (secondToLastThirdElement && secondToLastThirdElement.trim().length !== 0) _lineO = Some(BigInt(secondToLastThirdElement));
-            }
-        }
+        [_locationO, _pathO, _lineO, _columnO] = _parse(_line);
         return { toString, location, path, line, column };
     }
 
@@ -111,5 +89,21 @@ export function StackTraceLine(_line: `at ${ string } (${ string })`): StackTrac
 
     function column(): Option<bigint> {
         return _columnO;
+    }
+
+    function _parse(line: string): [location: Option<string>, path: Option<string>, line: Option<bigint>, column: Option<bigint>] {
+        let locationO: Option<string> = None;
+        let pathO: Option<string> = None;
+        let lineO: Option<bigint> = None;
+        let columnO: Option<bigint> = None;
+        let pattern: RegExp = /at (?<location>.*?) \((?<path>.*?):(?<line>\d+):(?<column>\d+)\)/;
+        let match: RegExpExecArray | null = pattern.exec(line);
+        if (match && match.groups) {
+            locationO = match.groups.location ? Some(match.groups.location) : None;
+            pathO = match.groups.path ? Some(match.groups.path) : None;
+            lineO = match.groups.line ? Some(BigInt(match.groups.line)) : None;
+            columnO = match.groups.column ? Some(BigInt(match.groups.column)) : None;
+        }
+        return [locationO, pathO, lineO, columnO];
     }
 }

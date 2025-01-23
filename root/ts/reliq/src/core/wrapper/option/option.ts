@@ -4,6 +4,7 @@ import type { OptionHandler } from "@root";
 import type { SomeValOfAll } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
+import { isBranded } from "@root";
 
 /**
  * ***Brief***
@@ -14,7 +15,19 @@ export type Option<T1> = Some<T1> | None;
 
 export const Option: OptionHandler = (() => {
     /** @constructor */ {
-        return { all, any };
+        return { isOption, isSome, isNone, all, any };
+    }
+
+    function isOption(unknown: unknown): unknown is Option<unknown> {
+        return isSome(unknown) || isNone(unknown);
+    }
+
+    function isSome(unknown: unknown): unknown is Some<unknown> {
+        return isBranded(unknown, "Some");
+    }
+
+    function isNone(unknown: unknown): unknown is None {
+        return isBranded(unknown, "None");
     }
 
     function all<T1 extends Array<Option<unknown>>>(options: T1): Option<SomeValOfAll<T1>> {

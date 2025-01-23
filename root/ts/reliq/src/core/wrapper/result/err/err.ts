@@ -278,11 +278,8 @@ export function Err<T1>(_value: T1): Err<T1> {
         let e: T1 = inspect();
         let codeO: Option<string> = None;
         let messageO: Option<string> = None;
-        if (
-            e !== null
-            && e !== undefined
-            && typeof e === "object"
-        ) {
+        let stackO: Option<StackTrace> = None;
+        if (e !== null && e !== undefined && typeof e === "object") {
             if ("code" in e && typeof e.code === "string") codeO = Some(e.code);
             if ("message" in e) {
                 if (typeof e.message === "string") messageO = Some(e.message);
@@ -301,16 +298,40 @@ export function Err<T1>(_value: T1): Err<T1> {
                     });
                 }
             }
+            if ("stack" in e) {
+                if (typeof e.stack === "string") stackO = Some(StackTrace(e.stack));
+                else {
+                    wrap(() => {
+                        let value: unknown = (e.stack as any);
+                        if (!(
+                            value !== null
+                            && value !== undefined
+                            && typeof value === "object"
+                            && "toString" in value
+                            && "lines" in value
+                            && typeof value.toString === "function"
+                            && typeof value.lines === "function"
+                            && typeof value.toString() === "string"
+                            && Array.isArray(value.lines())
+                        )) throw undefined;
+                        return value;
+                    }).map(stack => {
+                        /// There may be edge case where this may not be true
+                        /// better validation will be required in the
+                        /// future.
+                        stackO = Some((stack as StackTrace));
+                        return;
+                    });
+                }
+            }
         }
         panic(Error({
             code: codeO.unlockOr("PANIC"),
-            message: Some(message +
-                "\n" + 
-                "\n" + "Transient Error:" +
-                "\n" + messageO.unlockOr("The transient error did not come with a message.")
+            message: Some(messageO.unlockOr("The transient error did not come with a message.") +
+                "\n" + "Context: " + message
             ),
             payload: None,
-            stack: stack()
+            stack: stackO.unlockOr(StackTrace(expect))
         }));
     }
 

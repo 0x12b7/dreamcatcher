@@ -1,10 +1,12 @@
 import type { Function } from "@root";
 import type { Option } from "@root";
 import type { UnlockedWrapper } from "@root";
+import type { Branded } from "@root";
 import { None } from "@root";
 import { Ok } from "@root";
 
 export type Some<T1> = 
+    & Branded<"Some">
     & UnlockedWrapper<T1>
     & {
 
@@ -123,6 +125,7 @@ export type Some<T1> =
 export function Some<T1>(_value: T1): Some<T1> {
     /** @constructor */ {
         return {
+            type,
             some,
             none,
             expect,
@@ -132,6 +135,10 @@ export function Some<T1>(_value: T1): Some<T1> {
             map,
             toResult
         };
+    }
+
+    function type(): "Some" {
+        return "Some";
     }
 
     function some(): this is Some<T1> {

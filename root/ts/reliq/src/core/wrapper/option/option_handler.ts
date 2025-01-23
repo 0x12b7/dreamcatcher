@@ -1,4 +1,6 @@
-import type { Option } from "@root";
+import { Option } from "@root";
+import type { None } from "@root";
+import type { Some } from "@root";
 import type { SomeValOfAll } from "@root";
 
 /**
@@ -6,6 +8,12 @@ import type { SomeValOfAll } from "@root";
  * Utility class for handling tasks within `Option`.
  */
 export type OptionHandler = {
+
+    isOption(unknown: unknown): unknown is Option<unknown>;
+
+    isSome(unknown: unknown): unknown is Some<unknown>;
+
+    isNone(unknown: unknown): unknown is None;
 
     /**
      * ***Brief***

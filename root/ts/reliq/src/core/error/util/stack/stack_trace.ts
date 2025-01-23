@@ -20,9 +20,16 @@ export function StackTrace(
     let _lines: Array<StackTraceLine>;
 
     /** @constructor */ {
+        _lines = [];
         if (typeof _args0 === "string") _lines = _parse(_args0);
         if (typeof _args0 === "function") _lines = _parse(localStackTrace(_args0).unlockOr(""));
         if (Array.isArray(_args0)) _lines = _args0;
+        
+
+        _lines.forEach((line, k) => {
+            console.log(line.toString());
+        })
+
         return { toString, lines };
     }
 
@@ -57,23 +64,14 @@ export function StackTrace(
         return stack
             .split("\n")
             .map(line => {
+                if (line === "Error") return "";
                 return line.trim();
             })
             .filter(line => {
-                return line.length > 0;
+                return line.trim().length > 0;
             })
             .map(line => {
-                /// Warning
-                /// This is ok because it is only for display purposes.
                 return StackTraceLine((line as any));
             });
     }
 }
-
-StackTrace(`
-    Error: Something went wrong
-        at someFunction (/path/to/file.js:10:15)
-        <<< STACK_TRACE_LINE.ERR_LOCATION_UNAVAILABLEE >>>
-        at anotherFunction (/path/to/otherfile.js:20:25)
-        at main (/path/to/mainfile.js:30:35)
-`);
