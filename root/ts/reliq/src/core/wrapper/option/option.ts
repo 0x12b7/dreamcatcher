@@ -34,6 +34,7 @@ export const Option: OptionHandler = (() => {
         while (i < options.length) {
             let option: Option<unknown> = options.at(i)!;
             if (option.some()) return option as Some<SomeValOfAll<T1>[number]>;
+            i ++;
         }
         return None;
     }

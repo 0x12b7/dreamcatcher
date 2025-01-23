@@ -6,6 +6,7 @@ import { Ok } from "@root";
 import { None } from "@root";
 import { Some } from "@root";
 import { panic } from "@root";
+import { wrap } from "@root";
 
 export type Err<T1> = {
 
@@ -276,14 +277,38 @@ export function Err<T1>(_value: T1): Err<T1> {
     function expect(message: string): never {
         let e: T1 = inspect();
         let codeO: Option<string> = None;
-        if (e !== null && e !== undefined && typeof e === "object" && "code" in e && typeof e.code === "string") codeO = Some(e.code);
+        let messageO: Option<string> = None;
+        if (
+            e !== null
+            && e !== undefined
+            && typeof e === "object"
+        ) {
+            if ("code" in e && typeof e.code === "string") codeO = Some(e.code);
+            if ("message" in e) {
+                if (typeof e.message === "string") messageO = Some(e.message);
+                else {
+                    wrap(() => {
+                        let value: unknown = (e.message as any).unlockOr(undefined);
+                        if (!(
+                            value !== null
+                            && value !== undefined
+                            && typeof value === "string"
+                        )) throw undefined;
+                        return value;
+                    }).map(message => {
+                        messageO = Some(message);
+                        return;
+                    });
+                }
+            }
+        }
         panic(Error({
-            code: codeO.unlockOr("ERR_TRIED_UNWRAP_ERR"),
-            message: Some([
-                "Fatal Error" + " >>> " + "Tried to unwrap an error value.",
-                "",
-                message
-            ].join("\n")),
+            code: codeO.unlockOr("PANIC"),
+            message: Some(message +
+                "\n" + 
+                "\n" + "Transient Error:" +
+                "\n" + messageO.unlockOr("The transient error did not come with a message.")
+            ),
             payload: None,
             stack: stack()
         }));
