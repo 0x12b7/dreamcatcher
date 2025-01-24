@@ -9,9 +9,9 @@ import { allO } from "@root";
 let o0: Option<200n> = None;
 let o1: Option<201n> = None;
 let o2: Option<202n> = Some<202n>(202n);
-anyO([o0, o1, o2]).expect("[option.test]: Failed to retrieve an expected value.");
+anyO(o0, o1, o2).expect("[option.test]: Failed to retrieve an expected value.");
 
 /// Test [allO].
 let o3: Option<203n> = Some<203n>(203n);
 let o4: Option<204n> = Some<204n>(204n);
-allO([o2, o3, o4]).expect("[option.test]: Failed to retrieve an expected value.");
+allO(o2, o3, o4).expect("[option.test]: Failed to retrieve an expected value.");

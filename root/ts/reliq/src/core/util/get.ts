@@ -36,7 +36,7 @@ export async function get(url: string): Promise<Result<Unsafe, NetworkError>> {
 
                 return Error0("NETWORK.ERR_UNKNOWN", e.message, 999n);
             });
-        return anyO([o0, o1])
+        return anyO(o0, o1)
             .toResult(undefined)
             .recover(() => {
                 return Error0("NETWORK.ERR_UNKNOWN", undefined, 999n); 

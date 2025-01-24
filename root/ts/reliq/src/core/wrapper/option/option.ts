@@ -36,7 +36,7 @@ export const Option: OptionHandler = (() => {
         return Some((value as T1));
     }
 
-    function all<T1 extends Array<Option<unknown>>>(options: T1): Option<SomeValOfAll<T1>> {
+    function all<T1 extends Array<Option<unknown>>>(...options: T1): Option<SomeValOfAll<T1>> {
         let out: Array<unknown> = [];
         let i: number = 0;
         while (i < options.length) {
@@ -48,7 +48,7 @@ export const Option: OptionHandler = (() => {
         return Some(out as SomeValOfAll<T1>);
     }
 
-    function any<T1 extends Array<Option<unknown>>>(options: T1): Option<SomeValOfAll<T1>[number]> {
+    function any<T1 extends Array<Option<unknown>>>(...options: T1): Option<SomeValOfAll<T1>[number]> {
         let i: number = 0;
         while (i < options.length) {
             let option: Option<unknown> = options.at(i)!;

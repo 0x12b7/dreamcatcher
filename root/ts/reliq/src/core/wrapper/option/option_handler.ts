@@ -29,7 +29,7 @@ export type OptionHandler = {
      *  let o: Option<[200n, 201n, 202n]> = Option.all([o0, o1, o2]);
      * ```
      */
-    all<T1 extends Array<Option<unknown>>>(...options: T1): Option<[SomeValOfAll<T1>[number]]>;
+    all<T1 extends Array<Option<unknown>>>(...options: T1): Option<SomeValOfAll<T1>>;
     
     /**
      * ***Brief***

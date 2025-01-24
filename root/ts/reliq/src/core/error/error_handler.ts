@@ -139,15 +139,11 @@ export const ErrorHandler: ErrorHandler = (() => {
         let red: string = "\x1b[31m";
         let symbol: string = red + "|>" + reset;
         let missing: string = red + "<<< 404 >>>" + reset;
-        allO(locationO, pathO, lineO, columnO)
-            .map(() => {
-
+        return allO(locationO, pathO, lineO, columnO)
+            .map(([location, path, line, column]) => {
+                return `${ symbol } ${ location } ${ path } ${ line } ${ column }`;;
             })
-        let str0: string = red + locationO.unlockOr(missing) + reset;
-        let str1: string = pathO.unlockOr(missing);
-        let str2: string = lineO.unlockOr(missing).toString();
-        let str3: string = columnO.unlockOr(missing).toString();
-        return `${ symbol } ${ str0 } ${ str1 } ${ str2 } ${ str3 }`;
+            .unlockOr(red + "|> " + reset + missing);
     }
 
     function _matchLine<T1>(line: string, onValid: Closure<[line: string], T1>, onInvalid: Closure<[line: string], T1>): T1 {
