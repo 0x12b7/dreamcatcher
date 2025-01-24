@@ -1,0 +1,1 @@
+Contains core essential of Reliq which are expanded utility types, Option types, Result types, and the Unsafe wrapper type.

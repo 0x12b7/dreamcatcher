@@ -1,7 +1,7 @@
 import { Option } from "@root";
 
-export const flag = Option.flag;
+export const flag: typeof Option.flag = Option.flag;
 
-export const allO = Option.all;
+export const allO: typeof Option.all = Option.all;
 
-export const anyO = Option.any;
+export const anyO: typeof Option.any = Option.any;

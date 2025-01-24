@@ -1,4 +1,4 @@
 import { get } from "@root";
 
 /** @script */
-(await get("https://www.google.com/")).expect("Unable to make request.");
+(await get("https://www.google.dcom/")).expect("Unable to make request.");

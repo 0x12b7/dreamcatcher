@@ -1220,6 +1220,14 @@ type Parsable = {
     parse<T1>(guard: TypeGuard<T1>): Option<T1>;
 };
 
+/**
+ * ***Brief***
+ * A utility function to check if an `unknown` value conforms to a specific branded type.
+ *
+ * ***Warning***
+ * Be cautious about brand collisions that may occur if multiple modules
+ * or contexts define similar branded types.
+ */
 declare function isBrandedStruct<T1 extends string>(unknown: unknown): unknown is BrandedStruct<any>;
 declare function isBrandedStruct<T1 extends string>(unknown: unknown, type: T1): unknown is BrandedStruct<T1>;
 
@@ -1234,7 +1242,55 @@ declare function isBrandedStruct<T1 extends string>(unknown: unknown, type: T1):
 declare function isBranded<T1 extends string>(unknown: unknown): unknown is Branded<any>;
 declare function isBranded<T1 extends string>(unknown: unknown, type: T1): unknown is Branded<T1>;
 
+/**
+ * ***Brief***
+ * Utility type for creating branded types with a unique string literal identifier `T1`.
+ *
+ * ***Example***
+ * ```ts
+ *  type Foo =
+ *      & BrandedStruct<"Foo">
+ *      & {
+ *      foo: void;
+ *  };
+ *
+ *  type Bar =
+ *      & BrandedStruct<"Bar">
+ *      & {
+ *      foo: void;
+ *  };
+ *
+ *  let union: Foo | Bar;
+ *  if (union.type === "Foo") {
+ *      /// ...
+ *  }
+ * ```
+ */
 type BrandedStruct<T1 extends string> = {
+    /**
+     * ***Brief***
+     * Type-level marker specifying the unique type identifier `T1`.
+     *
+     * ***Example***
+     * ```ts
+     *  type Foo =
+     *      & BrandedStruct<"Foo">
+     *      & {
+     *      foo: void;
+     *  };
+     *
+     *  type Bar =
+     *      & BrandedStruct<"Bar">
+     *      & {
+     *      foo: void;
+     *  };
+     *
+     *  let union: Foo | Bar;
+     *  if (union.type === "Foo") {
+     *      /// ...
+     *  }
+     * ```
+     */
     type: T1;
 };
 
@@ -1290,6 +1346,10 @@ type Branded<T1 extends string> = {
     type(): T1;
 };
 
+/**
+ * ***Brief***
+ * A value that can either be resolved immediately or asynchronously.
+ */
 type MaybeAsync<T1> = Promise<T1> | T1;
 
 /**
@@ -1314,11 +1374,20 @@ type Function$1<T1, T2> = (payload: T1) => T2;
  */
 type Closure<T1 extends Array<unknown>, T2> = (...payload: T1) => T2;
 
+/**
+ * ***Brief***
+ * A type alias for a `Function` that supports asynchronous operation.
+ *
+ * ***Example***
+ * ```ts
+ *  const fetch: AsyncFunction<string, unknown> = async (url: string) => /// ...;
+ * ```
+ */
 type AsyncFunction<T1, T2> = Function$1<T1, Promise<T2>>;
 
 /**
  * ***Brief***
- * A type alias for a closure that supports asynchronous operations.
+ * A type alias for a `Closure` that supports asynchronous operations.
  *
  * ***Example***
  * ```ts
