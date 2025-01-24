@@ -21,10 +21,10 @@ export function BuildScript(): BuildScript {
             format: "cjs",
             sourcemap: "inline",
             config: "tsconfig.json",
+            minify: "terser",
             bundle: true,
             dts: true,
-            clean: true,
-            minify: true
+            clean: true
         });
     }
 }

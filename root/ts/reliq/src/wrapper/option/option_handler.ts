@@ -1,7 +1,5 @@
-import { Option } from "@root";
-import type { None } from "@root";
-import type { Some } from "@root";
 import type { SomeValOfAll } from "@root";
+import { Option } from "@root";
 
 /**
  * ***Brief***

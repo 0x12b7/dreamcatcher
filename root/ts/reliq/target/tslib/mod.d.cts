@@ -161,7 +161,7 @@ type ResultHandler = {
 };
 
 type OkValOfAll<T1 extends Array<Result<unknown, unknown>>> = {
-    [T2 in keyof T1]: T1[T2] extends Ok<unknown> ? OkValOf<T1[T2]> : never;
+    [T2 in keyof T1]: OkValOf<T1[T2]>;
 };
 
 type OkValOf<T1 extends Result<unknown, unknown>> = T1 extends Ok<infer T2> ? T2 : never;
@@ -353,7 +353,7 @@ type Ok<T1> = UnlockedWrapper<T1> & {
 declare function Ok<T1>(_value: T1): Ok<T1>;
 
 type ErrValOfAll<T1 extends Array<Result<unknown, unknown>>> = {
-    [T2 in keyof T1]: T1[T2] extends Err<unknown> ? ErrValOf<T1[T2]> : never;
+    [T2 in keyof T1]: ErrValOf<T1[T2]>;
 };
 
 type ErrValOf<T1 extends Result<unknown, unknown>> = T1 extends Err<infer T2> ? T2 : never;
@@ -708,8 +708,8 @@ type Alloc<T1> = DynWrapper<T1> & UnlockedWrapper<T1> & Some<T1>;
  */
 declare function Alloc<T1>(_value: T1, _dyn: DynWrapper<T1>): Alloc<T1>;
 
-declare const allO: <T1 extends Array<Option<unknown>>>(...options: T1) => Option<SomeValOfAll<T1>>;
-declare const anyO: <T1 extends Array<Option<unknown>>>(...options: T1) => Option<SomeValOfAll<T1>[number]>;
+declare const allO: typeof Option.all;
+declare const anyO: typeof Option.any;
 
 type SomeValOfAll<T1 extends Array<Option<unknown>>> = {
     [T2 in keyof T1]: SomeValOf<T1[T2]>;
@@ -717,10 +717,6 @@ type SomeValOfAll<T1 extends Array<Option<unknown>>> = {
 
 type SomeValOf<T1 extends Option<unknown>> = T1 extends Some<infer T2> ? T2 : never;
 
-/**
- * ***Brief***
- * Extracts the values of all `Some` instances from an array of `Option` types, resulting in a tuple of their values, excluding `None`.
- */
 type SomeOfAll<T1 extends Array<Option<unknown>>> = {
     [T2 in keyof T1]: T1[T2] extends Some<unknown> ? SomeOf<T1[T2]> : never;
 };
