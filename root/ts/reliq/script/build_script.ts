@@ -16,7 +16,7 @@ export function BuildScript(): BuildScript {
 
     async function run(): Promise<Result<void, Unsafe>> {
         return await wrapAsync(build, {
-            entry: ["src/core/mod.ts"],
+            entry: ["src/mod.ts"],
             outDir: "target/tslib",
             format: "cjs",
             sourcemap: "inline",

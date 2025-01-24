@@ -6,7 +6,7 @@ import { relative } from "path";
 
 /** @script */
 let root: string = __dirname;
-let moduleFolder: string = join(root, "../src/core");
+let moduleFolder: string = join(root, "../src/");
 let moduleFile: string = join(moduleFolder, "mod.internal.ts");
 let sorted: Array<string> = [];
 let set: Array<Array<string>> = [];
