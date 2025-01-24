@@ -28,7 +28,8 @@ export function panic<T1 extends string>(
     if (typeof p0 === "object") {
         let e: Error0<T1> = p0;
         let handler: ErrorHandler = flag((p1 as ErrorHandler | undefined)).unlockOr(ErrorHandler);
-        throw handler.convertToStandardError(e);
+        //throw handler.convertToStandardError(e);
+        throw `${ e.code }: ${ e.message.unlockOr("") }\n${ e.stack }`;
     }
     else {
         let message: T1 = p0;
@@ -36,9 +37,6 @@ export function panic<T1 extends string>(
         let handler: ErrorHandler = flag(p2).unlockOr(ErrorHandler);
         let eStandard: Error = Error();
         eStandard.name = "PANIC";
-        eStandard.message = message;
-        eStandard.cause = undefined;
-        eStandard.stack = handler.parseStackTrace(location);
-        throw eStandard;
+        throw "PANIC " + message + "\n" + handler.parseStackTrace(location);
     }
 }

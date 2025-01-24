@@ -1,7 +1,7 @@
 import type { Function } from "@root";
 import type { Option } from "@root";
 import { ErrorHandler } from "@root";
-import { Error } from "@root";
+import { Error as Error0 } from "@root";
 import { Ok } from "@root";
 import { None } from "@root";
 import { Some } from "@root";
@@ -235,12 +235,20 @@ export type Err<T1> = {
  * ***Warning***
  * Any operation attempting to access a `Result` must safely handle the `Err` state or terminate with an error.
  */
-export function Err<T1>(_value: T1, _handler?: ErrorHandler): Err<T1> {
+export function Err<T1>(_value: T1): Err<T1>;
+export function Err<T1>(_value: T1, _handler: ErrorHandler): Err<T1>;
+export function Err<T1>(
+    _p0: T1,
+    _p1: ErrorHandler = ErrorHandler
+): Err<T1> {
     let _this: Err<T1>;
     let _stack: string;
+    let _value: T1;
+    let _handler: ErrorHandler;
     
     /** @constructor */ {
-        _handler ??= ErrorHandler;
+        _value = _p0;
+        _handler = _p1;
         _stack = _handler.parseStackTrace(Err);
         return _this = {
             ok,
@@ -277,67 +285,34 @@ export function Err<T1>(_value: T1, _handler?: ErrorHandler): Err<T1> {
 
     function expect(message: string): never {
         let e: T1 = inspect();
-        _handler?.matchError<any>(e, undefined, () => {
-            
-        });
-
-        let codeO: Option<string> = None;
-        let messageO: Option<string> = None;
-        let stackO: Option<StackTrace> = None;
-        if (e !== null && e !== undefined && typeof e === "object") {
-            if ("code" in e && typeof e.code === "string") codeO = Some(e.code);
-            if ("message" in e) {
-                if (typeof e.message === "string") messageO = Some(e.message);
-                else {
-                    wrap(() => {
-                        let value: unknown = (e.message as any).unlockOr(undefined);
-                        if (!(
-                            value !== null
-                            && value !== undefined
-                            && typeof value === "string"
-                        )) throw undefined;
-                        return value;
-                    }).map(message => {
-                        messageO = Some(message);
-                        return;
-                    });
-                }
-            }
-            if ("stack" in e) {
-                if (typeof e.stack === "string") stackO = Some();
-                else {
-                    wrap(() => {
-                        let value: unknown = (e.stack as any);
-                        if (!(
-                            value !== null
-                            && value !== undefined
-                            && typeof value === "object"
-                            && "toString" in value
-                            && "lines" in value
-                            && typeof value.toString === "function"
-                            && typeof value.lines === "function"
-                            && typeof value.toString() === "string"
-                            && Array.isArray(value.lines())
-                        )) throw undefined;
-                        return value;
-                    }).map(stack => {
-                        /// There may be edge case where this may not be true
-                        /// better validation will be required in the
-                        /// future.
-                        stackO = Some((stack as StackTrace));
-                        return;
-                    });
-                }
-            }
+        let transientEO: Option<Error0<any, unknown>> = None;
+        if (e instanceof Error) {
+            let customE: Error0<any, unknown> = Error0({
+                code: e.name.toUpperCase(),
+                message: message
+            });
+            transientEO = Some(customE);
         }
-        panic(Error({
-            code: codeO.unlockOr("PANIC"),
-            message: Some(messageO.unlockOr("The transient error did not come with a message.") +
-                "\n" + "Context: " + message
-            ),
-            payload: None,
-            stack: stackO.unlockOr(StackTrace(expect))
-        }));
+        if (transientEO.none()) _handler.matchError(e, e => {
+            e.message = e.message.map(message0 => {
+                console.log("kkkk")
+                return message + 
+                    "\n" + message0;
+            });
+            transientEO = Some(e);
+            return;
+        });
+        
+        let transientE: Error0<any, unknown> = transientEO
+            .toResult(undefined)
+            .recover(() => {
+                return Error0({
+                    code: "PANIC",
+                    message: message
+                });
+            })
+            .unlock();
+        panic(transientE);
     }
 
     function expectErr(__: unknown): T1 {

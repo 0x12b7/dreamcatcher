@@ -1,4 +1,8 @@
 import { get } from "@root";
 
 /** @script */
-(await get("www.google.com/")).expect("Unable to make request.");
+async function myFunc() {
+    (await get("www.google.com/")).expect("Unable to make request.");
+}
+
+myFunc();

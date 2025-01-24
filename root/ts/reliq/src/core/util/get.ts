@@ -2,6 +2,7 @@ import type { NetworkError } from "@root";
 import { AxiosError } from "axios";
 import { default as Axios } from "axios";
 import { Error as Error0 } from "@root";
+import { ErrorHandler } from "@root";
 import { NetworkStatusCodeMap } from "@root";
 import { Result } from "@root";
 import { Option } from "@root";
@@ -26,6 +27,13 @@ export async function get(url: string): Promise<Result<Unsafe, NetworkError>> {
                 return unknown instanceof Error;
             })
             .map(e => {
+                return Error0({
+                    code: "NETWORK.ERR_UNKNOWN",
+                    message: e.message,
+                    payload: 999n,
+                    stack: ErrorHandler.parseStackTrace(e.stack ?? "")
+                })
+
                 return Error0("NETWORK.ERR_UNKNOWN", e.message, 999n);
             });
         return anyO([o0, o1])

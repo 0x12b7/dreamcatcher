@@ -43,6 +43,7 @@ export * from "./type/type_guard.ts";
 export * from "./type/trait/serializable.ts";
 export * from "./type/trait/sequence.ts";
 export * from "./type/trait/parsable.ts";
+export * from "./type/trait/guard/is_branded_struct.ts";
 export * from "./type/trait/guard/is_branded.ts";
 export * from "./type/trait/branded_struct.ts";
 export * from "./type/trait/branded.ts";

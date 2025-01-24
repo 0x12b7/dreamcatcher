@@ -1,14 +1,16 @@
 import type { Option } from "@root";
 import type { Closure } from "@root";
-import type { TypeGuard } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
 import { Error as CustomError } from "@root";
-import { flag } from "@root";
-import { isBranded } from "@root";
+import { isBrandedStruct } from "@root";
+import { allO } from "@root";
 
 export type ErrorHandler = {
-    matchError<T1 extends string>(unknown: unknown, code?: T1, task?: Closure<[e: CustomError<T1, unknown>], void>): unknown is CustomError<T1, unknown>;
+    matchError(unknown: unknown): unknown is CustomError<any, unknown>;
+    matchError(unknown: unknown, task: Closure<[e: CustomError<any, unknown>], void>): unknown is CustomError<any, unknown>;
+    matchError<T1 extends string>(unknown: unknown, code: T1): unknown is CustomError<T1, unknown>;
+    matchError<T1 extends string>(unknown: unknown, code: T1, task: Closure<[e: CustomError<any, unknown>], void>): unknown is CustomError<T1, unknown>;
     localStackTrace(location: Function): Option<string>;
     parseStackTrace(locationOrStack: Function | string): string;
     convertToStandardError<T1 extends string, T2 = unknown>(e: CustomError<T1, T2>): Error;
@@ -28,34 +30,34 @@ export const ErrorHandler: ErrorHandler = (() => {
     function matchError(unknown: unknown, task: Closure<[e: CustomError<any, unknown>], void>): unknown is CustomError<any, unknown>;
     function matchError<T1 extends string>(unknown: unknown, code: T1): unknown is CustomError<T1, unknown>;
     function matchError<T1 extends string>(unknown: unknown, code: T1, task: Closure<[e: CustomError<any, unknown>], void>): unknown is CustomError<T1, unknown>;
-    function matchError<T1 extends string = any>(
+    function matchError<T1 extends string>(
         p0: unknown,
         p1?: T1 | Closure<[e: CustomError<any, unknown>], void>,
         p2?: Closure<[e: CustomError<any, unknown>], void>
     ): p0 is CustomError<T1, unknown> {
-
-        
-        let guard: TypeGuard<CustomError<T1>> = (unknown): unknown is CustomError<T1> => {
-            let match: boolean = false;
+        let unknown: unknown = p0;
+        let match: boolean =
+            unknown !== null
+            && unknown !== undefined
+            && typeof unknown === "object"
+            && isBrandedStruct(unknown, "Error");
+        if (!match) return false;
+        if (p1 !== undefined && typeof p1 === "string") {
+            let code: string = p1;
             match =
-                unknown !== null
-                && unknown !== undefined
-                && typeof unknown === "object"
-                && isBranded(unknown, "Error");
-            return flag(code)
-                .map(() => {
-                    let match0: boolean = false;
-                    match0 =
-                        match
-                        && "code" in (unknown as any)
-                        && typeof (unknown as any).code === "string"
-                        && (unknown as any).code === code;
-                    return match0;
-                })
-                .unlockOr(match);
+                match
+                && "code" in (unknown as any)
+                && typeof (unknown as any).code === "string"
+                && (unknown as any).code === code;   
         }
-        if (!guard(unknown)) return false;
-        if (task) task(unknown);
+        if (!match) return false;
+        let taskO: Option<Closure<[e: CustomError<any, unknown>], void>> = None;
+        if (p1 !== undefined && typeof p1 === "function") taskO = Some(p1);
+        if (p2 !== undefined) taskO = Some(p2);
+        taskO.map(task => {
+            task((unknown as CustomError<any, unknown>));
+            return;
+        });
         return true;
     }
 
@@ -109,7 +111,7 @@ export const ErrorHandler: ErrorHandler = (() => {
                 return _representLine(locationO, pathO, lineO, columnO);
             })
             .forEach(line => {
-                result += line;
+                result += "\n" + line;
                 return;
             });
         return result;
@@ -132,9 +134,16 @@ export const ErrorHandler: ErrorHandler = (() => {
     }
 
     function _representLine(locationO: Option<string>, pathO: Option<string>, lineO: Option<bigint>, columnO: Option<bigint>): string {
-        let symbol: string = "↟";
-        let missing: string = "<<< MISSING >>>";
-        let str0: string = locationO.unlockOr(missing);
+        let reset: string = "\x1b[0m";
+        let cyan: string = "\x1b[36m";
+        let red: string = "\x1b[31m";
+        let symbol: string = red + "|>" + reset;
+        let missing: string = red + "<<< 404 >>>" + reset;
+        allO(locationO, pathO, lineO, columnO)
+            .map(() => {
+
+            })
+        let str0: string = red + locationO.unlockOr(missing) + reset;
         let str1: string = pathO.unlockOr(missing);
         let str2: string = lineO.unlockOr(missing).toString();
         let str3: string = columnO.unlockOr(missing).toString();
