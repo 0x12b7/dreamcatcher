@@ -70,22 +70,59 @@ function Car(): Result<Car, CarError> {
     function drive(): void;
 }
 
-Car().map(car => {
-    /// ...
-});
-
+Car()
+    .map(car => {
+        /// ...
+    })
+    .mapErr(e => {
+        console.log("Failed to initialize car.", e);
+        return;
+    });
 ```
 
+##### Option
+```ts
+function foo(): Option<bigint> {
+    if () return Some(200n);
+    return None;
+}
+
+/** Declarative. */
+foo()
+    .and(value => {
+        if () return None;
+        return Some(value + 1n);
+    })
+    .and(value => {
+        /// ...
+    });
+
+/** Imperative. */
+let fooO: Option<bigint> = foo();
+if (fooO.none()) return fooO;
+let foo: bigint = fooO.unlock();
+```
+
+
 ## Style Guide
-#### Introduction
 This style guide establishes conventions and best practices for writing robust TypeScript code while leveraging the full potential of Reliq. By adhering to these guidelines, developers can create maintainable, safe, and efficient applications using the powerful patterns inspired by Rust's `Result` and `Option` types.
 
 #### Using Option
-Prefer `Option` for nullable or optional values instead of `null` or `undefined`.
+Use `Option` over `null` or `undefined`.
 ```ts
-/// No
+/**
+ * ***Bad***
+ * Will not be handled explicitly.
+ * 
+ */
 let value: string | null = null;
 
+
+/**
+ * ***Good***
+ * Will require explicit handling.
+ * Will 
+ */
 /// Yes
 let value: Option<string> = None;
 ```
@@ -104,6 +141,77 @@ function foo(bar?: string): void {
     });
 }
 ```
+
+#### Functional Object Oriented Programming
+
+###### Class
+```ts
+/**
+ * ***No***
+ * * Will not support `Result` and `Option` constructor.
+ * * Will not support `async` constructor.
+ * * Will require `new` keyword.
+ * * Will require `this` keyword. 
+ */
+class Foo {
+    constructor() {
+
+    }
+}
+
+
+/**
+ * ***Yes*** 
+ * * Will support `Result` and `Option` contructor.
+ * * Will support `async` constructor.
+ * * Will not require `new` keyword.
+ * * Will not require `this` keyword.
+ */
+
+type Foo = {
+
+};
+
+function Foo(): Async<Result<Foo, Error>> {
+    /** @constructor */ {
+
+    }
+}
+```
+
+
+#### Math
+Prefer `bigint` instead of `number` for all operations.
+
+```ts
+/**
+ * ***No***
+ * * Will underflow and overflow silently causing unexpected behaviour.
+ * * Will cause imprecise floating point math and rounding errors.
+ */
+let value: number = 12.50;
+
+/**
+ * ***Yes***
+ * * Will represent large integers without precision loss.
+ * * Will not silently overflow and underflow.
+ * * Will not produce floating point rounding errors.
+ */
+let value0: bigint;
+let value1: Fpv<2n> = Fpv(1250n).expect("Failed to initialize `Fpv<2n>`.");
+value1 = value1.mul(50n);
+console.log(value1); /// 625n (6.25).
+```
+
+#### FAQ
+###### When should I prefer `Result` over traditional exceptions?
+Exceptions are for unexpected and unrecoverable errors, most errors will end up being expected and recoverable. You can use
+`panic` to throw `Error`.
+
+###### Why should I use `Option` or `Result`?
+* ***Avoid Runtime Errors***: By handling errors and nullability explicitly at compile time, you reduce the likelihood of runtime crashes.
+* ***Early Error Detection***: Since `Err` or `None` states must be handled explicitly, you are less likely to introduce bugs due to unhandled cases.
+
 
 ## License
 Reliq is licensed under the MIT License.
