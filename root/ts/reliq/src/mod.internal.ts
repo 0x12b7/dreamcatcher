@@ -36,8 +36,6 @@ export * from "./wrapper/fpv/fpv_error_code.ts";
 export * from "./wrapper/fpv/fpv_error.ts";
 export * from "./wrapper/fpv/fpv.ts";
 export * from "./util/to_string.ts";
-export * from "./util/post.ts";
-export * from "./util/get.ts";
 export * from "./util/clone.ts";
 export * from "./type/type_guard.ts";
 export * from "./type/trait/serializable.ts";

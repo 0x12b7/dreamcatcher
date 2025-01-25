@@ -708,6 +708,7 @@ type Alloc<T1> = DynWrapper<T1> & UnlockedWrapper<T1> & Some<T1>;
  */
 declare function Alloc<T1>(_value: T1, _dyn: DynWrapper<T1>): Alloc<T1>;
 
+declare const flag: typeof Option.flag;
 declare const allO: typeof Option.all;
 declare const anyO: typeof Option.any;
 
@@ -1470,4 +1471,4 @@ type DomError = Error$1<DomErrorCode>;
 declare function DomError(): DomError;
 declare function DomError(_e: DOMException): DomError;
 
-export { Alloc, type AsyncClosure, type AsyncFunction, type Branded, type BrandedStruct, type Closure, DeAlloc, DomError, type DomErrorCode, Dyn, type DynConstructor, type DynWrapper, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error$1 as Error, Fpv, type FpvError, type FpvErrorCode, type FpvIsh, type Function$1 as Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, type Parsable, Ref, type RefDelTask, type RefTask, Result, type ResultHandler, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, type TypeGuard, Unsafe, allO, allR, anyO, anyR, clone, isBranded, isBrandedStruct, panic, toString, wrap, wrapAsync };
+export { Alloc, type AsyncClosure, type AsyncFunction, type Branded, type BrandedStruct, type Closure, DeAlloc, DomError, type DomErrorCode, Dyn, type DynConstructor, type DynWrapper, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error$1 as Error, Fpv, type FpvError, type FpvErrorCode, type FpvIsh, type Function$1 as Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, type Parsable, Ref, type RefDelTask, type RefTask, Result, type ResultHandler, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, type TypeGuard, Unsafe, allO, allR, anyO, anyR, clone, flag, isBranded, isBrandedStruct, panic, toString, wrap, wrapAsync };

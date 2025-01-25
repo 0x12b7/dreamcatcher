@@ -46,6 +46,7 @@ export { allR } from "@root";
 export { anyR } from "@root";
 export { wrap } from "@root";
 export { wrapAsync } from "@root";
+export { flag } from "@root";
 export { allO } from "@root";
 export { anyO } from "@root";
 
