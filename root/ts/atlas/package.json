@@ -1,7 +1,10 @@
 {
 	"name": "atlas",
-	"module": "index.ts",
+	"version": "1.0.0",
 	"type": "module",
+	"scripts": {
+		"build": "bun build --compile --target=bun-windows-x64 ./src/app.ts --outfile ./target/windows-x64/app"
+	},
 	"devDependencies": {
 		"@types/bun": "latest"
 	},
@@ -9,7 +12,8 @@
 		"typescript": "^5.0.0"
 	},
 	"dependencies": {
-		"reliq": "1.2.2",
+		"chokidar": "^4.0.3",
+		"reliq": "2.0.0",
 		"solion": "1.0.1"
 	}
 }

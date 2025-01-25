@@ -1,22 +1,12 @@
-import { Compiler } from "solion";
+import { walk } from "./app.internal";
 
-type App = {
+export type App = {
 
 };
 
-function App(_compiler: Compiler, _running: boolean): App {
-    
-    /** @constructor */ {
+export function App(): App {
+
+    function run() {
         
-    }
-
-    async function run() {
-        while (_running) {
-                
-        }
-    }
-
-    function _() {
-
     }
 }
