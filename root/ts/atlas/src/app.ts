@@ -1,12 +1,7 @@
-import { walk } from "./app.internal";
+import { Directory } from "@root";
+import { execPath } from "process";
 
-export type App = {
-
-};
-
-export function App(): App {
-
-    function run() {
-        
-    }
-}
+(async () => {
+    let root: Directory = Directory(execPath).expect("Failed to initialize directory.");
+    
+})();

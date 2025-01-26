@@ -1,1 +1,1 @@
-export * from "./util/walk";
+export * from "./util/directory";
