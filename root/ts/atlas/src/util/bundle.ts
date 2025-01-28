@@ -1,4 +1,4 @@
-import { Result as Result0 } from "reliq";
+import { allR, Result as Result0 } from "reliq";
 import { Error as Error0 } from "reliq";
 import { Ok } from "reliq";
 import { Unsafe } from "reliq";
@@ -24,10 +24,10 @@ export type Bundle = {
 
 export function Bundle() {
     let _this: Bundle;
-    let _out: Array<string>;
+    let _exports: Array<TsFile>;
     
     /***/ {
-        _out = [];
+        _exports = [];
         return _this = {
             insertExport,
             removeExport,
@@ -36,25 +36,43 @@ export function Bundle() {
     }
 
     function insertExport(file: TsFile): Bundle {
+        
+        
         return file
             .raise()
             .and(raise => {
-                
+
             });
         _out.push();
         return _this;
     }
 
     function removeExport(file: TsFile): Bundle {
+        
+
         let k: number = _out.indexOf(path);
         if (k === -1) return _this;
         _out.splice(k, 1)!;
         return _this;
     }
 
+    function sort(): void {
+        _exports.sort((file0, file1) => {
+            return allR([file0.raise(), file1.raise()] as const)
+                .map(([raise0, raise1]) => {
+                    return Number(raise0 - raise1);
+                })
+                .recover(() => {
+                    return 0;
+                })
+                .unlock();
+        });
+        return;
+    }
+
     async function build(path: string): Promise<Bundle.Result<Bundle>> {
         let r: Result0<void, Unsafe> = await wrapAsync(async () => {
-            let content = _out
+            let content = _exports
                 .map(path => _export(path))
                 .join("\n");
             await write(path, content);

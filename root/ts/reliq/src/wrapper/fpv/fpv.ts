@@ -1,12 +1,25 @@
-import type { Result } from "@root";
+import type { Result as Result0 } from "@root";
 import type { Wrapper } from "@root";
 import type { Closure } from "@root";
-import type { FpvIsh } from "@root";
-import type { FpvError } from "@root";
 import { INTERNAL_ERROR_MESSAGE } from "@root";
-import { Error } from "@root";
+import { Error as Error0 } from "@root";
 import { Ok } from "@root";
 import { Err } from "@root";
+
+
+
+export namespace Fpv {
+    export type Result<T1> = Result0<T1, Error>;
+
+    export type ErrorCode =
+        | "FPV.ERR_DIVISION_BY_ZERO"
+        | "FPV.ERR_PRECISION_IS_ZERO"
+        | "FPV.ERR_PRECISION_IS_NEGATIVE";
+
+    export type Error = Error0<ErrorCode>;
+
+    export type Compatible<T1 extends bigint = 2n> = Fpv<T1> | bigint;
+}
 
 export type Fpv<T1 extends bigint = 2n> = 
     & Wrapper<bigint>
@@ -15,14 +28,80 @@ export type Fpv<T1 extends bigint = 2n> =
     /**
      * ***Brief***
      * Returns the precision of the `Fpv`.
+     * 
+     * ***Example***
+     * ```ts
+     *  Fpv(200n)
+     *      .expect("Failed to initialize fixed point value.")
+     *      .
+     * ```
      */
     precision(): T1;
 
     /**
      * ***Brief***
      * Returns the representation factor of the `Fpv`, based on its precision.
+     * 
+     * ***Example***
+     * ```ts
+     *  Fpv<2n>(200n)
+     *      .expect("Failed to initialize ")
+     *      .representation(); /// 10**2n
+     * ```
      */
     representation(): bigint;
+
+    /**
+     * ***Brief***
+     * Compares the current `Fpv` with the given value for equality.
+     * 
+     * ***Example***
+     * ```ts
+     *  Fpv(200n)
+     *      .expect("")
+     *      .eq(200n); /// true
+     * ```
+     */
+    eq(value: Fpv.Compatible<T1>): boolean;
+
+    /**
+     * ***Brief***
+     * Checks if the current `Fpv` is less than the given value.
+     */
+    lt(value: Fpv.Compatible<T1>): boolean;
+
+    /**
+     * ***Brief***
+     * Checks if the current `Fpv` is less than or equal to the given value.
+     */
+    lteq(value: Fpv.Compatible<T1>): boolean;
+
+    /**
+     * ***Brief***
+     * Checks if the current `Fpv` is greater than the given value.
+     * 
+     * ***Example***
+     * ```ts
+     *  let success: boolean = Fpv(200n)
+     *      .expect("Failed to initialize fixed point value.")
+     *      .gt(200n); /// false
+     * ```
+     */
+    gt(value: Fpv.Compatible<T1>): boolean;
+
+    /**
+     * ***Brief***
+     * Checks if the current `Fpv` is greater than or equal to the given value,
+     * 
+     * ***Example***
+     * ```ts
+     *  let success: boolean = Fpv(200n)
+     *      .expect("Failed to initialize Fpv.")
+     *      .gteq(200n);
+     *  console.log(success); /// "true".
+     * ```
+     */
+    gteq(value: Fpv.Compatible<T1>): boolean;
 
     /**
      * ***Brief***
@@ -40,7 +119,7 @@ export type Fpv<T1 extends bigint = 2n> =
      *  console.log(value); /// 300n === 3.00
      * ```
      */
-    add(value: FpvIsh<T1>): Fpv<T1>;
+    add(value: Fpv.Compatible<T1>): Fpv<T1>;
     
     /**
      * ***Brief***
@@ -58,7 +137,7 @@ export type Fpv<T1 extends bigint = 2n> =
      *  console.log(value); /// 100n === 1.00
      * ```
      */
-    sub(value: FpvIsh<T1>): Fpv<T1>;
+    sub(value: Fpv.Compatible<T1>): Fpv<T1>;
 
     /**
      * ***Brief***
@@ -76,7 +155,7 @@ export type Fpv<T1 extends bigint = 2n> =
      *  console.log(value); /// 100n === 1.00
      * ```
      */
-    mul(value: FpvIsh<T1>): Fpv<T1>;
+    mul(value: Fpv.Compatible<T1>): Fpv<T1>;
 
     /**
      * ***Brief***
@@ -97,24 +176,29 @@ export type Fpv<T1 extends bigint = 2n> =
      *  console.log(value); /// 400n === 4.00
      * ```
      */
-    div(value: FpvIsh<T1>): Result<Fpv<T1>, FpvError>;
+    div(value: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
 };
 
 /**
  * ***Brief***
  * Creates a new `Fpv` with the provided value and precision.
  */
-export function Fpv<T1 extends bigint = 2n>(_fpv: FpvIsh<T1>, _precision: T1 = (2n as any)): Result<Fpv<T1>, FpvError> {
+export function Fpv<T1 extends bigint = 2n>(_fpv: Fpv.Compatible<T1>, _precision: T1 = (2n as any)): Fpv.Result<Fpv<T1>> {
     let _value: bigint;
     
     /** @constructor */ {
-        if (precision() === 0n) return Err(Error("FPV.ERR_PRECISION_IS_ZERO", "Fpv: Does not support zero precision."));
-        if (precision() < 0n) return Err(Error("FPV.ERR_PRECISION_IS_NEGATIVE", "Fpv: Does not support negative precision."));
+        if (precision() === 0n) return Err(Error0("FPV.ERR_PRECISION_IS_ZERO", "Fpv: Does not support zero precision."));
+        if (precision() < 0n) return Err(Error0("FPV.ERR_PRECISION_IS_NEGATIVE", "Fpv: Does not support negative precision."));
         _value = _unwrap(_fpv);
         return Ok({
             unwrap,
             precision,
             representation,
+            eq,
+            lt,
+            lteq,
+            gt,
+            gteq,
             add,
             sub,
             mul,
@@ -134,19 +218,39 @@ export function Fpv<T1 extends bigint = 2n>(_fpv: FpvIsh<T1>, _precision: T1 = (
         return 10n**precision();
     }
 
-    function add(value: FpvIsh<T1>): Fpv<T1> {
+    function eq(value: Fpv.Compatible<T1>): boolean {
+        return _value === _unwrap(value);
+    }
+
+    function lt(value: Fpv.Compatible<T1>): boolean {
+        return _value < _unwrap(value);
+    }
+
+    function lteq(value: Fpv.Compatible<T1>): boolean {
+        return _value <= _unwrap(value);
+    }
+
+    function gt(value: Fpv.Compatible<T1>): boolean {
+        return _value > _unwrap(value);
+    }
+
+    function gteq(value: Fpv.Compatible<T1>): boolean {
+        return _value >= _unwrap(value);
+    }
+
+    function add(value: Fpv.Compatible<T1>): Fpv<T1> {
         return _wrap(() => {
             return _value + _unwrap(value);
         });
     }
 
-    function sub(value: FpvIsh<T1>): Fpv<T1> {
+    function sub(value: Fpv.Compatible<T1>): Fpv<T1> {
         return _wrap(() => {
             return _value - _unwrap(value);
         });
     }
 
-    function mul(value: FpvIsh<T1>): Fpv<T1> {
+    function mul(value: Fpv.Compatible<T1>): Fpv<T1> {
         return _wrap(() => {
             let z: bigint = _value * _unwrap(value);
             let q: bigint = z / representation();
@@ -154,9 +258,9 @@ export function Fpv<T1 extends bigint = 2n>(_fpv: FpvIsh<T1>, _precision: T1 = (
         });
     }
 
-    function div(value: FpvIsh<T1>): Result<Fpv<T1>, FpvError> {
+    function div(value: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>> {
         let n: bigint = _unwrap(value);
-        if (n === 0n) return Err(Error("FPV.ERR_DIVISION_BY_ZERO", "Fpv: Cannot divide by zero."));
+        if (n === 0n) return Err(Error0("FPV.ERR_DIVISION_BY_ZERO", "Fpv: Cannot divide by zero."));
         return Ok(_wrap(() => {
             let z: bigint = _value * representation();
             let q: bigint = z / n;
@@ -168,7 +272,7 @@ export function Fpv<T1 extends bigint = 2n>(_fpv: FpvIsh<T1>, _precision: T1 = (
         return Fpv<T1>(task()).expect("Fpv: Failed to wrap the task result into an Fpv." + INTERNAL_ERROR_MESSAGE);
     }
 
-    function _unwrap(fpv: FpvIsh<T1>): bigint {
+    function _unwrap(fpv: Fpv.Compatible<T1>): bigint {
         if (typeof fpv === "bigint") return fpv;
         return fpv.unwrap();
     }

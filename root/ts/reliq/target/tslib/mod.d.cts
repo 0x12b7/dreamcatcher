@@ -991,23 +991,84 @@ type None = Branded<"None"> & {
  */
 declare const None: None;
 
-type FpvIsh<T1 extends bigint = 2n> = Fpv<T1> | bigint;
-
-type FpvErrorCode = "FPV.ERR_DIVISION_BY_ZERO" | "FPV.ERR_PRECISION_IS_ZERO" | "FPV.ERR_PRECISION_IS_NEGATIVE";
-
-type FpvError = Error$1<FpvErrorCode>;
-
+declare namespace Fpv {
+    type Result<T1> = Result<T1, Error>;
+    type ErrorCode = "FPV.ERR_DIVISION_BY_ZERO" | "FPV.ERR_PRECISION_IS_ZERO" | "FPV.ERR_PRECISION_IS_NEGATIVE";
+    type Error = Error$1<ErrorCode>;
+    type Compatible<T1 extends bigint = 2n> = Fpv<T1> | bigint;
+}
 type Fpv<T1 extends bigint = 2n> = Wrapper<bigint> & {
     /**
      * ***Brief***
      * Returns the precision of the `Fpv`.
+     *
+     * ***Example***
+     * ```ts
+     *  Fpv(200n)
+     *      .expect("Failed to initialize fixed point value.")
+     *      .
+     * ```
      */
     precision(): T1;
     /**
      * ***Brief***
      * Returns the representation factor of the `Fpv`, based on its precision.
+     *
+     * ***Example***
+     * ```ts
+     *  Fpv<2n>(200n)
+     *      .expect("Failed to initialize ")
+     *      .representation(); /// 10**2n
+     * ```
      */
     representation(): bigint;
+    /**
+     * ***Brief***
+     * Compares the current `Fpv` with the given value for equality.
+     *
+     * ***Example***
+     * ```ts
+     *  Fpv(200n)
+     *      .expect("")
+     *      .eq(200n); /// true
+     * ```
+     */
+    eq(value: Fpv.Compatible<T1>): boolean;
+    /**
+     * ***Brief***
+     * Checks if the current `Fpv` is less than the given value.
+     */
+    lt(value: Fpv.Compatible<T1>): boolean;
+    /**
+     * ***Brief***
+     * Checks if the current `Fpv` is less than or equal to the given value.
+     */
+    lteq(value: Fpv.Compatible<T1>): boolean;
+    /**
+     * ***Brief***
+     * Checks if the current `Fpv` is greater than the given value.
+     *
+     * ***Example***
+     * ```ts
+     *  let success: boolean = Fpv(200n)
+     *      .expect("Failed to initialize fixed point value.")
+     *      .gt(200n); /// false
+     * ```
+     */
+    gt(value: Fpv.Compatible<T1>): boolean;
+    /**
+     * ***Brief***
+     * Checks if the current `Fpv` is greater than or equal to the given value,
+     *
+     * ***Example***
+     * ```ts
+     *  let success: boolean = Fpv(200n)
+     *      .expect("Failed to initialize Fpv.")
+     *      .gteq(200n);
+     *  console.log(success); /// "true".
+     * ```
+     */
+    gteq(value: Fpv.Compatible<T1>): boolean;
     /**
      * ***Brief***
      * Adds a given `FpvIsh` value to the current `Fpv`.
@@ -1024,7 +1085,7 @@ type Fpv<T1 extends bigint = 2n> = Wrapper<bigint> & {
      *  console.log(value); /// 300n === 3.00
      * ```
      */
-    add(value: FpvIsh<T1>): Fpv<T1>;
+    add(value: Fpv.Compatible<T1>): Fpv<T1>;
     /**
      * ***Brief***
      * Subtracts a given `FpvIsh` value from the current `Fpv`.
@@ -1041,7 +1102,7 @@ type Fpv<T1 extends bigint = 2n> = Wrapper<bigint> & {
      *  console.log(value); /// 100n === 1.00
      * ```
      */
-    sub(value: FpvIsh<T1>): Fpv<T1>;
+    sub(value: Fpv.Compatible<T1>): Fpv<T1>;
     /**
      * ***Brief***
      * Multiplies the current `Fpv` by a given `FpvIsh` value.
@@ -1058,7 +1119,7 @@ type Fpv<T1 extends bigint = 2n> = Wrapper<bigint> & {
      *  console.log(value); /// 100n === 1.00
      * ```
      */
-    mul(value: FpvIsh<T1>): Fpv<T1>;
+    mul(value: Fpv.Compatible<T1>): Fpv<T1>;
     /**
      * ***Brief***
      * Divides the current `Fpv` by a given `FpvIsh` value.
@@ -1078,13 +1139,13 @@ type Fpv<T1 extends bigint = 2n> = Wrapper<bigint> & {
      *  console.log(value); /// 400n === 4.00
      * ```
      */
-    div(value: FpvIsh<T1>): Result<Fpv<T1>, FpvError>;
+    div(value: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
 };
 /**
  * ***Brief***
  * Creates a new `Fpv` with the provided value and precision.
  */
-declare function Fpv<T1 extends bigint = 2n>(_fpv: FpvIsh<T1>, _precision?: T1): Result<Fpv<T1>, FpvError>;
+declare function Fpv<T1 extends bigint = 2n>(_fpv: Fpv.Compatible<T1>, _precision?: T1): Fpv.Result<Fpv<T1>>;
 
 /**
  * ***Brief***
@@ -1471,4 +1532,4 @@ type DomError = Error$1<DomErrorCode>;
 declare function DomError(): DomError;
 declare function DomError(_e: DOMException): DomError;
 
-export { Alloc, type AsyncClosure, type AsyncFunction, type Branded, type BrandedStruct, type Closure, DeAlloc, DomError, type DomErrorCode, Dyn, type DynConstructor, type DynWrapper, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error$1 as Error, Fpv, type FpvError, type FpvErrorCode, type FpvIsh, type Function$1 as Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, type Parsable, Ref, type RefDelTask, type RefTask, Result, type ResultHandler, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, type TypeGuard, Unsafe, allO, allR, anyO, anyR, clone, flag, isBranded, isBrandedStruct, panic, toString, wrap, wrapAsync };
+export { Alloc, type AsyncClosure, type AsyncFunction, type Branded, type BrandedStruct, type Closure, DeAlloc, DomError, type DomErrorCode, Dyn, type DynConstructor, type DynWrapper, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error$1 as Error, Fpv, type Function$1 as Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, type Parsable, Ref, type RefDelTask, type RefTask, Result, type ResultHandler, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, type TypeGuard, Unsafe, allO, allR, anyO, anyR, clone, flag, isBranded, isBrandedStruct, panic, toString, wrap, wrapAsync };

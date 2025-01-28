@@ -50,9 +50,6 @@ export { flag } from "@root";
 export { allO } from "@root";
 export { anyO } from "@root";
 
-export type { FpvErrorCode } from "@root";
-export type { FpvError } from "@root";
-export type { FpvIsh } from "@root";
 export { Fpv } from "@root";
 
 export type { DynConstructor } from "@root";
