@@ -580,10 +580,10 @@ type Err<T1> = {
 declare function Err<T1>(_value: T1): Err<T1>;
 declare function Err<T1>(_value: T1, _handler: ErrorHandler): Err<T1>;
 
-type RefTask<T1> = Closure<[new: T1, old: T1], void>;
-
-type RefDelTask = Closure<[], void>;
-
+declare namespace Ref {
+    type Task<T1> = Closure<[new: T1, old: T1], void>;
+    type DeletionTask = Closure<[], void>;
+}
 type Ref<T1> = Wrapper<T1> & {
     /**
      * ***Brief***
@@ -604,7 +604,7 @@ type Ref<T1> = Wrapper<T1> & {
      *  ref.mut(404n);
      * ```
      */
-    onChange(task: RefTask<T1>): RefDelTask;
+    onChange(task: Ref.Task<T1>): Ref.DeletionTask;
 };
 /**
  * ***Brief***
@@ -1532,4 +1532,4 @@ type DomError = Error$1<DomErrorCode>;
 declare function DomError(): DomError;
 declare function DomError(_e: DOMException): DomError;
 
-export { Alloc, type AsyncClosure, type AsyncFunction, type Branded, type BrandedStruct, type Closure, DeAlloc, DomError, type DomErrorCode, Dyn, type DynConstructor, type DynWrapper, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error$1 as Error, Fpv, type Function$1 as Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, type Parsable, Ref, type RefDelTask, type RefTask, Result, type ResultHandler, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, type TypeGuard, Unsafe, allO, allR, anyO, anyR, clone, flag, isBranded, isBrandedStruct, panic, toString, wrap, wrapAsync };
+export { Alloc, type AsyncClosure, type AsyncFunction, type Branded, type BrandedStruct, type Closure, DeAlloc, DomError, type DomErrorCode, Dyn, type DynConstructor, type DynWrapper, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error$1 as Error, Fpv, type Function$1 as Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, type Parsable, Ref, Result, type ResultHandler, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, type TypeGuard, Unsafe, allO, allR, anyO, anyR, clone, flag, isBranded, isBrandedStruct, panic, toString, wrap, wrapAsync };

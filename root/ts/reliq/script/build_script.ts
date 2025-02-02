@@ -1,35 +1,26 @@
-import type { Result } from "@root";
-import { wrapAsync } from "@root";
-import { Unsafe } from "@root";
+import { wrapAsync } from "@core";
 import { build } from "tsup";
-
-export type BuildScript = {
-    run(): Promise<Result<void, Unsafe>>;
-};
-
-export function BuildScript(): BuildScript {
-    /** @constructor */ {
-        return {
-            run
-        };
-    }
-
-    async function run(): Promise<Result<void, Unsafe>> {
-        return await wrapAsync(build, {
-            entry: ["src/mod.ts"],
-            outDir: "target/tslib",
-            format: "cjs",
-            sourcemap: "inline",
-            config: "tsconfig.json",
-            minify: "terser",
-            bundle: true,
-            dts: true,
-            clean: true
-        });
-    }
-}
+import { join } from "path";
+import { readdirSync } from "fs";
 
 /** @script */
-(await BuildScript()
-    .run())
-    .expect("Failed to complete build script.");
+let root: string = join(__dirname, "../src/");
+readdirSync(root, { withFileTypes: true }).forEach(ent => {
+    if (ent.isDirectory()) {
+        console.log(ent.name);
+    }
+});
+(await wrapAsync(build, {
+    entry: [
+        "src/core/mod.ts",
+        "src/mod.ts"
+    ],
+    outDir: "target/tslib",
+    format: "cjs",
+    sourcemap: "inline",
+    config: "tsconfig.json",
+    minify: "terser",
+    bundle: true,
+    dts: true,
+    clean: true
+})).expect("Failed to build.");

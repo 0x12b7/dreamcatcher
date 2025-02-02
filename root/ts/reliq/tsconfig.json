@@ -3,9 +3,20 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@root": ["src/mod.internal.ts"]
+			"@common": [
+				"src/common/mod.internal.ts"
+			],
+			"@core": [
+				"src/core/mod.internal.ts"
+			]
 		}
 	},
-	"include": ["src", "script"],
-	"exclude": ["node_modules", "target"]
+	"include": [
+		"src", 
+		"script"
+	],
+	"exclude": [
+		"node_modules", 
+		"target"
+	]
 }
