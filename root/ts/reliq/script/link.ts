@@ -7,6 +7,7 @@ import { relative } from "path";
 /** @script */
 _link("/common");
 _link("/core");
+_link("/math");
 
 function _link(directory: string) {
     let root: string = join(__dirname, "../src/");

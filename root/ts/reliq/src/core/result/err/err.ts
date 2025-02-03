@@ -112,11 +112,11 @@ export type Err<T1> = {
      * ***Example***
      * ```ts
      *  let result: Result<200n, 404n> = Err(404n);
-     *  let status: 200n = result.unlockOr(200n);
+     *  let status: 200n = result.unwrapOr(200n);
      *  console.log(status); /// 200n.
      * ```
      */
-    unlockOr<T2>(fallback: T2): T2;
+    unwrapOr<T2>(fallback: T2): T2;
 
     /**
      * ***Brief***
@@ -256,7 +256,7 @@ export function Err<T1>(
             stack,
             expect,
             expectErr,
-            unlockOr,
+            unwrapOr,
             and,
             map,
             mapErr,
@@ -312,7 +312,7 @@ export function Err<T1>(
                     message: message
                 });
             })
-            .unlock();
+            .unwrap();
         panic(transientE);
     }
 
@@ -320,7 +320,7 @@ export function Err<T1>(
         return inspect();
     }
 
-    function unlockOr<T2>(fallback: T2): T2 {
+    function unwrapOr<T2>(fallback: T2): T2 {
         return fallback;
     }
 

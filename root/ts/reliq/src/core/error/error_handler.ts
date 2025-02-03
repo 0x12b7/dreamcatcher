@@ -75,7 +75,7 @@ export const ErrorHandler: ErrorHandler = (() => {
     function convertToStandardError<T1 extends string, T2 = unknown>(e: CustomError<T1, T2>): Error {
         let eStandard: Error = Error();
         eStandard.name = e.code;
-        eStandard.message = e.message.unlockOr("");
+        eStandard.message = e.message.unwrapOr("");
         eStandard.stack = e.stack.toString();
         eStandard.cause = undefined;
         return eStandard;
@@ -83,7 +83,7 @@ export const ErrorHandler: ErrorHandler = (() => {
 
     function _parsePayload(payload: Function | string): string {
         if (typeof payload === "string") return payload;
-        return localStackTrace(payload).unlockOr("");
+        return localStackTrace(payload).unwrapOr("");
     }
 
     function _parseStack(stack: string): string {
@@ -140,7 +140,7 @@ export const ErrorHandler: ErrorHandler = (() => {
             .map(([location, path, line, column]) => {
                 return `     ${ _red(symbol) } ${ path } ${ _red(location) } ${ line } ${ column }`;
             })
-            .unlockOr("     " + _red(missing));
+            .unwrapOr("     " + _red(missing));
     }
 
     function _matchLine<T1>(line: string, onValid: Closure<[line: string], T1>, onInvalid: Closure<[line: string], T1>): T1 {

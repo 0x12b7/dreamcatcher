@@ -1,10 +1,10 @@
 "raise 1";
 
-import type { ErrValOfAll } from "@core";
-import type { OkValOfAll } from "@core";
-import type { ResultHandler } from "@core";
-import type { Closure } from "@core";
-import type { AsyncClosure } from "@core";
+import { type ErrValOfAll } from "@core";
+import { type OkValOfAll } from "@core";
+import { type ResultHandler } from "@core";
+import { type Closure } from "@core";
+import { type AsyncClosure } from "@core";
 import { Ok } from "@core";
 import { Err } from "@core";
 import { Unsafe } from "@core";
@@ -39,7 +39,7 @@ export const Result: ResultHandler = (() => {
         let i: number = 0;
         while (i < results.length) {
             let result: Result<unknown, unknown> = results.at(i)!;
-            if (result.ok()) out.push(result.unlock());
+            if (result.ok()) out.push(result.unwrap());
             else return result as Err<ErrValOfAll<T1>[number]>;
             i ++;
         }

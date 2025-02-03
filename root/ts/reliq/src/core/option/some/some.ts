@@ -1,13 +1,13 @@
 import type { Function } from "@core";
 import type { Option } from "@core";
-import type { UnlockedWrapper } from "@core";
+import type { Wrapper } from "@core";
 import type { Branded } from "@core";
 import { None } from "@core";
 import { Ok } from "@core";
 
 export type Some<T1> = 
     & Branded<"Some">
-    & UnlockedWrapper<T1>
+    & Wrapper<T1>
     & {
 
     /**
@@ -62,11 +62,11 @@ export type Some<T1> =
      * ***Example***
      * ```ts
      *  let option: Option<200n> = None;
-     *  let status: 200n = option.unlockOr(200n);
+     *  let status: 200n = option.unwrapOr(200n);
      *  console.log(status); /// 200n.
      * ```
      */
-    unlockOr(__: unknown): T1;
+    unwrapOr(__: unknown): T1;
 
     /**
      * ***Brief***
@@ -129,8 +129,8 @@ export function Some<T1>(_value: T1): Some<T1> {
             some,
             none,
             expect,
-            unlock,
-            unlockOr,
+            unwrap,
+            unwrapOr,
             and,
             map,
             toResult
@@ -153,11 +153,11 @@ export function Some<T1>(_value: T1): Some<T1> {
         return _value;
     }
 
-    function unlock(): T1 {
+    function unwrap(): T1 {
         return _value;
     }
 
-    function unlockOr(__: unknown): T1 {
+    function unwrapOr(__: unknown): T1 {
         return _value;
     }
 

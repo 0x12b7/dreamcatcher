@@ -1,7 +1,7 @@
-import type { Wrapper } from "@core";
-import type { Parsable } from "@core";
-import type { TypeGuard } from "@core";
-import type { Option } from "@core";
+import { type Wrapper } from "@core";
+import { type Parsable } from "@core";
+import { type TypeGuard } from "@core";
+import { type Option } from "@core";
 import { Some } from "@core";
 import { None } from "@core";
 

@@ -27,11 +27,11 @@ export function panic<T1 extends string>(
 ): never {
     if (typeof p0 === "object") {
         let e: Error0<T1> = p0;
-        let handler: ErrorHandler = flag((p1 as ErrorHandler | undefined)).unlockOr(ErrorHandler);
+        let handler: ErrorHandler = flag((p1 as ErrorHandler | undefined)).unwrapOr(ErrorHandler);
         throw [
             "",
             "",
-            "     " + `${ _red(e.code) } ${ e.message.unlockOr("<<< UNAVAILABLE >>>") }`,
+            "     " + `${ _red(e.code) } ${ e.message.unwrapOr("<<< UNAVAILABLE >>>") }`,
             "",
             "     STACK_TRACE" + 
             e.stack
@@ -39,8 +39,8 @@ export function panic<T1 extends string>(
     }
     else {
         let message: T1 = p0;
-        let location: Function = flag((p1 as Function | undefined)).unlockOr(panic);
-        let handler: ErrorHandler = flag(p2).unlockOr(ErrorHandler);
+        let location: Function = flag((p1 as Function | undefined)).unwrapOr(panic);
+        let handler: ErrorHandler = flag(p2).unwrapOr(ErrorHandler);
         let eStandard: Error = Error();
         eStandard.name = "PANIC";
         throw "PANIC " + message + "\n" + handler.parseStackTrace(location);
@@ -49,8 +49,4 @@ export function panic<T1 extends string>(
 
 function _red(string: string): string {
     return "\x1b[31m" + string + "\x1b[0m";
-}
-
-function _green(string: string): string {
-    return "\x1b[32m" + string + "\x1b[0m";
 }

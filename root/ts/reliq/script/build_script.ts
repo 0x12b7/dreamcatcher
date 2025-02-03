@@ -13,7 +13,7 @@ readdirSync(root, { withFileTypes: true }).forEach(ent => {
 (await wrapAsync(build, {
     entry: [
         "src/core/mod.ts",
-        "src/mod.ts"
+        "src/math/mod.ts"
     ],
     outDir: "target/tslib",
     format: "cjs",

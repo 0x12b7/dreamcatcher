@@ -67,13 +67,13 @@ export function Error<T1 extends string, T2 = unknown>(
                 stack?: string;
                 handler?: ErrorHandler;
             } = _p0;
-            let handler: ErrorHandler = flag(configuration.handler).unlockOr(ErrorHandler);
+            let handler: ErrorHandler = flag(configuration.handler).unwrapOr(ErrorHandler);
             return {
                 type: "Error",
                 code: configuration.code,
                 message: flag(configuration.message),
                 payload: flag(configuration.payload),
-                stack: flag(configuration.stack).unlockOr(handler.parseStackTrace(Error))
+                stack: flag(configuration.stack).unwrapOr(handler.parseStackTrace(Error))
             };
         }
         return {

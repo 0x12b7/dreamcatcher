@@ -27,6 +27,9 @@ declare const Result: ResultHandler;
 type Option<T1> = Some<T1> | None;
 declare const Option: OptionHandler;
 
+type Unsafe = Wrapper<unknown> & Parsable;
+declare function Unsafe(_value: unknown): Unsafe;
+
 /**
  * ***Brief***
  * A wrapper for a value of type `T1` that provides a method to retrieve the wrapped value without handling.
@@ -34,10 +37,10 @@ declare const Option: OptionHandler;
 type Wrapper<T1> = {
     /**
      * ***Brief***
-     * Unwraps the wrapped value of type `T1`.
+     * Safely unwraps the wrapped value of type `T1`.
      *
      * ***Requirement***
-     * Must require no handling to access.
+     * All exceptions to be handled.
      *
      * ***Example***
      * ```ts
@@ -48,37 +51,189 @@ type Wrapper<T1> = {
     unwrap(): T1;
 };
 
-type Unsafe = Wrapper<unknown> & Parsable;
-declare function Unsafe(_value: unknown): Unsafe;
+/**
+ * **Note**
+ * `function` that narrows the type of the provided value to type `T1`.
+ *
+ * **Example**
+ * ```ts
+ *  let isNumber: TypeGuard<number>;
+ *  let unknown: unknown;
+ *  if (isNumber(unknown)) {
+ *      /// ...
+ *  }
+ * ```
+ */
+type TypeGuard<T1> = (unknown: unknown) => unknown is T1;
 
 /**
  * ***Brief***
- * Represents an unlocked wrapper which can be unlocked to retrieve its value.
+ * A type-safety trait, enabling validation and transformation through user-defined type guard functions.
+ *
+ * ***Example***
+ * ```ts
+ *  let foo: Parsable;
+ *  foo
+ *      .parse((inst): inst is bigint => typeof inst === "bigint")
+ *      .map(int => {
+ *          /// ...
+ *      });
+ * ```
  */
-type UnlockedWrapper<T1> = Omit<Wrapper<T1>, "unwrap"> & {
+type Parsable = {
     /**
      * ***Brief***
-     * Unlocks the value to retrieve the original stored data of type `T1`.
-     *
-     * ***Requirement***
-     * The error state must be handled.
+     * `parse` validates the value using a provided type guard function.
      *
      * ***Example***
      * ```ts
-     *  let result: Result<200n, 404n>;
-     *  if (result.ok()) {
-     *      let status: 200n = result.unlock();
+     *  let foo: Parsable;
+     *  foo
+     *      .parse((inst): inst is bigint => typeof inst === "bigint")
+     *      .map(int => {
+     *          /// ...
+     *      });
+     * ```
+     */
+    parse<T1>(guard: TypeGuard<T1>): Option<T1>;
+};
+
+/**
+ * ***Brief***
+ * Utility type for creating branded types with a unique string literal identifier `T1`.
+ *
+ * ***Example***
+ * ```ts
+ *  type Foo =
+ *      & BrandedStruct<"Foo">
+ *      & {
+ *      foo: void;
+ *  };
+ *
+ *  type Bar =
+ *      & BrandedStruct<"Bar">
+ *      & {
+ *      foo: void;
+ *  };
+ *
+ *  let union: Foo | Bar;
+ *  if (union.type === "Foo") {
+ *      /// ...
+ *  }
+ * ```
+ */
+type BrandedStruct<T1 extends string> = {
+    /**
+     * ***Brief***
+     * Type-level marker specifying the unique type identifier `T1`.
+     *
+     * ***Example***
+     * ```ts
+     *  type Foo =
+     *      & BrandedStruct<"Foo">
+     *      & {
+     *      foo: void;
+     *  };
+     *
+     *  type Bar =
+     *      & BrandedStruct<"Bar">
+     *      & {
+     *      foo: void;
+     *  };
+     *
+     *  let union: Foo | Bar;
+     *  if (union.type === "Foo") {
      *      /// ...
      *  }
      * ```
      */
-    unlock(): T1;
+    type: T1;
 };
 
-declare const allR: <T1 extends Array<Result<unknown, unknown>>>(results: T1) => Result<OkValOfAll<T1>, ErrValOfAll<T1>[number]>;
-declare const anyR: <T1 extends Array<Result<unknown, unknown>>>(results: T1) => Result<OkValOfAll<T1>[number], ErrValOfAll<T1>>;
-declare const wrap: <T1, T2, T3 extends Array<T2>>(task: Closure<T3, T1>, ...payload: T3) => Result<T1, Unsafe>;
-declare const wrapAsync: <T1, T2, T3 extends Array<T2>>(task: AsyncClosure<T3, T1>, ...payload: T3) => Promise<Result<T1, Unsafe>>;
+/**
+ * ***Brief***
+ * Utility type for creating branded types with a unique string literal identifier `T1`.
+ *
+ * ***Example***
+ * ```ts
+ *  type Foo =
+ *      & Branded<"Foo">
+ *      & {
+ *      foo(): void;
+ *  };
+ *
+ *  type Bar =
+ *      & Branded<"Bar">
+ *      & {
+ *      foo(): void;
+ *  };
+ *
+ *  let union: Foo | Bar;
+ *  if (union.type() === "Foo") {
+ *      /// ...
+ *  }
+ * ```
+ */
+type Branded<T1 extends string> = {
+    /**
+     * ***Brief***
+     * Type-level marker method specifying the unique type identifier `T1`.
+     *
+     * ***Example***
+     * ```ts
+     *  type Foo =
+     *      & Branded<"Foo">
+     *      & {
+     *      foo(): void;
+     *  };
+     *
+     *  type Bar =
+     *      & Branded<"Bar">
+     *      & {
+     *      foo(): void;
+     *  };
+     *
+     *  let union: Foo | Bar;
+     *  if (union.type() === "Foo") {
+     *      /// ...
+     *  }
+     * ```
+     */
+    type(): T1;
+};
+
+/**
+ * ***Brief***
+ * Represents a generic function type that takes a single argument and returns a value.
+ *
+ * ***Example***
+ * ```ts
+ *  const addOne: Function<bigint, bigint> = (x: bigint) => x += 1n;
+ * ```
+ */
+type Function$1<T1, T2> = (payload: T1) => T2;
+
+/**
+ * ***Brief***
+ * Represents a callable function type that accepts an array of arguments and returns a specified type.
+ *
+ * ***Example***
+ * ```ts
+ *  const add: Closure<[bigint, bigint], bigint> = (x: bigint, y: bigint) => x + y;
+ * ```
+ */
+type Closure<T1 extends Array<unknown>, T2> = (...payload: T1) => T2;
+
+/**
+ * ***Brief***
+ * A type alias for a `Closure` that supports asynchronous operations.
+ *
+ * ***Example***
+ * ```ts
+ *  const fetch: AsyncClosure<[string], unknown> = async (url: string) => /// ...;
+ * ```
+ */
+type AsyncClosure<T1 extends Array<unknown>, T2> = Closure<T1, Promise<T2>>;
 
 /**
  * ***Brief***
@@ -166,13 +321,7 @@ type OkValOfAll<T1 extends Array<Result<unknown, unknown>>> = {
 
 type OkValOf<T1 extends Result<unknown, unknown>> = T1 extends Ok<infer T2> ? T2 : never;
 
-type OkOfAll<T1 extends Array<Result<unknown, unknown>>> = {
-    [T2 in keyof T1]: T1[T2] extends Ok<unknown> ? OkOf<T1[T2]> : never;
-};
-
-type OkOf<T1 extends Result<unknown, unknown>> = T1 extends Ok<infer T2> ? Ok<T2> : never;
-
-type Ok<T1> = UnlockedWrapper<T1> & {
+type Ok<T1> = Wrapper<T1> & {
     /**
      * ***Brief***
      * `ok` checks if the current instance is `Ok`.
@@ -236,11 +385,11 @@ type Ok<T1> = UnlockedWrapper<T1> & {
      * ***Example***
      * ```ts
      *  let result: Result<200n, 404n> = Err(404n);
-     *  let status: 200n = result.unlockOr(200n);
+     *  let status: 200n = result.unwrapOr(200n);
      *  console.log(status); /// 200n.
      * ```
      */
-    unlockOr(__: unknown): T1;
+    unwrapOr(__: unknown): T1;
     /**
      * ***Brief***
      * Recovers from the current error by applying a recovery function, transforming the `Err` into an `Ok`.
@@ -358,12 +507,6 @@ type ErrValOfAll<T1 extends Array<Result<unknown, unknown>>> = {
 
 type ErrValOf<T1 extends Result<unknown, unknown>> = T1 extends Err<infer T2> ? T2 : never;
 
-type ErrOfAll<T1 extends Array<Result<unknown, unknown>>> = {
-    [T2 in keyof T1]: T1[T2] extends Err<unknown> ? ErrOf<T1[T2]> : never;
-};
-
-type ErrOf<T1 extends Result<unknown, unknown>> = T1 extends Err<infer T2> ? Err<T2> : never;
-
 type Err<T1> = {
     /**
      * ***Brief***
@@ -462,11 +605,11 @@ type Err<T1> = {
      * ***Example***
      * ```ts
      *  let result: Result<200n, 404n> = Err(404n);
-     *  let status: 200n = result.unlockOr(200n);
+     *  let status: 200n = result.unwrapOr(200n);
      *  console.log(status); /// 200n.
      * ```
      */
-    unlockOr<T2>(fallback: T2): T2;
+    unwrapOr<T2>(fallback: T2): T2;
     /**
      * ***Brief***
      * Chains an task until the first `Err` is encountered.
@@ -580,151 +723,13 @@ type Err<T1> = {
 declare function Err<T1>(_value: T1): Err<T1>;
 declare function Err<T1>(_value: T1, _handler: ErrorHandler): Err<T1>;
 
-declare namespace Ref {
-    type Task<T1> = Closure<[new: T1, old: T1], void>;
-    type DeletionTask = Closure<[], void>;
-}
-type Ref<T1> = Wrapper<T1> & {
-    /**
-     * ***Brief***
-     * Mutates the internal value of the `Ref` instance.
-     */
-    mut(value: T1): Ref<T1>;
-    /**
-     * ***Brief***
-     * Registers a callback that is invoked whenever the value changes.
-     *
-     * ***Example***
-     * ```ts
-     *  let ref: Ref<bigint> = Ref(200n);
-     *  ref.onChange(value => {
-     *      /// ...
-     *      return;
-     *  });
-     *  ref.mut(404n);
-     * ```
-     */
-    onChange(task: Ref.Task<T1>): Ref.DeletionTask;
-};
-/**
- * ***Brief***
- * Wrapper that supports mutation and change tracking.
- */
-declare function Ref<T1>(_value: T1): Ref<T1>;
-
-/**
- * ***Brief***
- * A dynamic wrapper for resource allocation and deallocation.
- */
-type DynWrapper<T1> = {
-    /**
-     * ***Brief***
-     * Deallocates a resource, making it available for recycling.
-     *
-     * ***Example***
-     * ```ts
-     *  let personD: Dyn<{ name: string }>;
-     *  personD
-     *      .deAlloc()
-     *      .map(person => {
-     *          /// Not run because `person` was deallocated.
-     *          /// ...
-     *      });
-     * ```
-     */
-    deAlloc(): DeAlloc<T1>;
-};
-
-type DynConstructor<T1, T2 extends Array<unknown>> = Closure<T2, Dyn<T1>>;
-
-type Dyn<T1> = Alloc<T1> | DeAlloc<T1>;
-/**
- * ***Brief***
- * A dynamic resource management pattern, allowing for
- * allocation and deallocation of resources with proper lifecycle handling.
- *
- * ***Warning***
- * The `Dyn` wrapper must be properly managed to avoid memory leaks. If the wrapper itself is garbage collected
- * without its content being explicitly deallocated, the resources it manages will not be recycled
- * and made available for reuse. Ensure all allocated resources are deallocated before the `Dyn` instance goes out of scope.
- *
- * ***Example***
- * ```ts
- *  type Car = {
- *      drive(): void;
- *  };
- *
- *  const Car: DynConstructor<Car, [_model: string]> = Dyn(
- *      (_model: string) => {
- *          constructor {
- *              return { drive };
- *          }
- *
- *          function drive(): void {
- *              return "Vroom.";
- *          }
- *      },
- *      car => {
- *          /// Reset car or any tasks before it is made available again.
- *          /// ...
- *          return car;
- *      }, 32n, "ModelT"
- *  );
- *
- *  let car: Dyn<Car> = Car("ModelF");
- *  car = car.deAlloc();
- *  car.map(car => {
- *      /// Will not run because `car` has been deallocated.
- *      /// ...
- *  });
- * ```
- *
- * ***Example***
- * ```ts
- *  /// Warning.
- *  let car: Dyn<Car> = Car("ModelB");
- *  car.deAlloc();
- *  car.map(car => {
- *      /// Will run because the car must be updated to the new state.
- *      /// Always assign the `deAlloc` result a new `Dyn` wrapper or
- *      /// itself.
- *      /// ...
- *  });
- * ```
- */
-declare function Dyn<T1, T2 extends Array<unknown>>(_constructor: Closure<T2, T1>, _onDeAlloc: Closure<[T1], T1>, _load: bigint, ..._onLoadPayload: T2): Closure<T2, Dyn<T1>>;
-
-type DeAlloc<T1> = DynWrapper<T1> & None;
-/**
- * ***Brief***
- * The deallocated state of an allocated resource.
- */
-declare function DeAlloc<T1>(_dyn: DynWrapper<T1>): DeAlloc<T1>;
-
-type Alloc<T1> = DynWrapper<T1> & UnlockedWrapper<T1> & Some<T1>;
-/**
- * ***Brief***
- * The allocated state of an allocated resource.
- */
-declare function Alloc<T1>(_value: T1, _dyn: DynWrapper<T1>): Alloc<T1>;
-
-declare const flag: typeof Option.flag;
-declare const allO: typeof Option.all;
-declare const anyO: typeof Option.any;
-
 type SomeValOfAll<T1 extends Array<Option<unknown>>> = {
     [T2 in keyof T1]: SomeValOf<T1[T2]>;
 };
 
 type SomeValOf<T1 extends Option<unknown>> = T1 extends Some<infer T2> ? T2 : never;
 
-type SomeOfAll<T1 extends Array<Option<unknown>>> = {
-    [T2 in keyof T1]: T1[T2] extends Some<unknown> ? SomeOf<T1[T2]> : never;
-};
-
-type SomeOf<T1 extends Option<unknown>> = T1 extends Some<infer T2> ? Some<T2> : never;
-
-type Some<T1> = Branded<"Some"> & UnlockedWrapper<T1> & {
+type Some<T1> = Branded<"Some"> & Wrapper<T1> & {
     /**
      * ***Brief***
      * `some` checks if the current instance is `Some`.
@@ -774,11 +779,11 @@ type Some<T1> = Branded<"Some"> & UnlockedWrapper<T1> & {
      * ***Example***
      * ```ts
      *  let option: Option<200n> = None;
-     *  let status: 200n = option.unlockOr(200n);
+     *  let status: 200n = option.unwrapOr(200n);
      *  console.log(status); /// 200n.
      * ```
      */
-    unlockOr(__: unknown): T1;
+    unwrapOr(__: unknown): T1;
     /**
      * ***Brief***
      * Chains an task until the first `None` is encountered.
@@ -930,11 +935,11 @@ type None = Branded<"None"> & {
      * ***Example***
      * ```ts
      *  let option: Option<200n> = None;
-     *  let status: 200n = option.unlockOr(200n);
+     *  let status: 200n = option.unwrapOr(200n);
      *  console.log(status); /// 200n.
      * ```
      */
-    unlockOr<T2>(fallback: T2): T2;
+    unwrapOr<T2>(fallback: T2): T2;
     /**
      * ***Brief***
      * Chains an task until the first `None` is encountered.
@@ -991,488 +996,6 @@ type None = Branded<"None"> & {
  */
 declare const None: None;
 
-declare namespace Fpv {
-    type Result<T1> = Result<T1, Error>;
-    type ErrorCode = "FPV.ERR_DIVISION_BY_ZERO" | "FPV.ERR_PRECISION_IS_ZERO" | "FPV.ERR_PRECISION_IS_NEGATIVE";
-    type Error = Error$1<ErrorCode>;
-    type Compatible<T1 extends bigint = 2n> = Fpv<T1> | bigint;
-}
-type Fpv<T1 extends bigint = 2n> = Wrapper<bigint> & {
-    /**
-     * ***Brief***
-     * Returns the precision of the `Fpv`.
-     *
-     * ***Example***
-     * ```ts
-     *  Fpv(200n)
-     *      .expect("Failed to initialize fixed point value.")
-     *      .
-     * ```
-     */
-    precision(): T1;
-    /**
-     * ***Brief***
-     * Returns the representation factor of the `Fpv`, based on its precision.
-     *
-     * ***Example***
-     * ```ts
-     *  Fpv<2n>(200n)
-     *      .expect("Failed to initialize ")
-     *      .representation(); /// 10**2n
-     * ```
-     */
-    representation(): bigint;
-    /**
-     * ***Brief***
-     * Compares the current `Fpv` with the given value for equality.
-     *
-     * ***Example***
-     * ```ts
-     *  Fpv(200n)
-     *      .expect("")
-     *      .eq(200n); /// true
-     * ```
-     */
-    eq(value: Fpv.Compatible<T1>): boolean;
-    /**
-     * ***Brief***
-     * Checks if the current `Fpv` is less than the given value.
-     */
-    lt(value: Fpv.Compatible<T1>): boolean;
-    /**
-     * ***Brief***
-     * Checks if the current `Fpv` is less than or equal to the given value.
-     */
-    lteq(value: Fpv.Compatible<T1>): boolean;
-    /**
-     * ***Brief***
-     * Checks if the current `Fpv` is greater than the given value.
-     *
-     * ***Example***
-     * ```ts
-     *  let success: boolean = Fpv(200n)
-     *      .expect("Failed to initialize fixed point value.")
-     *      .gt(200n); /// false
-     * ```
-     */
-    gt(value: Fpv.Compatible<T1>): boolean;
-    /**
-     * ***Brief***
-     * Checks if the current `Fpv` is greater than or equal to the given value,
-     *
-     * ***Example***
-     * ```ts
-     *  let success: boolean = Fpv(200n)
-     *      .expect("Failed to initialize Fpv.")
-     *      .gteq(200n);
-     *  console.log(success); /// "true".
-     * ```
-     */
-    gteq(value: Fpv.Compatible<T1>): boolean;
-    /**
-     * ***Brief***
-     * Adds a given `FpvIsh` value to the current `Fpv`.
-     *
-     * ***Warning***
-     * Extremely large values may cause the program to panic due to insufficient memory.
-     *
-     * ***Example***
-     * ```ts
-     *  let value: bigint = Fpv(200n)
-     *      .expect("Failed to initialize Fpv.")
-     *      .add(100n)
-     *      .unwrap();
-     *  console.log(value); /// 300n === 3.00
-     * ```
-     */
-    add(value: Fpv.Compatible<T1>): Fpv<T1>;
-    /**
-     * ***Brief***
-     * Subtracts a given `FpvIsh` value from the current `Fpv`.
-     *
-     * ***Warning***
-     * Extremely large values may cause the program to panic due to insufficient memory.
-     *
-     * ***Example***
-     * ```ts
-     *  let value: bigint = Fpv(200n)
-     *      .expect("Failed to initialize Fpv.")
-     *      .sub(100n)
-     *      .unwrap();
-     *  console.log(value); /// 100n === 1.00
-     * ```
-     */
-    sub(value: Fpv.Compatible<T1>): Fpv<T1>;
-    /**
-     * ***Brief***
-     * Multiplies the current `Fpv` by a given `FpvIsh` value.
-     *
-     * ***Warning***
-     * Extremely large values may cause the program to panic due to insufficient memory.
-     *
-     * ***Example***
-     * ```ts
-     *  let value: bigint = Fpv(200n)
-     *      .expect("Failed to initialize Fpv.")
-     *      .mul(50n) /// 0.50
-     *      .unwrap();
-     *  console.log(value); /// 100n === 1.00
-     * ```
-     */
-    mul(value: Fpv.Compatible<T1>): Fpv<T1>;
-    /**
-     * ***Brief***
-     * Divides the current `Fpv` by a given `FpvIsh` value.
-     *
-     * ***Warning***
-     * Extremely large values may cause the program to panic due to insufficient memory.
-     *
-     * ***Warning***
-     * If dividing by zero, an error will be returned.
-     *
-     * ***Example***
-     * ```ts
-     *  let value: bigint = Fpv(200n)
-     *      .expect("Failed to initialize Fpv.")
-     *      .div(50n) /// 0.50
-     *      .unwrap();
-     *  console.log(value); /// 400n === 4.00
-     * ```
-     */
-    div(value: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
-};
-/**
- * ***Brief***
- * Creates a new `Fpv` with the provided value and precision.
- */
-declare function Fpv<T1 extends bigint = 2n>(_fpv: Fpv.Compatible<T1>, _precision?: T1): Fpv.Result<Fpv<T1>>;
-
-/**
- * ***Brief***
- * Converts `unknown` to `string`.
- *
- * ***Warning***
- * Does not support circular references and circular objects will result in `[object Object]`.
- *
- * ***Example***
- *  ```ts
- *  console.log(toString(42));          /// 42
- *  console.log(toString(true));        /// true
- *  console.log(toString(null));        /// null
- *  console.log(toString(undefined));   /// undefined
- *
- *  console.log(toString("example"));   /// example
- *
- *  let object: {
- *      color: string;
- *      speed: {
- *          min: number,
- *          max: number
- *      }
- *  } = {
- *      color: "Blue",
- *      speed: {
- *          min: 0,
- *          max: 500
- *      }
- *  };
- *  console.log(object);                /// {"color":"Blue","speed":{"min":0,"max":500}}
- *
- *  function foo(): void {
- *      let x: string = 500;
- *      return x;
- *  }
- *  console.log(foo);                   /// function foo() {
- *                                      ///     x = 500;
- *                                      ///     return x;
- *                                      /// }
- *  ```
- */
-declare function toString(unknown: unknown): string;
-
-/**
- * ***Brief***
- * Creates a deep clone of the provided value using the structuredClone API.
- *
- * ***Example***
- * ```ts
- *  clone()
- *      .resolve(e => {
- *          if (e.code === "DOM.ERR_DATA_CLONE") {
- *              /// ...
- *          }
- *      })
- *      .unlock();
- * ```
- */
-declare function clone<T1>(value: T1): Result<T1, DomError>;
-
-/**
- * **Note**
- * `function` that narrows the type of the provided value to type `T1`.
- *
- * **Example**
- * ```ts
- *  let isNumber: TypeGuard<number>;
- *  let unknown: unknown;
- *  if (isNumber(unknown)) {
- *      /// ...
- *  }
- * ```
- */
-type TypeGuard<T1> = (unknown: unknown) => unknown is T1;
-
-/**
- * ***Brief***
- * A trait representing objects that can be serialized to a string format.
- *
- * ***Example***
- * ```ts
- *  let foo: Serializable;
- *  let fooRepresentation: string = foo.toString();
- * ```
- */
-type Serializable = {
-    /**
-     * ***Brief***
-     * Converts the implementing object to its string representation.
-     *
-     * ***Example***
-     * ```ts
-     *  let foo: Serializable;
-     *  let fooRepresentation: string = foo.toString();
-     * ```
-     */
-    toString(): string;
-};
-
-/**
- * ***Brief***
- * A type-safety trait, enabling validation and transformation through user-defined type guard functions.
- *
- * ***Example***
- * ```ts
- *  let foo: Parsable;
- *  foo
- *      .parse((inst): inst is bigint => typeof inst === "bigint")
- *      .map(int => {
- *          /// ...
- *      });
- * ```
- */
-type Parsable = {
-    /**
-     * ***Brief***
-     * `parse` validates the value using a provided type guard function.
-     *
-     * ***Example***
-     * ```ts
-     *  let foo: Parsable;
-     *  foo
-     *      .parse((inst): inst is bigint => typeof inst === "bigint")
-     *      .map(int => {
-     *          /// ...
-     *      });
-     * ```
-     */
-    parse<T1>(guard: TypeGuard<T1>): Option<T1>;
-};
-
-/**
- * ***Brief***
- * A utility function to check if an `unknown` value conforms to a specific branded type.
- *
- * ***Warning***
- * Be cautious about brand collisions that may occur if multiple modules
- * or contexts define similar branded types.
- */
-declare function isBrandedStruct<T1 extends string>(unknown: unknown): unknown is BrandedStruct<any>;
-declare function isBrandedStruct<T1 extends string>(unknown: unknown, type: T1): unknown is BrandedStruct<T1>;
-
-/**
- * ***Brief***
- * A utility function to check if an `unknown` value conforms to a specific branded type.
- *
- * ***Warning***
- * Be cautious about brand collisions that may occur if multiple modules
- * or contexts define similar branded types.
- */
-declare function isBranded<T1 extends string>(unknown: unknown): unknown is Branded<any>;
-declare function isBranded<T1 extends string>(unknown: unknown, type: T1): unknown is Branded<T1>;
-
-/**
- * ***Brief***
- * Utility type for creating branded types with a unique string literal identifier `T1`.
- *
- * ***Example***
- * ```ts
- *  type Foo =
- *      & BrandedStruct<"Foo">
- *      & {
- *      foo: void;
- *  };
- *
- *  type Bar =
- *      & BrandedStruct<"Bar">
- *      & {
- *      foo: void;
- *  };
- *
- *  let union: Foo | Bar;
- *  if (union.type === "Foo") {
- *      /// ...
- *  }
- * ```
- */
-type BrandedStruct<T1 extends string> = {
-    /**
-     * ***Brief***
-     * Type-level marker specifying the unique type identifier `T1`.
-     *
-     * ***Example***
-     * ```ts
-     *  type Foo =
-     *      & BrandedStruct<"Foo">
-     *      & {
-     *      foo: void;
-     *  };
-     *
-     *  type Bar =
-     *      & BrandedStruct<"Bar">
-     *      & {
-     *      foo: void;
-     *  };
-     *
-     *  let union: Foo | Bar;
-     *  if (union.type === "Foo") {
-     *      /// ...
-     *  }
-     * ```
-     */
-    type: T1;
-};
-
-/**
- * ***Brief***
- * Utility type for creating branded types with a unique string literal identifier `T1`.
- *
- * ***Example***
- * ```ts
- *  type Foo =
- *      & Branded<"Foo">
- *      & {
- *      foo(): void;
- *  };
- *
- *  type Bar =
- *      & Branded<"Bar">
- *      & {
- *      foo(): void;
- *  };
- *
- *  let union: Foo | Bar;
- *  if (union.type() === "Foo") {
- *      /// ...
- *  }
- * ```
- */
-type Branded<T1 extends string> = {
-    /**
-     * ***Brief***
-     * Type-level marker method specifying the unique type identifier `T1`.
-     *
-     * ***Example***
-     * ```ts
-     *  type Foo =
-     *      & Branded<"Foo">
-     *      & {
-     *      foo(): void;
-     *  };
-     *
-     *  type Bar =
-     *      & Branded<"Bar">
-     *      & {
-     *      foo(): void;
-     *  };
-     *
-     *  let union: Foo | Bar;
-     *  if (union.type() === "Foo") {
-     *      /// ...
-     *  }
-     * ```
-     */
-    type(): T1;
-};
-
-/**
- * ***Brief***
- * A value that can either be resolved immediately or asynchronously.
- */
-type MaybeAsync<T1> = Promise<T1> | T1;
-
-/**
- * ***Brief***
- * Represents a generic function type that takes a single argument and returns a value.
- *
- * ***Example***
- * ```ts
- *  const addOne: Function<bigint, bigint> = (x: bigint) => x += 1n;
- * ```
- */
-type Function$1<T1, T2> = (payload: T1) => T2;
-
-/**
- * ***Brief***
- * Represents a callable function type that accepts an array of arguments and returns a specified type.
- *
- * ***Example***
- * ```ts
- *  const add: Closure<[bigint, bigint], bigint> = (x: bigint, y: bigint) => x + y;
- * ```
- */
-type Closure<T1 extends Array<unknown>, T2> = (...payload: T1) => T2;
-
-/**
- * ***Brief***
- * A type alias for a `Function` that supports asynchronous operation.
- *
- * ***Example***
- * ```ts
- *  const fetch: AsyncFunction<string, unknown> = async (url: string) => /// ...;
- * ```
- */
-type AsyncFunction<T1, T2> = Function$1<T1, Promise<T2>>;
-
-/**
- * ***Brief***
- * A type alias for a `Closure` that supports asynchronous operations.
- *
- * ***Example***
- * ```ts
- *  const fetch: AsyncClosure<[string], unknown> = async (url: string) => /// ...;
- * ```
- */
-type AsyncClosure<T1 extends Array<unknown>, T2> = Closure<T1, Promise<T2>>;
-
-/**
- * ***Brief***
- * `panic` throws an error with optional message and stack trace location.
- *
- * ***Example***
- * ```ts
- *  panic(Error("MATH.ERR_DIVISION_BY_ZERO"));
- *  panic(Error({
- *      code: "MATH.ERR_DIVISION_BY_ZERO",
- *      message: Some("Math: Cannot divide by zero."),
- *      payload: None,
- *      stack: StackTrace(...)
- *  }));
- *  panic("An unrecoverable error has occured.");
- * ```
- */
-declare function panic<T1 extends string>(e: Error$1<T1>, handler?: ErrorHandler): never;
-declare function panic<T1 extends string>(message: T1, location?: Function, handler?: ErrorHandler): never;
-
 type ErrorHandler = {
     matchError(unknown: unknown): unknown is Error$1<any, unknown>;
     matchError(unknown: unknown, task: Closure<[e: Error$1<any, unknown>], void>): unknown is Error$1<any, unknown>;
@@ -1522,14 +1045,4 @@ declare function Error$1<T1 extends string, T2 = unknown>(_configuration: {
 }): Error$1<T1, T2>;
 declare function Error$1<T1 extends string, T2 = unknown>(_code: T1, _message?: string, _payload?: T2): Error$1<T1, T2>;
 
-type DomErrorCode = "DOM.ERR_INDEX_SIZE" | "DOM.ERR_HIERARCHY_REQUEST" | "DOM.ERR_WRONG_DOCUMENT" | "DOM.ERR_INVALID_CHARACTER" | "DOM.ERR_NO_MODIFICATION_ALLOWED" | "DOM.ERR_NOT_FOUND" | "DOM.ERR_NOT_SUPPORTED" | "DOM.ERR_INVALID_STATE" | "DOM.ERR_ATTRIBUTE_IN_USE" | "DOM.ERR_SYNTAX" | "DOM.ERR_INVALID_MODIFICATION" | "DOM.ERR_NAMESPACE" | "DOM.ERR_INVALID_ACCESS" | "DOM.ERR_TYPE_MISMATCH" | "DOM.ERR_SECURITY" | "DOM.ERR_NETWORK" | "DOM.ERR_ABORT" | "DOM.ERR_URL_MISMATCH" | "DOM.ERR_QUOTA_EXCEEDED" | "DOM.ERR_TIMEOUT" | "DOM.ERR_INVALID_NODE_TYPE" | "DOM.ERR_DATA_CLONE" | "DOM.ERR_ENCODING" | "DOM.ERR_NOT_READABLE" | "DOM.ERR_UNKNOWN" | "DOM.ERR_CONSTRAINT" | "DOM.ERR_DATA" | "DOM.ERR_TRANSACTION_INACTIVE" | "DOM.ERR_READ_ONLY" | "DOM.ERR_VERSION" | "DOM.ERR_OPERATION" | "DOM.ERR_NOT_ALLOWED";
-
-type DomError = Error$1<DomErrorCode>;
-/**
- * ***Brief***
- * A domain-specific error that provides the error code for DOM exceptions.
- */
-declare function DomError(): DomError;
-declare function DomError(_e: DOMException): DomError;
-
-export { Alloc, type AsyncClosure, type AsyncFunction, type Branded, type BrandedStruct, type Closure, DeAlloc, DomError, type DomErrorCode, Dyn, type DynConstructor, type DynWrapper, Err, type ErrOf, type ErrOfAll, type ErrValOf, type ErrValOfAll, Error$1 as Error, Fpv, type Function$1 as Function, type MaybeAsync, None, Ok, type OkOf, type OkOfAll, type OkValOf, type OkValOfAll, Option, type OptionHandler, type Parsable, Ref, Result, type ResultHandler, type Serializable, Some, type SomeOf, type SomeOfAll, type SomeValOf, type SomeValOfAll, type TypeGuard, Unsafe, allO, allR, anyO, anyR, clone, flag, isBranded, isBrandedStruct, panic, toString, wrap, wrapAsync };
+export { type AsyncClosure as A, type BrandedStruct as B, type Closure as C, type ErrValOfAll as E, type Function$1 as F, None as N, Ok as O, type Parsable as P, Result as R, Some as S, type TypeGuard as T, Unsafe as U, type Wrapper as W, type Branded as a, type OkValOfAll as b, Err as c, Option as d, type OptionHandler as e, type SomeValOfAll as f, type SomeValOf as g, type ResultHandler as h, type ErrValOf as i, type OkValOf as j };

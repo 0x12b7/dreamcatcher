@@ -60,11 +60,11 @@ export type None =
      * ***Example***
      * ```ts
      *  let option: Option<200n> = None;
-     *  let status: 200n = option.unlockOr(200n);
+     *  let status: 200n = option.unwrapOr(200n);
      *  console.log(status); /// 200n.
      * ```
      */
-    unlockOr<T2>(fallback: T2): T2;
+    unwrapOr<T2>(fallback: T2): T2;
     
     /**
      * ***Brief***
@@ -132,7 +132,7 @@ export const None: None = (() => {
             some,
             none,
             expect,
-            unlockOr,
+            unwrapOr,
             and,
             map,
             toResult
@@ -155,7 +155,7 @@ export const None: None = (() => {
         panic(Error("ERR_VALUE_REQUIRED", message));
     }
 
-    function unlockOr<T1>(fallback: T1): T1 {
+    function unwrapOr<T1>(fallback: T1): T1 {
         return fallback;
     }
 

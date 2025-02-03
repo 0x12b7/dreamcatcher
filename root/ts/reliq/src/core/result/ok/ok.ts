@@ -1,5 +1,5 @@
 import type { Function } from "@core";
-import type { UnlockedWrapper } from "@core";
+import type { Wrapper } from "@core";
 import type { Option } from "@core";
 import type { Result } from "@core";
 import { Error } from "@core";
@@ -8,7 +8,7 @@ import { Some } from "@core";
 import { panic } from "@core";
 
 export type Ok<T1> = 
-    & UnlockedWrapper<T1>
+    & Wrapper<T1>
     & {
 
     /**
@@ -78,11 +78,11 @@ export type Ok<T1> =
      * ***Example***
      * ```ts
      *  let result: Result<200n, 404n> = Err(404n);
-     *  let status: 200n = result.unlockOr(200n);
+     *  let status: 200n = result.unwrapOr(200n);
      *  console.log(status); /// 200n.
      * ```
      */
-    unlockOr(__: unknown): T1;
+    unwrapOr(__: unknown): T1;
 
     /**
      * ***Brief***
@@ -208,8 +208,8 @@ export function Ok<T1>(_value: T1): Ok<T1> {
             err,
             expect,
             expectErr,
-            unlock,
-            unlockOr,
+            unwrap,
+            unwrapOr,
             and,
             map,
             mapErr,
@@ -228,30 +228,30 @@ export function Ok<T1>(_value: T1): Ok<T1> {
     }
 
     function expect(__: unknown): T1 {
-        return unlock();
+        return unwrap();
     }
 
     function expectErr(message: string): never {
         panic(Error("PANIC", message));
     }
 
-    function unlock(): T1 {
+    function unwrap(): T1 {
         return _value;
     }
 
-    function unlockOr(__: unknown): T1 {
-        return unlock();
+    function unwrapOr(__: unknown): T1 {
+        return unwrap();
     }
 
     function and<T2>(task: Function<T1, Ok<T2>>): Ok<T2>;
     function and<T2>(task: Function<T1, Err<T2>>): Result<T1, T2>;
     function and<T2, T3>(task: Function<T1, Result<T2, T3>>): Result<T2, T3>;
     function and<T2, T3>(task: Function<T1, Result<T2, T3>>): Result<T2, T3> {
-        return task(unlock());
+        return task(unwrap());
     }
 
     function map<T2>(task: Function<T1, T2>): Ok<T2> {
-        return Ok(task(unlock()));
+        return Ok(task(unwrap()));
     }
 
     function mapErr(__: unknown): Ok<T1> {
@@ -263,10 +263,10 @@ export function Ok<T1>(_value: T1): Ok<T1> {
     }
 
     function degrade<T2>(task: Function<T1, T2>): Err<T2> {
-        return Err(task(unlock()));
+        return Err(task(unwrap()));
     }
 
     function toOption(): Option<T1> {
-        return Some(unlock());
+        return Some(unwrap());
     }
 }

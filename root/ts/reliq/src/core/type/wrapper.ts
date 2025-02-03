@@ -6,10 +6,10 @@ export type Wrapper<T1> = {
 
     /**
      * ***Brief***
-     * Unwraps the wrapped value of type `T1`.
+     * Safely unwraps the wrapped value of type `T1`.
      * 
      * ***Requirement***
-     * Must require no handling to access.
+     * All exceptions to be handled.
      * 
      * ***Example***
      * ```ts

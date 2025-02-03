@@ -8,6 +8,9 @@
 			],
 			"@core": [
 				"src/core/mod.internal.ts"
+			],
+			"@math": [
+				"src/math/mod.internal.ts"
 			]
 		}
 	},

@@ -1,4 +1,4 @@
-import type { Wrapper } from "@core";
+import { type Wrapper } from "@core";
 
 /**
  * ***Brief***
@@ -10,7 +10,7 @@ export type UnlockedWrapper<T1> =
 
     /**
      * ***Brief***
-     * Unlocks the value to retrieve the original stored data of type `T1`. 
+     * Unwraps the value to retrieve the original stored data of type `T1`. 
      *
      * ***Requirement***
      * The error state must be handled.
@@ -19,10 +19,10 @@ export type UnlockedWrapper<T1> =
      * ```ts
      *  let result: Result<200n, 404n>;
      *  if (result.ok()) {
-     *      let status: 200n = result.unlock();
+     *      let status: 200n = result.unwrap();
      *      /// ...
      *  }
      * ```
      */ 
-    unlock(): T1;
+    unwrap(): T1;
 };
