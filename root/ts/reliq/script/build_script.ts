@@ -19,7 +19,9 @@ readdirSync(root, { withFileTypes: true }).forEach(ent => {
     format: "cjs",
     sourcemap: "inline",
     config: "tsconfig.json",
-    minify: "terser",
+    minifyIdentifiers: false,
+    minifySyntax: false,
+    keepNames: true,
     bundle: true,
     dts: true,
     clean: true
