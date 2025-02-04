@@ -4,23 +4,10 @@
 		"isolatedModules": true,
 		"baseUrl": ".",
 		"paths": {
-			"@common": [
-				"src/common/mod.internal.ts"
-			],
-			"@core": [
-				"src/core/mod.internal.ts"
-			],
-			"@math": [
-				"src/math/mod.internal.ts"
-			]
+			"@root": ["src/mod.ts"],
+			"@root:internal": ["src/mod.internal.ts"]
 		}
 	},
-	"include": [
-		"src", 
-		"script"
-	],
-	"exclude": [
-		"node_modules", 
-		"target"
-	]
+	"include": ["src", "script"],
+	"exclude": ["node_modules", "target"]
 }

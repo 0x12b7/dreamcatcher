@@ -15,13 +15,11 @@ readdirSync(root, { withFileTypes: true }).forEach(ent => {
         "src/core/mod.ts",
         "src/math/mod.ts"
     ],
-    outDir: "target/tslib",
+    outDir: "target/npm",
     format: "cjs",
     sourcemap: "inline",
     config: "tsconfig.json",
-    minifyIdentifiers: false,
-    minifySyntax: false,
-    keepNames: true,
+    minify: "terser",
     bundle: true,
     dts: true,
     clean: true
