@@ -36,6 +36,6 @@ export function clone<T1>(value: T1): Result<T1, DomError> {
             .map(exception => {
                 return DomError(exception);
             })
-            .unlockOr(DomError());
+            .unwrapOr(DomError());
     });
 }

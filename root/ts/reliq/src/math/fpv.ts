@@ -7,18 +7,7 @@ import { Ok } from "@root";
 
 type _Result0<T1, T2> = Result<T1, T2>;
 
-export namespace Fpv {
-    export type Result<T1> = _Result0<T1, ErrorCode>;
-
-    export type ErrorCode = 
-        | "FPV.ERR_DIVISION_BY_ZERO"
-        | "FPV.ERR_PRECISION_IS_ZERO"
-        | "FPV.ERR_PRECISION_IS_NEGATIVE";
-
-    export type Compatible<T1 extends bigint = 2n> = Fpv<T1> | bigint;
-}
-
-export type Fpv<T1 extends bigint = 2n> = 
+export type Fpv<T1 extends Fpv.Precision> = 
     & Wrapper<bigint>
     & {
     precision(): T1;
@@ -32,6 +21,7 @@ export type Fpv<T1 extends bigint = 2n> =
     sub(value: Fpv.Compatible<T1>): Fpv<T1>;
     mul(value: Fpv.Compatible<T1>): Fpv<T1>;
     div(value: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
+    sqrt(): Fpv.Result<Fpv<T1>>;
 };
 
 export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precision: T1 = (2n as any)): Fpv.Result<Fpv<T1>> {
@@ -50,7 +40,8 @@ export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precisi
             add,
             sub,
             mul,
-            div
+            div,
+            sqrt
         });
     }
 
@@ -116,6 +107,20 @@ export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precisi
         }));
     }
 
+    function sqrt(): Fpv.Result<Fpv<T1>> {
+        let n: bigint = _unwrap(_value);
+        if (n < 0n) return Err("FPV.ERR_CANNOT_SQUARE_NAGATIVE");
+        return Ok(_wrap(() => {
+            let x: bigint = n;
+            let y: bigint = (x + 1n) / 2n;
+            while (y < x) {
+                x = y;
+                y = (x + n / x) / 2n;
+            }
+            return x;
+        }));
+    }
+
     function _wrap(task: Closure<[], bigint>): Fpv<T1> {
         return Fpv<T1>(task()).expect("Fpv: Failed to wrap the task result to a new `Fpv` of type `T1`." + INTERNAL_ERROR_MESSAGE);
     }
@@ -124,4 +129,30 @@ export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precisi
         if (typeof value === "bigint") return value;
         return value.unwrap();
     }
+}
+
+export namespace Fpv {
+    export type Result<T1> = _Result0<T1, ErrorCode>;
+
+    export type ErrorCode = 
+        | "FPV.ERR_DIVISION_BY_ZERO"
+        | "FPV.ERR_PRECISION_IS_ZERO"
+        | "FPV.ERR_PRECISION_IS_NEGATIVE"
+        | "FPV.ERR_CANNOT_SQUARE_NAGATIVE";
+
+    export type Compatible<T1 extends bigint = 2n> = Fpv<T1> | bigint;
+
+    export type Precision = bigint;
+
+    export type Handler = {
+        unwrap<T1 extends bigint>(value: Fpv.Compatible<T1>): bigint;
+        lerp<T1 extends bigint = 2n>(x: Fpv.Compatible<T1>, y: Fpv.Compatible<T1>, ms: bigint): Fpv<T1>;
+    };
+
+    export const Handler: Handler = (() => {
+
+        function lerp<T1 extends bigint = 2n>(x: Fpv.Compatible<T1>, y: Fpv.Compatible<T1>, ms: bigint) {
+
+        }
+    })();
 }

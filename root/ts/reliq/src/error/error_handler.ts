@@ -6,6 +6,7 @@ import type { RecoveryWrapper } from "@root";
 import { Branded } from "@root";
 import { BrandedStruct } from "@root";
 import { Unsafe } from "@root";
+import { isNewExpression } from "typescript";
 
 
 export const flag: typeof Option.Handler.flag = Option.Handler.flag;
@@ -911,33 +912,31 @@ export function Err<T1>(
 
     function expect(message: string): never {
         let e: T1 = inspect();
-        let transientEO: Option<Error0<any, unknown>> = None;
-        if (e instanceof Error) {
-            let customE: Error0<any, unknown> = Error0({
-                code: e.name.toUpperCase(),
-                message: message
-            });
-            transientEO = Some(customE);
-        }
-        if (transientEO.none()) _handler.match(e, e => {
-            e.message = e.message.map(message0 => {
-                return message0 + 
-                
-                "\n" + 
+        if (e instanceof _Error) {
+            let code: string = e.name;
+            let message$0: string = e.message +
                 "\n     " + "Context" + 
                 "\n     " + message;
-            });
-            transientEO = Some(e);
-            return;
+            let stack$0: string = e.stack ?? stack();
+            Error.Handler.panic(Error({
+                code,
+                message: message$0,
+                stack: stack$0
+            }));
+        }
+        Error.Handler.match(inspect(), () => {
+            Error.Handler.panic(Error({
+                code: "PANIC",
+                message: "" 
+                    + "\n   " + "Context"
+                    + "\n   " + message,
+                stack: stack()
+            }));
         });
-        
-        let transientE: Error0<any, unknown> = transientEO
-            .toResult(undefined)
-            .recover(() => {
-                return Error({ code: "PANIC", message: message });
-            })
-            .unwrap();
-        Error.Handler.panic(transientE);
+        Error.Handler.panic(Error({
+            code: "",
+            message: ""
+        }));
     }
 
     function expectErr(__: unknown): T1 {
