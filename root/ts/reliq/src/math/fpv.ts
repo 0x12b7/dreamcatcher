@@ -1,9 +1,9 @@
-import type { Result } from "@mod:internal";
-import type { Wrapper } from "@mod:internal";
-import type { Closure } from "@mod:internal";
-import { INTERNAL_ERROR_MESSAGE } from "@mod:internal";
-import { Err } from "@core";
-import { Ok } from "@core";
+import type { Result } from "@root";
+import type { Wrapper } from "@root";
+import type { Closure } from "@root";
+import { INTERNAL_ERROR_MESSAGE } from "@root";
+import { Err } from "@root";
+import { Ok } from "@root";
 
 type _Result0<T1, T2> = Result<T1, T2>;
 
