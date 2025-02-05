@@ -1,21 +1,13 @@
-import { wrapAsync } from "@core";
+import { wrapAsync } from "@root:internal";
 import { build } from "tsup";
 import { join } from "path";
 import { readdirSync } from "fs";
+import { writeFileSync } from "fs";
 
 /** @script */
-let root: string = join(__dirname, "../src/");
-readdirSync(root, { withFileTypes: true }).forEach(ent => {
-    if (ent.isDirectory()) {
-        console.log(ent.name);
-    }
-});
 (await wrapAsync(build, {
-    entry: [
-        "src/core/mod.ts",
-        "src/math/mod.ts"
-    ],
-    outDir: "target/npm",
+    entry: "src/mod.ts",
+    outDir: "target/npm/",
     format: "cjs",
     sourcemap: "inline",
     config: "tsconfig.json",
@@ -24,3 +16,9 @@ readdirSync(root, { withFileTypes: true }).forEach(ent => {
     dts: true,
     clean: true
 })).expect("Failed to build.");
+
+/// jsr lib 
+let jsrTargetFolder: string = join(__dirname, "../target/jsr/");
+let jsrTargetFile: string = join(jsrTargetFolder, "mod.ts");
+let content: string = "export * from '../../src/mod.ts'";
+writeFileSync(jsrTargetFile, content);

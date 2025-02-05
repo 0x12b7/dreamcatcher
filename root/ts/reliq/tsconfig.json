@@ -4,8 +4,7 @@
 		"isolatedModules": true,
 		"baseUrl": ".",
 		"paths": {
-			"@root": ["src/mod.ts"],
-			"@root:internal": ["src/mod.internal.ts"]
+			"@root": ["src/mod.internal.ts"]
 		}
 	},
 	"include": ["src", "script"],
