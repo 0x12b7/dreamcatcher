@@ -6,22 +6,6 @@ import type { RecoveryWrapper } from "@root";
 import { Branded } from "@root";
 import { BrandedStruct } from "@root";
 import { Unsafe } from "@root";
-import { isNewExpression } from "typescript";
-
-
-export const flag: typeof Option.Handler.flag = Option.Handler.flag;
-
-export const allO: typeof Option.Handler.all = Option.Handler.all;
-
-export const anyO: typeof Option.Handler.any = Option.Handler.any;
-
-export const allR = Result.Handler.all;
-
-export const anyR = Result.Handler.any;
-
-export const wrap = Result.Handler.wrap;
-
-export const wrapAsync = Result.Handler.wrapAsync;
 
 
 type _Array<T1> = Array<T1>;
@@ -401,6 +385,7 @@ export type Ok<T1> =
      *  let status: 200n = result.expect("This is unexpected and unrecoverable.");
      * ```
      */
+    expect(): T1;
     expect(__: unknown): T1;
 
     /**
@@ -416,6 +401,7 @@ export type Ok<T1> =
      *  let status: 404n = result.expectErr("This is unexpected and unrecoverable.");
      * ```
     */
+    expectErr(): never;
     expectErr(message: string): never;
 
     /**
@@ -716,6 +702,7 @@ export type Err<T1> =
      *  let status: 200n = result.expect("This is unexpected and unrecoverable.");
      * ```
      */
+    expect(): never;
     expect(message: string): never;
 
     /**
@@ -731,6 +718,7 @@ export type Err<T1> =
      *  let status: 404n = result.expectErr("This is unexpected and unrecoverable.");
      * ```
     */
+    expectErr(): T1;
     expectErr(__: unknown): T1;
 
     /**
@@ -1434,3 +1422,18 @@ export const None: None = (() => {
         return Err(e);
     }
 })();
+
+
+export const flag: typeof Option.Handler.flag = Option.Handler.flag;
+
+export const allO: typeof Option.Handler.all = Option.Handler.all;
+
+export const anyO: typeof Option.Handler.any = Option.Handler.any;
+
+export const allR = Result.Handler.all;
+
+export const anyR = Result.Handler.any;
+
+export const wrap = Result.Handler.wrap;
+
+export const wrapAsync = Result.Handler.wrapAsync;

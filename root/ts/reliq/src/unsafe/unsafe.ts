@@ -10,7 +10,7 @@ export type Unsafe =
     & Parsable;
 
 export function Unsafe(_value: unknown): Unsafe {
-    /** @constructor */ {
+    {
         return { inspect, parse };
     }
 

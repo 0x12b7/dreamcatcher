@@ -1,11 +1,9 @@
-import type { Result } from "@root";
+import type { Result as Result$0 } from "@root";
 import type { Wrapper } from "@root";
 import type { Closure } from "@root";
 import { INTERNAL_ERROR_MESSAGE } from "@root";
 import { Err } from "@root";
 import { Ok } from "@root";
-
-type _Result0<T1, T2> = Result<T1, T2>;
 
 export type Fpv<T1 extends Fpv.Precision> = 
     & Wrapper<bigint>
@@ -22,10 +20,12 @@ export type Fpv<T1 extends Fpv.Precision> =
     mul(value: Fpv.Compatible<T1>): Fpv<T1>;
     div(value: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
     sqrt(): Fpv.Result<Fpv<T1>>;
+    lerp(to: Fpv.Compatible<T1>, percentage: Fpv.Compatible<T1>): Fpv<T1>;
+    cst<T2 extends Fpv.Precision>(precision: T2): Fpv<T2>;
 };
 
 export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precision: T1 = (2n as any)): Fpv.Result<Fpv<T1>> {
-    /** @constructor */ {
+    {
         if (precision() === 0n) return Err("FPV.ERR_PRECISION_IS_ZERO");
         if (precision() < 0n) return Err("FPV.ERR_PRECISION_IS_NEGATIVE");
         return Ok({
@@ -41,7 +41,8 @@ export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precisi
             sub,
             mul,
             div,
-            sqrt
+            sqrt,
+            lerp
         });
     }
 
@@ -110,15 +111,46 @@ export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precisi
     function sqrt(): Fpv.Result<Fpv<T1>> {
         let n: bigint = _unwrap(_value);
         if (n < 0n) return Err("FPV.ERR_CANNOT_SQUARE_NAGATIVE");
-        return Ok(_wrap(() => {
-            let x: bigint = n;
-            let y: bigint = (x + 1n) / 2n;
-            while (y < x) {
-                x = y;
-                y = (x + n / x) / 2n;
-            }
-            return x;
-        }));
+        if (n === 0n) return Ok(Fpv<T1>(0n).expect("Failed to initialize `Fpv`."));
+        let x: bigint = (n * representation() + 1n) / 2n;
+        let y: bigint;
+        do {
+            y = x;
+            x = (x + n * representation() / x) / 2n;
+        }
+        while (x !== y);
+        return Ok(Fpv<T1>(x).expect(""));
+    }
+
+    function lerp(to: Fpv.Compatible<T1>, percentage: Fpv.Compatible<T1>): Fpv<T1> {
+        let n0: Fpv<T1> =  _wrap(() => {
+            return _unwrap(_value);
+        });
+        let n1: Fpv<T1> = _wrap(() => {
+            return _unwrap(to);
+        });
+        let percentage$0: Fpv<T1> = _wrap(() => {
+            return _unwrap(percentage);
+        });
+        
+
+        let one: bigint = 1n * representation();
+        let one$0: Fpv<T1> = Fpv(one, precision()).expect("");
+        let x: bigint = one$0
+            .sub(percentage$0)
+            .unwrap();
+        let y: bigint = Fpv<T1>(n1)
+            .expect("")
+            .mul(percentage$0)
+            .unwrap();
+        return Fpv(n0, precision())
+            .expect("")
+            .mul(x)
+            .add(y);
+    }
+
+    function cst<T2 extends Fpv.Precision>(precision: T2): Fpv<T2> {
+        
     }
 
     function _wrap(task: Closure<[], bigint>): Fpv<T1> {
@@ -132,7 +164,7 @@ export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precisi
 }
 
 export namespace Fpv {
-    export type Result<T1> = _Result0<T1, ErrorCode>;
+    export type Result<T1> = Result$0<T1, ErrorCode>;
 
     export type ErrorCode = 
         | "FPV.ERR_DIVISION_BY_ZERO"
@@ -146,13 +178,16 @@ export namespace Fpv {
 
     export type Handler = {
         unwrap<T1 extends bigint>(value: Fpv.Compatible<T1>): bigint;
-        lerp<T1 extends bigint = 2n>(x: Fpv.Compatible<T1>, y: Fpv.Compatible<T1>, ms: bigint): Fpv<T1>;
     };
 
     export const Handler: Handler = (() => {
+        {
+            return { unwrap };
+        }
 
-        function lerp<T1 extends bigint = 2n>(x: Fpv.Compatible<T1>, y: Fpv.Compatible<T1>, ms: bigint) {
-
+        function unwrap<T1 extends bigint>(value: Fpv.Compatible<T1>): bigint {
+            if (typeof value === "bigint") return value;
+            return value.unwrap();
         }
     })();
 }

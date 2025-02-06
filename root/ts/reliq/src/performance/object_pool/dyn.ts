@@ -1,8 +1,7 @@
 import type { Closure } from "@root";
-import type { Option } from "@root";
+import type { Wrapper } from "@root";
 import { INTERNAL_ERROR_MESSAGE } from "@root";
-import { Alloc } from "@root";
-import { DeAlloc } from "@root";
+import { Option } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
 
@@ -62,7 +61,7 @@ export type Dyn<T1> = Alloc<T1> | DeAlloc<T1>;
  *  });
  * ```
  */
-export function Dyn<T1, T2 extends Array<unknown>>(_constructor: Closure<T2, T1>, _onDeAlloc: Closure<[T1], T1>, _load: bigint, ..._onLoadPayload: T2): Closure<T2, Dyn<T1>> {
+export function Dyn<T1, T2 extends Array<unknown>>(_constructor: Closure<T2, T1>, _onDeAlloc: Closure<[T1], T1>, _load: bigint, ..._onLoadPayload: T2): Dyn.Constructor<T1, T2> {
     let _available: Map<bigint, T1>;
     let _count: bigint;
 
@@ -71,7 +70,7 @@ export function Dyn<T1, T2 extends Array<unknown>>(_constructor: Closure<T2, T1>
         _count = 0n;
         let i: bigint = 0n;
         while (i < _load) {
-            let key: bigint = _genKey();
+            let key: bigint = _newKey();
             _available.set(key, _constructor(..._onLoadPayload));
             i ++;
         }
@@ -92,10 +91,10 @@ export function Dyn<T1, T2 extends Array<unknown>>(_constructor: Closure<T2, T1>
                         return Alloc(_recyled(key), { deAlloc });
                     })
                     .recover(() => {
-                        _key = Some(_genKey());
+                        _key = Some(_newKey());
                         return Alloc(_constructor(...payload), { deAlloc });
                     })
-                    .unlock();            
+                    .unwrap();            
             }
     
             function deAlloc(): DeAlloc<T1> {
@@ -112,7 +111,7 @@ export function Dyn<T1, T2 extends Array<unknown>>(_constructor: Closure<T2, T1>
         };
     }
 
-    function _genKey(): bigint {
+    function _newKey(): bigint {
         return _count += 1n;
     }
 
@@ -134,5 +133,56 @@ export function Dyn<T1, T2 extends Array<unknown>>(_constructor: Closure<T2, T1>
     function _recyle(key: bigint, value: T1): void {
         _available.set(key, value);
         return;
+    }
+}
+
+export namespace Dyn {
+    export type Constructor<T1, T2 extends Array<unknown>> = Closure<T2, Dyn<T1>>;
+
+    export type Wrapper<T1> = {
+
+        /**
+         * ***Brief***
+         * Deallocates a resource, making it available for recycling.
+         * 
+         * ***Example***
+         * ```ts
+         *  let personD: Dyn<{ name: string }>;
+         *  personD
+         *      .deAlloc()
+         *      .map(person => {
+         *          /// Not run because `person` was deallocated.
+         *          /// ...
+         *      });
+         * ```
+         */
+        deAlloc(): DeAlloc<T1>;
+    };
+}
+
+
+export type Alloc<T1> =
+    & Dyn.Wrapper<T1>
+    & Some<T1>
+    & Wrapper<T1>;
+    
+export function Alloc<T1>(_value: T1, _dyn: Dyn.Wrapper<T1>): Alloc<T1> {
+    {
+        return { ... Some(_value), ... _dyn };
+    }
+}
+
+
+export type DeAlloc<T1> = 
+    & None
+    & Dyn.Wrapper<T1>;
+
+/**
+ * ***Brief***
+ * The deallocated state of an allocated resource.
+ */
+export function DeAlloc<T1>(_dyn: Dyn.Wrapper<T1>): DeAlloc<T1> {
+    {
+        return { ... None, ... _dyn };
     }
 }
