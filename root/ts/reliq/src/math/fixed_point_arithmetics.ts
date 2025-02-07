@@ -1,5 +1,5 @@
-import type { Result as Result$0 } from "@root";
-import type { Wrapper } from "@root";
+import { type Result as Result$0 } from "@root";
+import { type Wrapper } from "@root";
 import { INTERNAL_ERROR_MESSAGE } from "@root";
 import { Err } from "@root";
 import { Ok } from "@root";
@@ -313,15 +313,16 @@ export namespace Fpv {
             let x$0: bigint = unwrap(x);
             if (x$0 < 0n) return Err("FPV.ERR_CANNOT_SQUARE_NAGATIVE");
             if (x$0 === 0n) return Ok(Fpv(0n, decimals).expect(INTERNAL_ERROR_MESSAGE));
-            let one: bigint = x$0 * (10n ** decimals);
-            let x$1: bigint = (x$0 * one + 1n) / 2n;
+            let one: bigint = 10n ** decimals;
+            one *= x$0;
+            let x$1: bigint = one;
             let y: bigint;
             do {
                 y = x$1;
-                x$1 = (x$1 + x$0 * one / x$1) / 2n; 
+                x$1 = (y + one / y) / 2n; 
             }
             while(x$1 !== y);
-            return Ok(Fpv(x, decimals).expect(INTERNAL_ERROR_MESSAGE));
+            return Ok(Fpv(x$1, decimals).expect(INTERNAL_ERROR_MESSAGE));
         }
 
         function cst<T1 extends Decimals, T2 extends Decimals>(x: bigint, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
@@ -329,23 +330,17 @@ export namespace Fpv {
         function cst<T1 extends Decimals, T2 extends Decimals>(x: Compatible<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>> {
             if (oldDecimals < 0n) return Err("FPV.ERR_NEGATIVE_DECIMALS");
             if (newDecimals < 0n) return Err("FPV.ERR_NEGATIVE_DECIMALS");
-            if (newDecimals === 0n) return Ok(Fpv(unwrap(x) / (10n ** oldDecimals), newDecimals).expect(INTERNAL_ERROR_MESSAGE));
-            return Ok(Fpv(
-                newDecimals > oldDecimals
-                    ? unwrap(x) * (
-                        10n **
-                        newDecimals > oldDecimals
-                            ? (newDecimals - oldDecimals as unknown as bigint)
-                            : (oldDecimals - newDecimals as unknown as bigint)
-                    )
-                    : unwrap(x) / (
-                        10n **
-                        newDecimals > oldDecimals
-                            ? (newDecimals - oldDecimals as unknown as bigint)
-                            : (oldDecimals - newDecimals as unknown as bigint)
-                    ),
-                newDecimals
-            ).expect(INTERNAL_ERROR_MESSAGE));
-        }
+            let x$0: bigint = unwrap(x);
+            let scl: bigint;
+            if (newDecimals > oldDecimals) {
+                scl = 10n ** (newDecimals - oldDecimals as unknown as bigint);
+                x$0 *= scl;
+            }
+            if (newDecimals < oldDecimals) {
+                scl = 10n ** (oldDecimals - newDecimals as unknown as bigint);
+                x$0 /= scl;
+            }
+            return Ok(Fpv(x$0, newDecimals).expect(INTERNAL_ERROR_MESSAGE));
+        }3
     })();
 }
