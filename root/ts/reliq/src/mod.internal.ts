@@ -17,7 +17,7 @@ export * from "./type/async_function.ts";
 export * from "./type/async_closure.ts";
 export * from "./performance/object_pool/dyn.ts";
 export * from "./math/vec.ts";
-export * from "./math/fpa.ts";
+export * from "./math/fixed_point_arithmetics.ts";
 export * from "./event/ref.ts";
 export * from "./error/variant/dom_error.ts";
 export * from "./error/error_handler.ts";
