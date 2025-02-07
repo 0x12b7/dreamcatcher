@@ -5,7 +5,7 @@ import { INTERNAL_ERROR_MESSAGE, wrap } from "@root";
 import { Err } from "@root";
 import { Ok } from "@root";
 
-export type Fpv<T1 extends Fpv.Precision> = 
+export type Fpv<T1 extends Fpv.Decimals> = 
     & Wrapper<bigint>
     & {
     precision(): T1;
@@ -21,7 +21,7 @@ export type Fpv<T1 extends Fpv.Precision> =
     div(value: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
     sqrt(): Fpv.Result<Fpv<T1>>;
     lerp(to: Fpv.Compatible<T1>, percentage: Fpv.Compatible<T1>): Fpv<T1>;
-    cst<T2 extends Fpv.Precision>(precision: T2): Fpv.Result<Fpv<T2>>;
+    cst<T2 extends Fpv.Decimals>(precision: T2): Fpv.Result<Fpv<T2>>;
 };
 
 export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precision: T1 = (2n as any)): Fpv.Result<Fpv<T1>> {
@@ -155,7 +155,7 @@ export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precisi
             .add(y);
     }
 
-    function cst<T2 extends Fpv.Precision>(precision$0: T2): Fpv.Result<Fpv<T2>> {
+    function cst<T2 extends Fpv.Decimals>(precision$0: T2): Fpv.Result<Fpv<T2>> {
         return Fpv.Calculator.cst(unwrap(), precision(), precision$0);
     }
 
@@ -177,23 +177,65 @@ export namespace Fpv {
         | "FPV.ERR_NEGATIVE_DECIMALS"
         | "FPV.ERR_CANNOT_SQUARE_NAGATIVE";
 
-    export type Compatible<T1 extends bigint = 2n> = Fpv<T1> | bigint;
+    export type Compatible<T1 extends Decimals = Decimals> = Fpv<T1> | bigint;
 
-    export type Precision = bigint;
+    export type Decimals = bigint;
 
     export type Calculator = {
-        unwrap<T1 extends Precision = 0n>(value: Compatible<T1>): bigint;
-        eq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean;
-        lt<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean;
-        gt<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean;
-        lteq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean;
-        gteq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean;
-        add<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Fpv<T1>;
-        sub<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Fpv<T1>;
-        mul<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Fpv<T1>;
-        div<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Result<Fpv<T1>>;
-        sqrt<T1 extends Precision>(value: Compatible<T1>): Result<Fpv<T1>>;
-        cst<T1 extends Precision = 0n, T2 extends Precision = 0n>(value: Compatible<T1>, oldPrecision: T1, newPrecision: T2): Result<Fpv<T2>>;
+        unwrap(value: Compatible<Decimals>): bigint;
+        eq<T1 extends Decimals>(x: bigint, y: bigint): boolean;
+        eq<T1 extends Decimals>(x: Fpv<T1>, y: bigint): boolean;
+        eq<T1 extends Decimals>(x: bigint, y: Fpv<T1>): boolean;
+        eq<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T2>): boolean;
+        eq<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): boolean;
+        lt<T1 extends Decimals>(x: bigint, y: bigint): boolean;
+        lt<T1 extends Decimals>(x: Fpv<T1>, y: bigint): boolean;
+        lt<T1 extends Decimals>(x: bigint, y: Fpv<T1>): boolean;
+        lt<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T2>): boolean;
+        lt<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): boolean;
+        gt<T1 extends Decimals>(x: bigint, y: bigint): boolean;
+        gt<T1 extends Decimals>(x: Fpv<T1>, y: bigint): boolean;
+        gt<T1 extends Decimals>(x: bigint, y: Fpv<T1>): boolean;
+        gt<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T2>): boolean;
+        gt<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): boolean;
+        lteq<T1 extends Decimals>(x: bigint, y: bigint): boolean;
+        lteq<T1 extends Decimals>(x: Fpv<T1>, y: bigint): boolean;
+        lteq<T1 extends Decimals>(x: bigint, y: Fpv<T1>): boolean;
+        lteq<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T1>): boolean;
+        lteq<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): boolean;
+        gteq<T1 extends Decimals>(x: bigint, y: bigint): boolean;
+        gteq<T1 extends Decimals>(x: Fpv<T1>, y: bigint): boolean;
+        gteq<T1 extends Decimals>(x: bigint, y: Fpv<T1>): boolean;
+        gteq<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T1>): boolean;
+        gteq<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): boolean;
+        add<T1 extends Decimals>(x: bigint, y: bigint): Fpv<T1>;
+        add<T1 extends Decimals>(x: Fpv<T1>, y: bigint): Fpv<T1>;
+        add<T1 extends Decimals>(x: bigint, y: Fpv<T1>): Fpv<T1>;
+        add<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T2>): Fpv<T1>;
+        add<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): Fpv<T1>;
+        sub<T1 extends Decimals>(x: bigint, y: bigint): Fpv<T1>;
+        sub<T1 extends Decimals>(x: Fpv<T1>, y: bigint): Fpv<T1>;
+        sub<T1 extends Decimals>(x: bigint, y: Fpv<T1>): Fpv<T1>;
+        sub<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T2>): Fpv<T1>;
+        sub<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): Fpv<T1>;
+        mul<T1 extends Decimals>(x: bigint, y: bigint): Fpv<T1>;
+        mul<T1 extends Decimals>(x: Fpv<T1>, y: bigint): Fpv<T1>;
+        mul<T1 extends Decimals>(x: bigint, y: Fpv<T1>): Fpv<T1>;
+        mul<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T2>): Fpv<T1>;
+        mul<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): Fpv<T1>;
+        div<T1 extends Decimals>(x: bigint, y: bigint): Result<Fpv<T1>>;
+        div<T1 extends Decimals>(x: Fpv<T1>, y: bigint): Result<Fpv<T1>>;
+        div<T1 extends Decimals>(x: bigint, y: Fpv<T1>): Result<Fpv<T1>>;
+        div<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T2>): Result<Fpv<T1>>;
+        div<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): Result<Fpv<T1>>;    
+        sqrt<T1 extends Decimals>(x: bigint, y: bigint): Result<Fpv<T1>>;
+        sqrt<T1 extends Decimals>(x: Fpv<T1>, y: bigint): Result<Fpv<T1>>;
+        sqrt<T1 extends Decimals>(x: bigint, y: Fpv<T1>): Result<Fpv<T1>>;
+        sqrt<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T2>): Result<Fpv<T1>>;
+        sqrt<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): Result<Fpv<T1>>;
+        cst<T1 extends Decimals, T2 extends Decimals>(x: bigint, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
+        cst<T1 extends Decimals, T2 extends Decimals>(x: Fpv<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
+        cst<T1 extends Decimals, T2 extends Decimals>(x: Compatible<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
     };
 
     export const Calculator: Calculator = (() => {
@@ -214,40 +256,62 @@ export namespace Fpv {
             };
         }
 
-        function unwrap<T1 extends bigint>(value: Fpv.Compatible<T1>): bigint {
-            if (typeof value === "bigint") return value;
-            return value.unwrap();
+        function unwrap(value: Compatible<Decimals>): bigint {
+            return typeof value === "bigint" ? value : value.unwrap();
         }
 
-        function eq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean {
-            return unwrap(value0) === unwrap(value1);
+        function eq<T1 extends Decimals>(x: bigint, y: bigint): boolean;
+        function eq<T1 extends Decimals>(x: Fpv<T1>, y: bigint): boolean;
+        function eq<T1 extends Decimals>(x: bigint, y: Fpv<T1>): boolean;
+        function eq<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T2>): boolean;
+        function eq<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): boolean {
+            return unwrap(x) === unwrap(y);
         }
 
-        function lt<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean {
-            return unwrap(value0) < unwrap(value1);
+        function lt<T1 extends Decimals>(x: bigint, y: bigint): boolean;
+        function lt<T1 extends Decimals>(x: Fpv<T1>, y: bigint): boolean;
+        function lt<T1 extends Decimals>(x: bigint, y: Fpv<T1>): boolean;
+        function lt<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T2>): boolean;
+        function lt<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): boolean {
+            return unwrap(x) < unwrap(y);
         }
 
-        function gt<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean {
-            return unwrap(value0) > unwrap(value1);
+        function gt<T1 extends Decimals>(x: bigint, y: bigint): boolean;
+        function gt<T1 extends Decimals>(x: Fpv<T1>, y: bigint): boolean;
+        function gt<T1 extends Decimals>(x: bigint, y: Fpv<T1>): boolean;
+        function gt<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T2>): boolean;
+        function gt<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): boolean {
+            return unwrap(x) > unwrap(y);
         }
 
-        function lteq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean {
-            return eq(value0, value1) || lt(value0, value1);
+        function lteq<T1 extends Decimals>(x: bigint, y: bigint): boolean;
+        function lteq<T1 extends Decimals>(x: Fpv<T1>, y: bigint): boolean;
+        function lteq<T1 extends Decimals>(x: bigint, y: Fpv<T1>): boolean;
+        function lteq<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T1>): boolean;
+        function lteq<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): boolean {
+            return unwrap(x) <= unwrap(y);
         }
 
-        function gteq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean {
+        
+
+
+
+
+        function gteq<T1 extends Decimals = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean {
             return eq(value0, value1) || gt(value0, value1);
         }
 
-        function add<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Fpv<T1> {
+        add<18n>(500n, 500n)
+
+        function add<T1 extends Decimals, T2 extends T1 = T1>(value0: Compatible<T1>, value1: Compatible<T2>): Fpv<T1> {
             return Fpv<T1>(unwrap(value0) + unwrap(value1)).expect();
         }
 
-        function sub<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Fpv<T1> {
+        function sub<T1 extends Decimals = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Fpv<T1> {
             return Fpv<T1>(unwrap(value0) - unwrap(value1)).expect();
         }
 
-        function mul<T1 extends Precision = 2n>(value0: Compatible<T1>, value1: Compatible<T1>, precision: T1 = (2n as any)): Fpv<T1> {
+        function mul<T1 extends Decimals = 2n>(value0: Compatible<T1>, value1: Compatible<T1>, precision: T1 = (2n as any)): Fpv<T1> {
             let n0: bigint = unwrap(value0);
             let n1: bigint = unwrap(value1);
             let z: bigint = n0 * n1;
@@ -255,7 +319,7 @@ export namespace Fpv {
             return Fpv<T1>(z / 10n ** precision).expect();
         }
 
-        function div<T1 extends Precision = 2n>(value0: Compatible<T1>, value1: Compatible<T1>, decimals: T1 = (2n as any)): Result<Fpv<T1>> {
+        function div<T1 extends Decimals = 2n>(value0: Compatible<T1>, value1: Compatible<T1>, decimals: T1 = (2n as any)): Result<Fpv<T1>> {
             let n0: bigint = unwrap(value0);
             let n1: bigint = unwrap(value1);
             if (n1 === 0n) return Err("FPV.ERR_DIVISION_BY_ZERO");
@@ -265,10 +329,10 @@ export namespace Fpv {
             return Ok(Fpv(q, decimals).expect());
         }
 
-        function sqrt<T1 extends Precision = 2n>(value: Compatible<T1>, decimals: T1 = (2n as any)): Result<Fpv<T1>> {
+        function sqrt<T1 extends Decimals = 2n>(value: Compatible<T1>, decimals: T1 = (2n as any)): Result<Fpv<T1>> {
             let n: bigint = unwrap(value);
             if (n < 0n) return Err("FPV.ERR_CANNOT_SQUARE_NAGATIVE");
-            if (n === 0n) return Ok(Fpv(0n, decimals).expect());
+            if (n === 0n) return Ok(Fpv(0n, decimals).expect(`Fpv: Failed to initialize a fixed point value whilst calculating the square root of ${ unwrap(value) } at ${ decimals } decimals.` + INTERNAL_ERROR_MESSAGE));
             let one: bigint = n * (10n ** decimals);
             let x: bigint = (n * one + 1n) / 2n;
             let y: bigint; do {
@@ -276,13 +340,13 @@ export namespace Fpv {
                 x = (x + n * one / x) / 2n;
             }
             while (x !== y);
-            return Ok(Fpv(x, decimals).expect());
+            return Ok(Fpv(x, decimals).expect(`Fpv: Failed to initialize a fixed point value whilst calculating the square root of ${ unwrap(value) } at ${ decimals } decimals.` + INTERNAL_ERROR_MESSAGE));
         }
 
-        function cst<T1 extends Precision = 0n, T2 extends Precision = 0n>(value: Compatible<T1>, oldDecimals: T1 = (2n as any), newDecimals: T2 = (2n as any)): Result<Fpv<T2>> {
+        function cst<T1 extends Decimals, T2 extends Decimals>(value: Compatible<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>> {
             if (oldDecimals < 0n) return Err("FPV.ERR_NEGATIVE_DECIMALS");
             if (newDecimals < 0n) return Err("FPV.ERR_NEGATIVE_DECIMALS");
-            if (newDecimals === 0n) return Ok(Fpv(unwrap(value) / (10n ** oldDecimals), newDecimals).expect(`Fpv: Failed to initialize fixed point value whilst converting from ${ oldDecimals } decimals to ${ newDecimals } decimals.` + INTERNAL_ERROR_MESSAGE));
+            if (newDecimals === 0n) return Ok(Fpv(unwrap(value) / (10n ** oldDecimals), newDecimals).expect(`Fpv: Failed to initialize a fixed point value whilst converting from ${ oldDecimals } decimals to ${ newDecimals } decimals.` + INTERNAL_ERROR_MESSAGE));
             return Ok(Fpv(
                 newDecimals > oldDecimals
                     ? unwrap(value) * (
@@ -298,7 +362,7 @@ export namespace Fpv {
                             : (oldDecimals - newDecimals as unknown as bigint)
                     ),
                 newDecimals
-            ).expect(`Fpv: Failed to initialize fixed point value whilst converting from ${ oldDecimals } decimals to ${ newDecimals } decimals.` + INTERNAL_ERROR_MESSAGE));
+            ).expect(`Fpv: Failed to initialize a fixed point value whilst converting from ${ oldDecimals } decimals to ${ newDecimals } decimals.` + INTERNAL_ERROR_MESSAGE));
         }
     })();
 }

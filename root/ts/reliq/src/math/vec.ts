@@ -1,12 +1,12 @@
 import { Fpv } from "@root";
 
-export type Vec<T1 extends Fpv.Precision> = {
+export type Vec<T1 extends Fpv.Decimals> = {
     x(): Fpv<T1>;
     y(): Fpv<T1>;
     distance(to: Vec<T1>): Fpv.Result<Fpv<T1>>;
 };
 
-export function Vec<T1 extends Fpv.Precision, T2 extends T1 = T1>(_x: Fpv.Compatible<T1>, _y: Fpv.Compatible<T2>): Vec<T1> {
+export function Vec<T1 extends Fpv.Decimals, T2 extends T1 = T1>(_x: Fpv.Compatible<T1>, _y: Fpv.Compatible<T2>): Vec<T1> {
     {
         return { x, y, distance };
     }
