@@ -1,7 +1,7 @@
 import type { Result as Result$0 } from "@root";
 import type { Wrapper } from "@root";
 import type { Closure } from "@root";
-import { INTERNAL_ERROR_MESSAGE } from "@root";
+import { INTERNAL_ERROR_MESSAGE, wrap } from "@root";
 import { Err } from "@root";
 import { Ok } from "@root";
 
@@ -21,12 +21,11 @@ export type Fpv<T1 extends Fpv.Precision> =
     div(value: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
     sqrt(): Fpv.Result<Fpv<T1>>;
     lerp(to: Fpv.Compatible<T1>, percentage: Fpv.Compatible<T1>): Fpv<T1>;
-    cst<T2 extends Fpv.Precision>(precision: T2): Fpv<T2>;
+    cst<T2 extends Fpv.Precision>(precision: T2): Fpv.Result<Fpv<T2>>;
 };
 
 export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precision: T1 = (2n as any)): Fpv.Result<Fpv<T1>> {
     {
-        if (precision() === 0n) return Err("FPV.ERR_PRECISION_IS_ZERO");
         if (precision() < 0n) return Err("FPV.ERR_PRECISION_IS_NEGATIVE");
         return Ok({
             unwrap,
@@ -42,7 +41,8 @@ export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precisi
             mul,
             div,
             sqrt,
-            lerp
+            lerp,
+            cst
         });
     }
 
@@ -59,10 +59,10 @@ export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precisi
     }
 
     function eq(value: Fpv.Compatible<T1>): boolean {
-        return _unwrap(_value) === _unwrap(value);
+        return Fpv.Calculator.eq(_value, value);
     }
 
-    function lt(value: Fpv.Compatible<T1>): boolean {
+    function lt<T2>(value: Fpv.Compatible<T1>): boolean {
         return _unwrap(_value) < _unwrap(value);
     }
 
@@ -91,10 +91,16 @@ export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precisi
     }
 
     function mul(value: Fpv.Compatible<T1>): Fpv<T1> {
+        let n0: bigint = _unwrap(_value);
+        let n1: bigint = _unwrap(value);
+        let z: bigint = n0 * n1;
+        if (precision() === 0n) {
+            return _wrap(() => {
+                return z
+            });
+        }
         return _wrap(() => {
-            let z: bigint = _unwrap(_value) * _unwrap(value);
-            let q: bigint = z / representation();
-            return q;
+            return z / representation();
         });
     }
 
@@ -149,8 +155,8 @@ export function Fpv<T1 extends bigint = 2n>(_value: Fpv.Compatible<T1>, _precisi
             .add(y);
     }
 
-    function cst<T2 extends Fpv.Precision>(precision: T2): Fpv<T2> {
-        
+    function cst<T2 extends Fpv.Precision>(precision$0: T2): Fpv.Result<Fpv<T2>> {
+        return Fpv.Calculator.cst(unwrap(), precision(), precision$0);
     }
 
     function _wrap(task: Closure<[], bigint>): Fpv<T1> {
@@ -168,7 +174,6 @@ export namespace Fpv {
 
     export type ErrorCode = 
         | "FPV.ERR_DIVISION_BY_ZERO"
-        | "FPV.ERR_PRECISION_IS_ZERO"
         | "FPV.ERR_PRECISION_IS_NEGATIVE"
         | "FPV.ERR_CANNOT_SQUARE_NAGATIVE";
 
@@ -176,18 +181,127 @@ export namespace Fpv {
 
     export type Precision = bigint;
 
-    export type Handler = {
-        unwrap<T1 extends bigint>(value: Fpv.Compatible<T1>): bigint;
+    export type Calculator = {
+        unwrap<T1 extends Precision = 0n>(value: Compatible<T1>): bigint;
+        eq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean;
+        lt<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean;
+        gt<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean;
+        lteq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean;
+        gteq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean;
+        add<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Fpv<T1>;
+        sub<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Fpv<T1>;
+        mul<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Fpv<T1>;
+        div<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Result<Fpv<T1>>;
+        sqrt<T1 extends Precision>(value: Compatible<T1>): Result<Fpv<T1>>;
+        cst<T1 extends Precision = 0n, T2 extends Precision = 0n>(value: Compatible<T1>, oldPrecision: T1, newPrecision: T2): Result<Fpv<T2>>;
     };
 
-    export const Handler: Handler = (() => {
+    export const Calculator: Calculator = (() => {
         {
-            return { unwrap };
+            return {
+                unwrap,
+                eq
+            };
         }
 
         function unwrap<T1 extends bigint>(value: Fpv.Compatible<T1>): bigint {
             if (typeof value === "bigint") return value;
             return value.unwrap();
+        }
+
+        function eq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean {
+            return unwrap(value0) === unwrap(value1);
+        }
+
+        function lt<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean {
+            return unwrap(value0) < unwrap(value1);
+        }
+
+        function gt<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean {
+            return unwrap(value0) > unwrap(value1);
+        }
+
+        function lteq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean {
+            return eq(value0, value1) || lt(value0, value1);
+        }
+
+        function gteq<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): boolean {
+            return eq(value0, value1) || gt(value0, value1);
+        }
+
+        function add<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Fpv<T1> {
+            return Fpv<T1>(unwrap(value0) + unwrap(value1)).expect();
+        }
+
+        function sub<T1 extends Precision = 0n>(value0: Compatible<T1>, value1: Compatible<T1>): Fpv<T1> {
+            return Fpv<T1>(unwrap(value0) - unwrap(value1)).expect();
+        }
+
+        function mul<T1 extends Precision = 2n>(value0: Compatible<T1>, value1: Compatible<T1>, precision: T1 = (2n as any)): Fpv<T1> {
+            let n0: bigint = unwrap(value0);
+            let n1: bigint = unwrap(value1);
+            let z: bigint = n0 * n1;
+            if (precision === 0n) return Fpv<T1>(z).expect();
+            return Fpv<T1>(z / 10n ** precision).expect();
+        }
+
+        function div<T1 extends Precision = 2n>(value0: Compatible<T1>, value1: Compatible<T1>, decimals: T1 = (2n as any)): Result<Fpv<T1>> {
+            let n0: bigint = unwrap(value0);
+            let n1: bigint = unwrap(value1);
+            if (n1 === 0n) return Err("FPV.ERR_DIVISION_BY_ZERO");
+            if (decimals === 0n) return Ok(Fpv(n0 / n1, decimals).expect());
+            let z: bigint = n0 * (10n ** decimals);
+            let q: bigint = z / n0;
+            return Ok(Fpv(q, decimals).expect());
+        }
+
+        function sqrt<T1 extends Precision = 2n>(value: Compatible<T1>, decimals: T1 = (2n as any)): Result<Fpv<T1>> {
+            let n: bigint = unwrap(value);
+            if (n < 0n) return Err("FPV.ERR_CANNOT_SQUARE_NAGATIVE");
+            if (n === 0n) return Ok(Fpv(0n, decimals).expect());
+            let one: bigint = n * (10n ** decimals);
+            let x: bigint = (n * one + 1n) / 2n;
+            let y: bigint; do {
+                y = x;
+                x = (x + n * one / x) / 2n;
+            }
+            while (x !== y);
+            return Ok(Fpv(x, decimals).expect());
+        }
+
+
+        function cst<T1 extends Precision = 0n, T2 extends Precision = 0n>(value: Fpv.Compatible<T1>, oldPrecision: T1 = (0n as any), newPrecision: T2 = (0n as any)): Fpv.Result<Fpv<T2>> {
+            return wrap(() => {})
+                .and(() => {
+                    return oldPrecision < 0n ? Err("FPV.ERR_PRECISION_IS_NEGATIVE") : Ok(undefined);
+                })
+                .and(() => {
+                    return newPrecision < 0n ? Err("FPV.ERR_PRECISION_IS_NEGATIVE") : Ok(undefined);
+                })
+                .and(() => {
+                    return newPrecision === 0n
+                        ? Ok(Fpv<T2>(unwrap(value) / (10n ** oldPrecision), newPrecision).expect())
+                        : Ok(Fpv<T2>(
+                            newPrecision > oldPrecision
+                                ? unwrap(value) * (
+                                    10n **
+                                    newPrecision > oldPrecision
+                                        ? (newPrecision - oldPrecision as unknown as bigint)
+                                        : (oldPrecision - newPrecision as unknown as bigint)
+                                )
+                                : unwrap(value) / (
+                                    10n ** 
+                                    newPrecision > oldPrecision
+                                        ? (newPrecision - oldPrecision as unknown as bigint)
+                                        : (oldPrecision - newPrecision as unknown as bigint)
+                                )
+                        ).expect());
+                })
+                .mapErr(e => {
+                    /// `e` cannot be `Unsafe` because the initial
+                    /// `wrap` call does not fail.
+                    return (e as ErrorCode);
+                });
         }
     })();
 }

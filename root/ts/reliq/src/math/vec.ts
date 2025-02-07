@@ -12,11 +12,11 @@ export function Vec<T1 extends Fpv.Precision, T2 extends T1 = T1>(_x: Fpv.Compat
     }
 
     function x(): Fpv<T1> {
-        return Fpv<T1>(Fpv.Handler.unwrap(_x)).expect("Vec: Failed to initialize `Fpv`.");
+        return Fpv<T1>(Fpv.Calculator.unwrap(_x)).expect("Vec: Failed to initialize `Fpv`.");
     }
 
     function y(): Fpv<T1> {
-        return Fpv<T1>(Fpv.Handler.unwrap(_y)).expect("Vec: Failed to initialize `Fpv`.");
+        return Fpv<T1>(Fpv.Calculator.unwrap(_y)).expect("Vec: Failed to initialize `Fpv`.");
     }
 
     function distance(to: Vec<T1>): Fpv.Result<Fpv<T1>> {

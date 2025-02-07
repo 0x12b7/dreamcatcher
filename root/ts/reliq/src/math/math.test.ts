@@ -9,8 +9,9 @@ console.log(
 );
 
 console.log(
-    Fpv(5000n)
+    Fpv(695700n, 4n)
         .expect()
-        .lerp(10000n, 5000n)
+        .cst(0n)
+        .expect()
         .unwrap()
 );
