@@ -174,7 +174,7 @@ export namespace Fpv {
 
     export type ErrorCode = 
         | "FPV.ERR_DIVISION_BY_ZERO"
-        | "FPV.ERR_PRECISION_IS_NEGATIVE"
+        | "FPV.ERR_NEGATIVE_DECIMALS"
         | "FPV.ERR_CANNOT_SQUARE_NAGATIVE";
 
     export type Compatible<T1 extends bigint = 2n> = Fpv<T1> | bigint;
@@ -197,10 +197,20 @@ export namespace Fpv {
     };
 
     export const Calculator: Calculator = (() => {
-        {
+        /** @constructor */ {
             return {
                 unwrap,
-                eq
+                eq,
+                lt,
+                gt,
+                lteq,
+                gteq,
+                add,
+                sub,
+                mul,
+                div,
+                sqrt,
+                cst
             };
         }
 
@@ -269,39 +279,26 @@ export namespace Fpv {
             return Ok(Fpv(x, decimals).expect());
         }
 
-
-        function cst<T1 extends Precision = 0n, T2 extends Precision = 0n>(value: Fpv.Compatible<T1>, oldPrecision: T1 = (0n as any), newPrecision: T2 = (0n as any)): Fpv.Result<Fpv<T2>> {
-            return wrap(() => {})
-                .and(() => {
-                    return oldPrecision < 0n ? Err("FPV.ERR_PRECISION_IS_NEGATIVE") : Ok(undefined);
-                })
-                .and(() => {
-                    return newPrecision < 0n ? Err("FPV.ERR_PRECISION_IS_NEGATIVE") : Ok(undefined);
-                })
-                .and(() => {
-                    return newPrecision === 0n
-                        ? Ok(Fpv<T2>(unwrap(value) / (10n ** oldPrecision), newPrecision).expect())
-                        : Ok(Fpv<T2>(
-                            newPrecision > oldPrecision
-                                ? unwrap(value) * (
-                                    10n **
-                                    newPrecision > oldPrecision
-                                        ? (newPrecision - oldPrecision as unknown as bigint)
-                                        : (oldPrecision - newPrecision as unknown as bigint)
-                                )
-                                : unwrap(value) / (
-                                    10n ** 
-                                    newPrecision > oldPrecision
-                                        ? (newPrecision - oldPrecision as unknown as bigint)
-                                        : (oldPrecision - newPrecision as unknown as bigint)
-                                )
-                        ).expect());
-                })
-                .mapErr(e => {
-                    /// `e` cannot be `Unsafe` because the initial
-                    /// `wrap` call does not fail.
-                    return (e as ErrorCode);
-                });
+        function cst<T1 extends Precision = 0n, T2 extends Precision = 0n>(value: Compatible<T1>, oldDecimals: T1 = (2n as any), newDecimals: T2 = (2n as any)): Result<Fpv<T2>> {
+            if (oldDecimals < 0n) return Err("FPV.ERR_NEGATIVE_DECIMALS");
+            if (newDecimals < 0n) return Err("FPV.ERR_NEGATIVE_DECIMALS");
+            if (newDecimals === 0n) return Ok(Fpv(unwrap(value) / (10n ** oldDecimals), newDecimals).expect(`Fpv: Failed to initialize fixed point value whilst converting from ${ oldDecimals } decimals to ${ newDecimals } decimals.` + INTERNAL_ERROR_MESSAGE));
+            return Ok(Fpv(
+                newDecimals > oldDecimals
+                    ? unwrap(value) * (
+                        10n **
+                        newDecimals > oldDecimals
+                            ? (newDecimals - oldDecimals as unknown as bigint)
+                            : (oldDecimals - newDecimals as unknown as bigint)
+                    )
+                    : unwrap(value) / (
+                        10n **
+                        newDecimals > oldDecimals
+                            ? (newDecimals - oldDecimals as unknown as bigint)
+                            : (oldDecimals - newDecimals as unknown as bigint)
+                    ),
+                newDecimals
+            ).expect(`Fpv: Failed to initialize fixed point value whilst converting from ${ oldDecimals } decimals to ${ newDecimals } decimals.` + INTERNAL_ERROR_MESSAGE));
         }
     })();
 }
