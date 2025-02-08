@@ -9,7 +9,6 @@ import { Unsafe } from "@root";
 
 type Array$0<T1> = Array<T1>;
 
-
 export type Error<T1 extends string, T2 = unknown> = 
     & BrandedStruct<"Error">
     & {
@@ -162,7 +161,7 @@ export namespace Error {
                 shards.shift();
                 e.stack = shards.join("\n");
                 console.log(shards, "ff");
-                throw "\x1Bc" + `${ e.code }: ${ e.message.unwrapOr("") }` + "\n" + `${ e.stack }`;
+                throw "\x1Bc" + `\x1B[31m${ e.code }: ${ e.message.unwrapOr("") }\x1B[0m` + "\n" + `${ e.stack }`;
             }
             let code: T1 = p0;
             let at: Function = flag((p1 as Function | undefined)).unwrapOr(panic);
@@ -191,7 +190,6 @@ export namespace Error {
         }
     })();
 }
-
 
 /**
  * ***Brief***
@@ -345,7 +343,6 @@ export namespace Result {
         }
     })();
 }
-
 
 export type Ok<T1> = 
     & Wrapper<T1>
@@ -632,7 +629,6 @@ export namespace Ok {
         [T2 in keyof T1]: ValFrom<T1[T2]>;
     };
 }
-
 
 export type Err<T1> = 
     & RecoveryWrapper<T1>
@@ -958,8 +954,8 @@ export function Err<T1>(
         });
         Error.Handler.panic(Error({
             code: "PANIC",
-            message: `${ message ? message : "An unexpected `Result` has caused the program to panic."}`,
-            stack: Error.Handler.localStackTrace(expect).unwrapOr("<<< 404 >>>")
+            message: `${ message ? message : "An unrecoverable error has caused the program to panic."}`,
+            stack: Error.Handler.localStackTrace(expect).unwrapOr("")
         }));
     }
 
@@ -1011,7 +1007,6 @@ export namespace Err {
         [T2 in keyof T1]: ValFrom<T1[T2]>;
     };
 }
-
 
 /**
  * ***Brief***
@@ -1108,7 +1103,6 @@ export namespace Option {
     })();
 }
 
-
 export type Some<T1> = 
     & Branded<"Some">
     & Wrapper<T1>
@@ -1157,7 +1151,9 @@ export type Some<T1> =
      *  let status: 200n = option.expect("This is unexpected and unrecoverable.");
      * ```
      */
+    expect(): T1;
     expect(__: unknown): T1;
+    expect(__?: unknown): T1;
 
     /**
      * ***Brief***
@@ -1253,7 +1249,9 @@ export function Some<T1>(_value: T1): Some<T1> {
         return false;
     }
 
-    function expect(__: unknown): T1 {
+    function expect(): T1;
+    function expect(__: unknown): T1;
+    function expect(__?: unknown): T1 {
         return _value;
     }
 
@@ -1291,7 +1289,6 @@ export namespace Some {
         [T2 in keyof T1]: ValFrom<T1[T2]>;
     };
 }
-
 
 export type None = 
     & Branded<"None">
@@ -1340,7 +1337,9 @@ export type None =
      *  let status: 200n = option.expect("This is unexpected and unrecoverable.");
      * ```
      */
+    expect(): never;
     expect(message: string): never;
+    expect(message?: string): never;
 
     /**
      * ***Brief***
@@ -1440,8 +1439,14 @@ export const None: None = (() => {
         return true;
     }
 
-    function expect(message: string): never {
-        Error.Handler.panic(Error("ERR_VALUE_REQUIRED", message));
+    function expect(): never;
+    function expect(message: string): never;
+    function expect(message?: string): never {
+        Error.Handler.panic(Error({
+            code: "PANIC",
+            message: `${ message ? message : "A missing value has caused the program to panic."}`,
+            stack: Error.Handler.localStackTrace(expect).unwrapOr("")
+        }));
     }
 
     function unwrapOr<T1>(fallback: T1): T1 {
@@ -1461,17 +1466,16 @@ export const None: None = (() => {
     }
 })();
 
-
 export const flag: typeof Option.Handler.flag = Option.Handler.flag;
 
 export const allO: typeof Option.Handler.all = Option.Handler.all;
 
 export const anyO: typeof Option.Handler.any = Option.Handler.any;
 
-export const allR = Result.Handler.all;
+export const allR: typeof Result.Handler.all = Result.Handler.all;
 
-export const anyR = Result.Handler.any;
+export const anyR: typeof Result.Handler.any = Result.Handler.any;
 
-export const wrap = Result.Handler.wrap;
+export const wrap: typeof Result.Handler.wrap = Result.Handler.wrap;
 
-export const wrapAsync = Result.Handler.wrapAsync;
+export const wrapAsync: typeof Result.Handler.wrapAsync = Result.Handler.wrapAsync;

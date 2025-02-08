@@ -463,6 +463,10 @@ type Fpv<T1 extends Fpv.Decimals> = Wrapper<bigint> & {
     sqrt(): Fpv.Result<Fpv<T1>>;
     cst<T2 extends Fpv.Decimals>(decimals: T2): Fpv.Result<Fpv<T2>>;
 };
+/**
+ * ***Warning***
+ * Does not support negative `decimals`.
+ */
 declare function Fpv<T1 extends Fpv.Decimals>(_v: Fpv.Compatible<T1>, _decimals: T1): Fpv.Result<Fpv<T1>>;
 declare namespace Fpv {
     type Result<T1> = Result$0<T1, ErrorCode>;
@@ -1265,7 +1269,9 @@ type Some<T1> = Branded<"Some"> & Wrapper<T1> & {
      *  let status: 200n = option.expect("This is unexpected and unrecoverable.");
      * ```
      */
+    expect(): T1;
     expect(__: unknown): T1;
+    expect(__?: unknown): T1;
     /**
      * ***Brief***
      * Retrieves the value of a `Some`, or falls back to the provided value if it’s `None`.
@@ -1382,7 +1388,9 @@ type None = Branded<"None"> & {
      *  let status: 200n = option.expect("This is unexpected and unrecoverable.");
      * ```
      */
+    expect(): never;
     expect(message: string): never;
+    expect(message?: string): never;
     /**
      * ***Brief***
      * Retrieves the value of a `Some`, or falls back to the provided value if it’s `None`.
@@ -1453,9 +1461,9 @@ declare const None: None;
 declare const flag: typeof Option.Handler.flag;
 declare const allO: typeof Option.Handler.all;
 declare const anyO: typeof Option.Handler.any;
-declare const allR: <T1 extends Result.Array<unknown, unknown>>(results: T1) => Result<Ok.ValFromAll<T1>, Err.ValFromAll<T1>[number]>;
-declare const anyR: <T1 extends Result.Array<unknown, unknown>>(results: T1) => Result<Ok.ValFromAll<T1>[number], Err.ValFromAll<T1>>;
-declare const wrap: <T1, T2, T3 extends Array$0<T2>>(task: Closure<T3, T1>, ...payload: T3) => Result<T1, Unsafe>;
-declare const wrapAsync: <T1, T2, T3 extends Array$0<T2>>(task: AsyncClosure<T3, T1>, ...payload: T3) => Promise<Result<T1, Unsafe>>;
+declare const allR: typeof Result.Handler.all;
+declare const anyR: typeof Result.Handler.any;
+declare const wrap: typeof Result.Handler.wrap;
+declare const wrapAsync: typeof Result.Handler.wrapAsync;
 
 export { Alloc, type AsyncClosure, type AsyncFunction, Branded, BrandedStruct, type Closure, DeAlloc, Dyn, Err, Error, Fpv, type Function$1 as Function, type MaybeAsync, None, Ok, Option, type Parsable, Ref, Result, type Serializable, Some, type TypeGuard, Unsafe, Vec, allO, allR, anyO, anyR, clone, flag, toString, wrap, wrapAsync };

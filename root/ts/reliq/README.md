@@ -10,27 +10,22 @@ Reliq is a TypeScript error-handling library inspired by Rust's error-handling p
 
 ## API Overview
 #### Result
-TypeScript will not map error cases, which causes `unknown`, undocumented, and unexplicit code to be blow up at runtime. The `Result` pattern increases code robustness by explicitly handling all possible outcomes at "result-time". Code is will now explicitly require proper handling or aknowledgement when something can go wrong.
+TypeScript will not map error cases, which causes `unknown`, undocumented, and unexplicit code to be blow up at runtime. The `Result` pattern increases code robustness by explicitly handling all possible outcomes at "result-time". Code will now explicitly require proper handling or aknowledgement when something can go wrong.
 ```ts
-import { Result } from "reliq";
+import { Result as Result$0 } from "reliq";
 import { Ok } from "reliq";
 import { Err } from "reliq";
 import { Error } from "reliq";
-
-type CarErrorCode =
-    | "CAR.ERR_MISSING_ENGINE"
-    | "CAR.ERR_MISSING_TIRE";
-
-type CarError = Error<CarErrorCode>;
 
 type Car = {
     speed(): bigint;
 };
 
-function Car(): Result<Car, CarError> {
+
+function Car(): Car.Result<Car> {
     /** @constructor */ {
-        if () return Err(Error("CAR.ERR_MISSING_ENGINE", "Car: looks like there's no engine."));
-        return { speed };
+        if () return Err("CAR.ERR_MISSING_ENGINE");
+        return Ok({ speed });
     }
 
     function speed(): bigint {
@@ -38,7 +33,17 @@ function Car(): Result<Car, CarError> {
     }
 }
 
-/// Declarative handling.
+namespace Car {
+    export type Result<T1> = Result$0<T1, ErrorCode>;
+
+    export type ErrorCode =
+        | "CAR.ERR_MISSING_ENGINE"
+        | "CAR.ERR_MISSING_TIRE";
+}
+
+
+/// Declarative
+
 Car()
     .map(car => {
         /** ... */
@@ -47,13 +52,16 @@ Car()
         /** ... */
     });
 
-/// Imperative handling.
+
+/// Imperative
+
 function main() {
-    let carR: Result<Car, CarError> = Car();
+    let carR: Car.Result<Car> = Car();
     if (carR.err()) return carR;
-    let car: Car = carR.unlock();
+    let car: Car = carR.unwrap();
 }
 ```
+
 
 #### Option
 Optional or missing values can be safely and explicitly handled using `Option`.
@@ -67,17 +75,15 @@ function foo(): Option<bigint> {
     return None;
 }
 
-/// Declarative handling.
+/// Declarative
 foo().map(foo => {
-    /** ... */
+    /// ...
 });
 
-/// Imperative handling.
-function main() {
-    let fooO: Option<bigint> = foo();
-    if (fooO.none()) return fooO;
-    let foo: bigint = fooO.unlock();
-}
+/// Imperative
+let fooO: Option<bigint> = foo();
+if (fooO.none()) return fooO;
+let foo: bigint = fooO.unwrap();
 ```
 
 #### Performance
@@ -125,7 +131,7 @@ Use `Fpv` for fixed point arithmetics instead of `number` for more robust and pr
 ```ts
     import { Fpv } from "reliq";
 
-    let price: Fpv<2n> = Fpv(2000n).expect("Failed to initialize `Fpv<2n>`."); /// 20.00
+    let price: Fpv<2n> = Fpv(2000n).expect(); /// 20.00
     price = price.mul(50n); /// 0.50
     console.log(price); /// 10.00 1000n
 ```

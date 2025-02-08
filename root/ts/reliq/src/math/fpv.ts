@@ -45,6 +45,10 @@ export type Fpv<T1 extends Fpv.Decimals> =
     cst<T2 extends Fpv.Decimals>(decimals: T2): Fpv.Result<Fpv<T2>>;
 };
 
+/**
+ * ***Warning***
+ * Does not support negative `decimals`.
+ */
 export function Fpv<T1 extends Fpv.Decimals>(_v: Fpv.Compatible<T1>, _decimals: T1): Fpv.Result<Fpv<T1>> {
     /***/ {
         if (decimals() < 0n) return Err("FPV.ERR_NEGATIVE_DECIMALS");
