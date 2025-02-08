@@ -8,11 +8,11 @@ import { BrandedStruct } from "@root";
 import { Unsafe } from "@root";
 
 
-type _Array<T1> = Array<T1>;
+type Array$0<T1> = Array<T1>;
 
-type _Error = ReturnType<ErrorConstructor>;
+type Error$0 = ReturnType<ErrorConstructor>;
 
-const _Error: ErrorConstructor = globalThis.Error;
+const Error$0: ErrorConstructor = globalThis.Error;
 
 
 export type Error<T1 extends string, T2 = unknown> = 
@@ -163,20 +163,34 @@ export namespace Error {
         ): never {
             if (typeof p0 === "object") {
                 let e: Error<T1> = p0;
-                let handler: Handler = flag((p1 as Handler | undefined)).unwrapOr(_this);
-                throw [
-
-                ].join("\n");
+                let shards: Array$0<string> = e.stack.split("\n");
+                shards.shift();
+                e.stack = shards.join("\n");
+                console.log(shards, "ff");
+                throw "\x1Bc" + `${ e.code }: ${ e.message.unwrapOr("") }` + "\n" + `${ e.stack }`;
             }
             let code: T1 = p0;
             let at: Function = flag((p1 as Function | undefined)).unwrapOr(panic);
             let handler: Handler = flag(p2).unwrapOr(_this);
-            throw code + "\n" + handler.localStackTrace(at);
+            let stack: string = handler
+                .localStackTrace(at)
+                .toResult(None)
+                .map(stack => {
+                    let shards: Array$0<string> = stack.split("\n");
+                    shards.shift();
+                    return shards.join("\n");
+                })
+                .recover(() => {
+                    return "<<< 404 >>>";
+                })
+                .unwrap();
+                
+            throw "\x1Bc" + `\x1B[31m${ code }\x1B[0m` + "\n" + `${ stack }`;
         }
 
         function localStackTrace(location: Function): Option<string> {
-            let e: ReturnType<typeof _Error> = _Error();
-            _Error.captureStackTrace(e, location);
+            let e: ReturnType<typeof Error$0> = Error$0();
+            Error$0.captureStackTrace(e, location);
             if (e.stack) return Some(e.stack);
             return None;
         }
@@ -207,7 +221,7 @@ export type Result<T1, T2> = Ok<T1> | Err<T2>;
 export namespace Result {
     export type Async<T1, T2> = Promise<Result<T1, T2>>;
 
-    export type Array<T1, T2> = _Array<Result<T1, T2>>;
+    export type Array<T1, T2> = Array$0<Result<T1, T2>>;
 
     export type Handler = {
         /**
@@ -260,7 +274,7 @@ export namespace Result {
          *  });
          * ```
          */
-        wrap<T1, T2, T3 extends _Array<T2>>(task: Closure<T3, T1>, ...payload: T3): Result<T1, Unsafe>;
+        wrap<T1, T2, T3 extends Array$0<T2>>(task: Closure<T3, T1>, ...payload: T3): Result<T1, Unsafe>;
         
         /**
          * ***Brief***
@@ -285,7 +299,7 @@ export namespace Result {
          *  });
          * ```
          */
-        wrapAsync<T1, T2, T3 extends _Array<T2>>(task: AsyncClosure<T3, T1>, ...payload: T3): Promise<Result<T1, Unsafe>>;
+        wrapAsync<T1, T2, T3 extends Array$0<T2>>(task: AsyncClosure<T3, T1>, ...payload: T3): Promise<Result<T1, Unsafe>>;
     };
 
     export const Handler: Handler = (() => {
@@ -294,7 +308,7 @@ export namespace Result {
         }
 
         function all<T1 extends Array<unknown, unknown>>(results: T1): Result<Ok.ValFromAll<T1>, Err.ValFromAll<T1>[number]> {
-            let out: _Array<unknown> = [];
+            let out: Array$0<unknown> = [];
             let i: number = 0;
             while (i < results.length) {
                 let result: Result<unknown, unknown> = results.at(i)!;
@@ -306,7 +320,7 @@ export namespace Result {
         }
     
         function any<T1 extends Array<unknown, unknown>>(results: T1): Result<Ok.ValFromAll<T1>[number], Err.ValFromAll<T1>> {
-            let out: _Array<unknown> = [];
+            let out: Array$0<unknown> = [];
             let i: number = 0;
             while (i < results.length) {
                 let wrapper: Result<unknown, unknown> = results.at(i)!;
@@ -317,7 +331,7 @@ export namespace Result {
             return Err((out as Err.ValFromAll<T1>));
         }
         
-        function wrap<T1, T2, T3 extends _Array<T2>>(task: Closure<T3, T1>, ...payload: T3): Result<T1, Unsafe> {
+        function wrap<T1, T2, T3 extends Array$0<T2>>(task: Closure<T3, T1>, ...payload: T3): Result<T1, Unsafe> {
             try {
                 return Ok(task(...payload));
             }
@@ -326,7 +340,7 @@ export namespace Result {
             }
         }
     
-        async function wrapAsync<T1, T2, T3 extends _Array<T2>>(task: AsyncClosure<T3, T1>, ...payload: T3): Promise<Result<T1, Unsafe>> {
+        async function wrapAsync<T1, T2, T3 extends Array$0<T2>>(task: AsyncClosure<T3, T1>, ...payload: T3): Promise<Result<T1, Unsafe>> {
             try {
                 return Ok((await task(...payload)));
             }
@@ -387,6 +401,7 @@ export type Ok<T1> =
      */
     expect(): T1;
     expect(__: unknown): T1;
+    expect(__?: unknown): T1;
 
     /**
      * ***Brief***
@@ -403,6 +418,7 @@ export type Ok<T1> =
     */
     expectErr(): never;
     expectErr(message: string): never;
+    expectErr(message?: string): never;
 
     /**
      * ***Brief***
@@ -559,12 +575,16 @@ export function Ok<T1>(_value: T1): Ok<T1> {
     function err(): this is Err<unknown> {
         return false;
     }
-
-    function expect(__: unknown): T1 {
+    
+    function expect(): T1;
+    function expect(__: unknown): T1;
+    function expect(__?: unknown): T1 {
         return unwrap();
     }
 
-    function expectErr(message: string): never {
+    function expectErr(): never;
+    function expectErr(message: string): never;
+    function expectErr(message?: string): never {
         Error.Handler.panic(Error("PANIC", message));
     }
 
@@ -704,6 +724,7 @@ export type Err<T1> =
      */
     expect(): never;
     expect(message: string): never;
+    expect(message?: string): never;
 
     /**
      * ***Brief***
@@ -720,6 +741,7 @@ export type Err<T1> =
     */
     expectErr(): T1;
     expectErr(__: unknown): T1;
+    expectErr(__?: unknown): T1;
 
     /**
      * ***Brief***
@@ -898,36 +920,41 @@ export function Err<T1>(
         return _stack;
     }
 
-    function expect(message: string): never {
+    function expect(): never;
+    function expect(message: string): never;
+    function expect(message?: string): never {
         let e: T1 = inspect();
-        if (e instanceof _Error) {
+        if (e instanceof Error$0) {
             let code: string = e.name;
-            let message$0: string = e.message +
-                "\n     " + "Context" + 
-                "\n     " + message;
+            let message$0: string = e.message
+                + `\n   Context`
+                + `\n   ${ message }`;
             let stack$0: string = e.stack ?? stack();
             Error.Handler.panic(Error({
-                code,
+                code: code,
                 message: message$0,
                 stack: stack$0
             }));
         }
-        Error.Handler.match(inspect(), () => {
+        Error.Handler.match(inspect(), e => {
             Error.Handler.panic(Error({
-                code: "PANIC",
-                message: "" 
-                    + "\n   " + "Context"
-                    + "\n   " + message,
-                stack: stack()
-            }));
+                code: e.code,
+                message: e.message
+                    + `\n   Context`
+                    + `\n   ${ message }`,
+                stack: e.stack
+            }))
         });
         Error.Handler.panic(Error({
-            code: "",
-            message: ""
+            code: "PANIC",
+            message: message ?? "An unexpected `Result` has caused the program to panic.",
+            stack: Error.Handler.localStackTrace(expect).unwrapOr("<<< 404 >>>")
         }));
     }
 
-    function expectErr(__: unknown): T1 {
+    function expectErr(): T1;
+    function expectErr(__: unknown): T1;
+    function expectErr(__?: unknown): T1 {
         return inspect();
     }
 
@@ -985,7 +1012,7 @@ export type Option<T1> = Some<T1> | None;
 export namespace Option {
     export type Async<T1> = Promise<Option<T1>>;
 
-    export type Array<T1> = _Array<Option<T1>>;
+    export type Array<T1> = Array$0<Option<T1>>;
 
     /**
      * ***Brief***
@@ -1047,7 +1074,7 @@ export namespace Option {
         }
 
         function all<T1 extends Option.Array<unknown>>(...options: T1): Option<Some.ValFromAll<T1>> {
-            let out: _Array<unknown> = [];
+            let out: Array$0<unknown> = [];
             let i: number = 0;
             while (i < options.length) {
                 let option: Option<unknown> = options.at(i)!;

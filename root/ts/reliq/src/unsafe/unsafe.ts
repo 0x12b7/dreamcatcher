@@ -1,7 +1,7 @@
-import type { RecoveryWrapper } from "@root";
-import type { Parsable } from "@root";
-import type { TypeGuard } from "@root";
-import type { Option } from "@root";
+import { type RecoveryWrapper } from "@root";
+import { type Parsable } from "@root";
+import { type TypeGuard } from "@root";
+import { type Option } from "@root";
 import { Some } from "@root";
 import { None } from "@root";
 
@@ -10,7 +10,7 @@ export type Unsafe =
     & Parsable;
 
 export function Unsafe(_value: unknown): Unsafe {
-    {
+    /***/ {
         return { inspect, parse };
     }
 

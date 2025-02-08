@@ -1,7 +1,6 @@
 {
 	"extends": "../../../tsconfig.json",
 	"compilerOptions": {
-		"isolatedModules": true,
 		"baseUrl": ".",
 		"paths": {
 			"@root": ["src/mod.internal.ts"]

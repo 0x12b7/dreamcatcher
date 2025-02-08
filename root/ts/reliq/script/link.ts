@@ -4,39 +4,40 @@ import { readdirSync } from "fs";
 import { join } from "path";
 import { relative } from "path";
 
-/** @script */
-let moduleDirectory: string = join(join(__dirname, "../src"), ".");
-let moduleFile: string = join(moduleDirectory, "mod.internal.ts");
-let sorted: Array<string> = [];
-let set: Array<Array<string>> = [];
-let out: string = "";
-_typeScriptFiles(moduleDirectory).forEach(file => {
-    let raise: bigint = 0n;
-    try {
-        raise = _raise(file);
-    }
-    catch {}
-    set[Number(raise)] ??= [];
-    set[Number(raise)].push(file);
-    return;
-});
-set.forEach(files => {
-    files.forEach(file => {
-        sorted.push(file);
+(() => {
+    let moduleDirectory: string = join(join(__dirname, "../src"), ".");
+    let moduleFile: string = join(moduleDirectory, "mod.internal.ts");
+    let sorted: Array<string> = [];
+    let set: Array<Array<string>> = [];
+    let out: string = "";
+    _typeScriptFiles(moduleDirectory).forEach(file => {
+        let raise: bigint = 0n;
+        try {
+            raise = _raise(file);
+        }
+        catch {}
+        set[Number(raise)] ??= [];
+        set[Number(raise)].push(file);
         return;
     });
-    return;
-});
-sorted
-    .reverse()
-    .forEach(file => {
-        if (file.includes("mod")) return;
-        if (file.includes("test.ts")) return;
-        let path: string = relative(moduleDirectory, file).replace(/\\/g, "/");
-        out += _import("./" + path) + "\n";
+    set.forEach(files => {
+        files.forEach(file => {
+            sorted.push(file);
+            return;
+        });
         return;
     });
-writeFileSync(moduleFile, out);
+    sorted
+        .reverse()
+        .forEach(file => {
+            if (file.includes("mod")) return;
+            if (file.includes("test.ts")) return;
+            let path: string = relative(moduleDirectory, file).replace(/\\/g, "/");
+            out += _import("./" + path) + "\n";
+            return;
+        });
+    writeFileSync(moduleFile, out);
+})();
 
 function _typeScriptFiles(moduleFolder: string): Array<string> {
     let result: Array<string> = [];
