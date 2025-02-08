@@ -1,18 +1,13 @@
-import type { AsyncClosure } from "@root";
-import type { Closure } from "@root";
-import type { Function as Function0 } from "@root";
-import type { Wrapper } from "@root";
-import type { RecoveryWrapper } from "@root";
-import { Branded } from "@root";
+import { type AsyncClosure } from "@root";
+import { type Closure } from "@root";
+import { type Function as Function0 } from "@root";
+import { type Wrapper } from "@root";
+import { type RecoveryWrapper } from "@root";
+import { type Branded } from "@root";
 import { BrandedStruct } from "@root";
 import { Unsafe } from "@root";
 
-
 type Array$0<T1> = Array<T1>;
-
-type Error$0 = ReturnType<ErrorConstructor>;
-
-const Error$0: ErrorConstructor = globalThis.Error;
 
 
 export type Error<T1 extends string, T2 = unknown> = 
@@ -189,8 +184,8 @@ export namespace Error {
         }
 
         function localStackTrace(location: Function): Option<string> {
-            let e: ReturnType<typeof Error$0> = Error$0();
-            Error$0.captureStackTrace(e, location);
+            let e: ReturnType<typeof globalThis.Error> = globalThis.Error();
+            globalThis.Error.captureStackTrace(e, location);
             if (e.stack) return Some(e.stack);
             return None;
         }
@@ -924,11 +919,29 @@ export function Err<T1>(
     function expect(message: string): never;
     function expect(message?: string): never {
         let e: T1 = inspect();
-        if (e instanceof Error$0) {
+        if (typeof e === "string") {
+            if (e.includes(".")) {
+                if (
+                    e.split(".")
+                        ?.at(1)
+                        ?.startsWith("ERR")
+                ) Error.Handler.panic(e, expect);
+            }
+            else {
+                if (e.startsWith("ERR")) Error.Handler.panic(e, expect);
+            }
+        }
+        if (typeof e === "string") {
+            if (
+                e.includes(".")
+                && e.split(".")
+                    ?.at(1)
+                    ?.startsWith("ERR")
+            ) Error.Handler.panic(e, expect);
+        }
+        if (e instanceof globalThis.Error) {
             let code: string = e.name;
-            let message$0: string = e.message
-                + `\n   Context`
-                + `\n   ${ message }`;
+            let message$0: string = `${ e.message } ${ message ? `${ message }` : "" }`;
             let stack$0: string = e.stack ?? stack();
             Error.Handler.panic(Error({
                 code: code,
@@ -939,15 +952,13 @@ export function Err<T1>(
         Error.Handler.match(inspect(), e => {
             Error.Handler.panic(Error({
                 code: e.code,
-                message: e.message
-                    + `\n   Context`
-                    + `\n   ${ message }`,
+                message: `${ e.message } ${ message ? `${ message }` : "" }`,
                 stack: e.stack
             }))
         });
         Error.Handler.panic(Error({
             code: "PANIC",
-            message: message ?? "An unexpected `Result` has caused the program to panic.",
+            message: `${ message ? message : "An unexpected `Result` has caused the program to panic."}`,
             stack: Error.Handler.localStackTrace(expect).unwrapOr("<<< 404 >>>")
         }));
     }

@@ -1,11 +1,11 @@
 {
 	"name": "reliq",
 	"description": "Reliq is a library for building unreasonably safe TypeScript applications.",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"license": "Apache-2.0",
 	"type": "module",
-	"types": "target/tslib/mod.d.cts",
-	"main": "target/tslib/mod.cjs",
+	"types": "target/npm/mod.d.cts",
+	"main": "target/npm/mod.cjs",
 	"scripts": {
 		"build": "bun run script/build_script.ts",
 		"link": "bun run script/link.ts",

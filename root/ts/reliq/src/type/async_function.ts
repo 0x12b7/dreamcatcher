@@ -1,4 +1,4 @@
-import type { Function } from "@root";
+import { type Function } from "@root";
 
 /**
  * ***Brief***

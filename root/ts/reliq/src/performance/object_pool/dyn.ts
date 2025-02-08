@@ -1,5 +1,5 @@
-import type { Closure } from "@root";
-import type { Wrapper } from "@root";
+import { type Closure } from "@root";
+import { type Wrapper } from "@root";
 import { INTERNAL_ERROR_MESSAGE } from "@root";
 import { Option } from "@root";
 import { Some } from "@root";

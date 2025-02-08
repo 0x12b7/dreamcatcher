@@ -1,4 +1,4 @@
-import type { Closure } from "@root";
+import { type Closure } from "@root";
 
 /**
  * ***Brief***
