@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"dappnet": "0.2.5",
-		"reliq": "1.2.2",
+		"reliq": "2.4.0",
 		"solc": "0.8.28"
 	}
 }

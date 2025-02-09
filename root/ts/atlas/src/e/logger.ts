@@ -15,32 +15,32 @@ export type Logger = {
 };
 
 export const Logger: Logger = (() => {
-    let _this: Logger;
-    let _logs: Array<string>;
+    let this_: Logger;
+    let logs_: Array<string>;
 
     /** @constructor */ {
-        _logs = [];
-        return _this = { logMessage, logSuccess, logFailure };
+        logs_ = [];
+        return this_ = { logMessage, logSuccess, logFailure };
     }
 
     function logMessage(message: string): Logger {
-        _logs.push(`[message]: ${ message }`);
-        return _this;
+        logs_.push(`[message]: ${ message }`);
+        return this_;
     }
 
     function logSuccess(message: string): Logger {
-        _logs.push(`[success]: ${ message }`);
-        return _this;
+        logs_.push(`[success]: ${ message }`);
+        return this_;
     }
 
     function logFailure(message: Logger.FailureMessage): Logger {
         if (typeof message === "string") {
-            _logs.push(`[error]: ${ message }`);
-            return _this;
+            logs_.push(`[error]: ${ message }`);
+            return this_;
         }
         if ("code" in message) {
-            _logs.push(`[error]: ${ message.code }: ${ message.message.unlockOr("<<< UNAVAILABLE >>>") }` + message.stack);
-            return _this;
+            logs_.push(`[error]: ${ message.code }: ${ message.message.unwrapOr("<<< UNAVAILABLE >>>") }` + message.stack);
+            return this_;
         }
         return message
             .parse((instance): instance is Error => {
@@ -48,13 +48,13 @@ export const Logger: Logger = (() => {
             })
             .toResult(undefined)
             .map(e => {
-                _logs.push(`[error]: ${ e.name }: ${ e.message }`);
-                return _this;
+                logs_.push(`[error]: ${ e.name }: ${ e.message }`);
+                return this_;
             })
             .recover(() => {
-                _logs.push(`[error]: ${ message.unwrap() }`);
-                return _this;
+                logs_.push(`[error]: ${ message.inspect() }`);
+                return this_;
             })
-            .unlock();
+            .unwrap();
     }
 })();
