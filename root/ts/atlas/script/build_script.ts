@@ -1,13 +1,12 @@
 import { build } from "bun";
 
-async function main() {
+(async () => {
     await build({
         entrypoints: ["src/app.ts"],
-        outdir: "target/v8",
-        format: "iife",
+        outdir: "target/bun",
+        format: "esm",
         target: "bun",
-        minify: true
+        sourcemap: "linked",
+        minify: false
     });
-}
-
-main();
+})();

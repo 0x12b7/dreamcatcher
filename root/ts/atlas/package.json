@@ -3,7 +3,8 @@
 	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
-		"build": "bun run script/build_script.ts"
+		"build": "bun run script/build_script.ts",
+		"start": "bun run build && bun run target/bun/app.js"
 	},
 	"devDependencies": {
 		"@types/bun": "latest"
