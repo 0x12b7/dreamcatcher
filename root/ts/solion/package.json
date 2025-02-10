@@ -1,6 +1,6 @@
 {
 	"name": "solion",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Wrapper for Solc with Enhanced Types & Utilities",
 	"license": "MIT",
 	"main": "target/tslib/mod.cjs",
@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"dappnet": "0.2.5",
-		"reliq": "2.4.0",
+		"reliq": "^2.4.0",
 		"solc": "0.8.28"
 	}
 }

@@ -1,38 +1,196 @@
 /// @ts-ignore
 import { default as Solc } from "solc";
-
-import { Configuration } from "@root";
-import { Output } from "@root";
-import { Unsafe } from "reliq";
-import { Result } from "reliq";
+import { Result as Result$0 } from "reliq";
 import { Ok } from "reliq";
+import { Unsafe } from "reliq";
 import { wrap } from "reliq";
 
-type Result$0<T1, T2> = Result<T1, T2>;
-
 export type Compiler = {
-    compile(configuration: Configuration): Compiler.Result<Output>;
+    compile(configuration: Compiler.Configuration): Compiler.Result<Compiler.Output>;
 };
 
-export const Compiler: Compiler = (() => {
+export function Compiler(): Compiler {
     /***/ {
         return { compile };
     }
 
-    function compile(configuration: Configuration): Compiler.Result<Output> {
-        let cargoR: Result<string, Unsafe> = wrap(JSON.stringify, configuration);
-        if (cargoR.err()) return cargoR;
-        let cargo: string = cargoR.unwrapSafely();
-        let contentR: Result<string, Unsafe> = wrap(Solc.compile, cargo);
-        if (contentR.err()) return contentR;
-        let content: string = contentR.unwrapSafely();
-        let outR: Result<unknown, Unsafe> = wrap(JSON.parse, content);
-        if (outR.err()) return outR;
-        let out: unknown = outR.unwrapSafely();
-        return Ok((out as Output));
-    }
-})();
+    function compile(configuration: Compiler.Configuration): Compiler.Result<Compiler.Output> {
+        let configuration$0: Result$0<string, Unsafe> = wrap(() => {
+            return JSON.stringify(configuration);
+        });
+        if (configuration$0.err()) return configuration$0;
+        let configuration$1: string = configuration$0.unwrap();
+        let content: Result$0<string, Unsafe> = wrap(() => {
+            return Solc.compile(configuration$1);
+        });
+        if (content.err()) return content;
+        let content$0: string = content.unwrap();
+        let out: Result$0<unknown, Unsafe> = wrap(() => {
+            return JSON.parse(content$0);
+        });
+        if (out.err()) return out;
+        let out$0: unknown = out.unwrap();
+        return Ok((out$0 as Compiler.Output));
+    }    
+}
 
 export namespace Compiler {
+    export type Configuration = {
+        language: "Solidity" | "Vyper" | "lll" | "assembly";
+        sources: {
+            [contract: string]: {
+                keccak256?: string;
+                urls?: Array<string>;
+                content?: string;
+            };
+        };
+        settings?: {
+            remappings?: Array<string>;
+            optimizer?: {
+                enabled: boolean;
+                runs: number;
+            };
+            evmVersion?: 
+                | "homestead" 
+                | "tangerineWhistle" 
+                | "spuriousDragon" 
+                | "byzantium" 
+                | "constantinople" 
+                | "petersburg" 
+                | "istanbul" 
+                | "berlin" 
+                | "london";
+            metadata?: {
+                useLiteralContent: boolean;
+            };
+            libraries?: {
+                [fileName: string]: {
+                    [library: string]: string;
+                }
+            },
+            outputSelection?: {
+                "*": {
+                    "*": Array<
+                        | "abi"
+                        | "ast"
+                        | "legacyAST"
+                        | "devdoc"
+                        | "userdoc"
+                        | "metadata"
+                        | "ir"
+                        | "evm.assembly"
+                        | "evm.legacyAssembly"
+                        | "evm.bytecode.object"
+                        | "evm.bytecode.opcodes"
+                        | "evm.bytecode.sourceMap"
+                        | "evm.bytecode.linkReferences"
+                        | "evm.methodIdentifiers"
+                        | "evm.gasEstimates"
+                        | "ewasm.wast"
+                        | "ewasm.wasm">;
+                }
+            }
+        }
+    };
+
+    export type Output = {
+        errors?: Array<Error>;
+        sources?: {
+            [fileName: string]: SourceOutput;
+        };
+        contracts?: {
+            [fileName: string]: {
+                [contract: string]: ContractOutput;
+            }
+        };
+    };
+
+    export type ContractOutput = {
+        abi?: Array<object>;
+        metadata?: string;
+        userdoc?: object;
+        devdoc?: object;
+        ir?: string;
+        evm?: EvmOutput;
+        ewasm?: {
+            wast?: string;
+            wasm?: string;
+        };
+    };
+
+    export type EvmOutput = {
+        assembly?: string;
+        legacyAssembly?: object;
+        bytecode?: Bytecode;
+        deployedBytecode?: Bytecode;
+        methodIdentifiers?: {
+            [selector: EvmSelector]: string;
+        };
+        gasEstimates?: {
+            creation?: {
+                codeDepositCost?: string;
+                executionCost?: string;
+                totalCost?: string;
+            };
+            external?: {
+                [selector: EvmSelector]: string
+            };
+            internal?: {
+                [selector: EvmSelector]: string
+            };
+        };
+    };
+
     export type Result<T1> = Result$0<T1, Unsafe>;
+
+    export type Error = {
+        sourceLocation?: SourceLocation;
+        type: ErrorCode;
+        component: string;
+        severity: "error" | "warning";
+        message: string;
+        formattedMessage?: string;
+    };
+
+    export type ErrorCode =
+    | "JSONError"
+    | "IOError"
+    | "ParserError"
+    | "DocstringParsingError"
+    | "SyntaxError"
+    | "DeclarationError"
+    | "TypeError"
+    | "UnimplementedFeatureError"
+    | "InternalCompilerError"
+    | "Exception"
+    | "CompilerError"
+    | "FatalError"
+    | "Warning";
+
+    export type Bytecode = {
+        object?: string;
+        opcodes?: string;
+        sourceMap?: string;
+        linkReferences?: {
+            [fileName: string]: {
+                [library: string]: Array<{
+                    start: number;
+                    length: number;
+                }>;
+            };
+        };
+    };
+
+    export type SourceLocation = {
+        file: string;
+        start: number;
+        end: number;
+    };
+
+    export type SourceOutput = {
+        id: number;
+        ast: object;
+        legacyAST?: object;
+    };
+    
 }

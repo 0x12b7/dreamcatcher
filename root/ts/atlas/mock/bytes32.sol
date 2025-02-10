@@ -55,39 +55,7 @@ library Bytes32 {
     }
 }
 
-library Address {
 
-    function zero()
-        internal
-        pure
-        returns (address) {
-        return address(0);
-    }
-
-    function from(bytes32 value)
-        internal
-        pure
-        returns (address) {
-        return address(uint160(uint256(value)));
-    }
-
-    function route(address to)
-        internal {
-        require(to != zero(), "ERR_ZERO_ADDRESS");
-        assembly {
-            calldatacopy(0, 0, calldatasize())
-            let result := delegatecall(gas(), to, 0, calldatasize(), 0, 0)
-            returndatacopy(0, 0, returndatasize())
-            switch result
-                case 0 {
-                    revert(0, returndatasize())
-                }
-                default {
-                    return(0, returndatasize())
-                }
-        }
-    }
-}
 
 library UInt256 {
     function from(bytes32 value)
