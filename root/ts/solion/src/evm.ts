@@ -1,12 +1,15 @@
-import { Err, Ok, Option, Unsafe, wrap, wrapAsync } from "reliq";
+import { Err, flag, Ok, Option, Unsafe, wrap, wrapAsync } from "reliq";
 import { Result } from "reliq";
 import { Some } from "reliq";
 import { None } from "reliq";
 import { Fpv } from "reliq";
-import { JsonRpcProvider } from "ethers";
+import { JsonRpcProvider, N } from "ethers";
 import { Wallet } from "ethers";
 import { Contract } from "ethers";
 import type { ContractMethod } from "ethers";
+import { Interface } from "ethers";
+import type { TransactionReceipt } from "ethers";
+import type { TransactionResponse } from "ethers";
 
 type Result$0<T1, T2> = Result<T1, T2>;
 
@@ -72,7 +75,77 @@ export function Evm(_url: string): Evm.Result<Evm> {
         });
         if (wallet.err()) return wallet;
         let wallet$0: Wallet = wallet.unwrap();
-        
+        let address: Result$0<Evm.Address, Evm.Error> = (await wrapAsync(async () => {
+            return await wallet$0.getAddress();
+        })).map(address => {
+            return address;
+        }).mapErr(e => {
+            return _resolveUnsafeError(e);
+        });
+        if (address.err()) return address;
+        let address$0: Evm.Address = address.unwrap();
+        let nonce: Result$0<bigint, Evm.Error> = (await wrapAsync(async () => {
+            return await wallet$0.getNonce();
+        })).map(nonce => {
+            return BigInt(nonce);
+        }).mapErr(e => {
+            return _resolveUnsafeError(e);
+        });
+        if (nonce.err()) return nonce;
+        let nonce$0: bigint = nonce.unwrap();
+        let intf: Result$0<Interface, Evm.Error> = wrap(() => {
+            return new Interface([transaction.signature]);
+        }).mapErr(e => {
+            return _resolveUnsafeError(e);
+        });
+        if (intf.err()) return intf;
+        let intf$0: Interface = intf.unwrap();
+        let name: Option<string> = Evm.SignatureHandler.nameOf(transaction.signature);
+        if (name.none()) return Err({
+            code: "EVM.ERR_MALFORMED_SIGNATURE",
+            data: None,
+            message: None,
+            reason: None,
+            transaction: None
+        });
+        let name$0: string = name.unwrap();
+        let data: Result$0<string, Evm.Error> = wrap(() => {
+            return intf$0.encodeFunctionData(name, transaction.payload);
+        }).mapErr(e => {
+            return _resolveUnsafeError(e);
+        });
+        if (data.err()) return data;
+        let data$0: string = data.unwrap();
+        let gasPrice: bigint = transaction.gasPrice ? Fpv.Calculator.unwrap(transaction.gasPrice) : 0n;
+        let gasLimit: bigint = transaction.gasLimit ? Fpv.Calculator.unwrap(transaction.gasLimit) : 0n;
+        let response: Result$0<TransactionReceipt | null, Evm.Error> = (await wrapAsync(async () => {
+            return await wallet$0.sendTransaction({
+                from: address$0,
+                to: transaction.to,
+                nonce: nonce$0,
+                gasPrice: gasPrice,
+                gasLimit: gasLimit,
+                data: data$0
+        })})).mapErr(e => {
+            return _resolveUnsafeError(e);
+        });
+        if (response.err()) return response;
+        let response$0: TransactionResponse | null = response.unwrap();
+        if (response$0 === null) return Err({
+            code: "EVM.ERR_INVALID_RESPONSE",
+            data: None,
+            message: None,
+            transaction: None,
+            reason: None
+        });
+        let receipt: Result$0<TransactionReceipt | null, Evm.Error> = (await wrapAsync(async () => {
+            return await response$0.wait(Number(transaction.confirmations), Number(transaction.timeout));
+        })).mapErr(e => {
+            return _resolveUnsafeError(e);
+        });
+        if (receipt.err()) return receipt;
+        let receipt$0: TransactionReceipt = receipt.unwrap();
+        return Ok(receipt$0);
     }
 
     function _resolveUnsafeError(u: Unsafe): Evm.Error {
@@ -167,7 +240,9 @@ export namespace Evm {
         | "EVM.ERR_OFFCHAIN_FAULT"
 
         /// User Interaction
-        | "EVM.ERR_ACTION_REJECTED";
+        | "EVM.ERR_ACTION_REJECTED"
+
+        | "EVM.ERR_MALFORMED_SIGNATURE";
 
 
     export type TransactionReceipt = {
@@ -182,14 +257,14 @@ export namespace Evm {
 
     export type Query<T1 extends Payload = Payload> = {
         privateKey: string;
-        to: string;
+        to: Evm.Address;
         signature: NonNeutralSignature;
         payload?: T1;
     };
 
     export type Touch<T1 extends Payload = Payload> = {
         privateKey: string;
-        to: string;
+        to: Evm.Address;
         signature: NonNeutralSignature;
         payload?: T1;
         gasPrice?: Fpv.Compatible<18n>;
@@ -241,7 +316,7 @@ export namespace Evm {
         build(): SignatureBuilderResult<Signature>;
     };
 
-    export function Signature(): SignatureBuilder {
+    export function SignatureBuilder(): SignatureBuilder {
         let _this: SignatureBuilder;
         let _name: Option<string>;
         let _type: Option<"event" | "external">;
@@ -332,6 +407,32 @@ export namespace Evm {
             return Err("SIGNATURE_BUILDER.ERR_MALFORMED_SIGNATURE");
         }
     }
+
+    export type SignatureHandler = {
+        nameOf(signature: Signature): Option<string>;
+    };
+
+    export const SignatureHandler: SignatureHandler = (() => {
+        /***/ {
+            return { nameOf };
+        }
+
+        function nameOf(signature: Signature): Option<string> {
+            let shards: Array<string> = signature.split(" ");
+            if (shards.length === 0) return None;
+            let string: Option<string> = flag(shards.at(1));
+            if (string.none()) return string;
+            let string$0: string = string.unwrap();
+            let result: Option<string> = flag(
+                string$0
+                    .split("(")
+                    .at(0)
+            );
+            if (result.none()) return result;
+            let result$0: string = result.unwrap();
+            return Some(result$0);
+        }
+    })();
 
     
     export type EventSignature = `event ${ string }(${ string })`;
