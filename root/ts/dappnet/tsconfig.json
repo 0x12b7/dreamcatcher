@@ -1,14 +1,11 @@
 {
 	"extends": "../../../tsconfig.json",
 	"compilerOptions": {
-		"declaration": true,
-		"declarationDir": "dist",
-		"declarationMap": true,
 		"baseUrl": ".",
 		"paths": {
-			"@core.vm.ethereum": ["src/vm/ethereum/mod.ts"],
-			"@core.vm.ethereum.node": ["src/vm/ethereum/mod.node.ts"],
-			"@core.vm.ethereum.web": ["src/vm/ethereum/mode.web.ts"]
+			"@browser": ["src/browser/mod.internal.ts"],
+			"@bun": ["src/browser/mod.internal.ts"],
+			"@common": ["src/common/mod.internal.ts"]
 		}
 	},
 	"include": ["."],

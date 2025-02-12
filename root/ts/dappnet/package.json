@@ -1,6 +1,6 @@
 {
 	"name": "dappnet",
-	"version": "0.4.5",
+	"version": "0.5.5",
 	"description": "TS Library for Building DApps on Multiple DVMs",
 	"license": "MIT",
 	"main": "target/tslib/mod.cjs",
@@ -8,8 +8,8 @@
 	"types": "target/tslib/mod.d.cts",
 	"type": "module",
 	"scripts": {
-		"build:bun": "bun run script/build.bun.ts",
-		"build:browser": "bun run script/build.browser.ts",
+		"build:bun": "bun run script/build_bun.ts",
+		"build:browser": "bun run script/build_browser.ts",
 		"build": "bun run build:bun && build:browser",
 		"release": "bun run build && npm publish"
 	},
