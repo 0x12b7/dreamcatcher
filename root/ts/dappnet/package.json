@@ -8,7 +8,9 @@
 	"types": "target/tslib/mod.d.cts",
 	"type": "module",
 	"scripts": {
-		"build": "bun run script/build_script.ts",
+		"build:bun": "bun run script/build.bun.ts",
+		"build:browser": "bun run script/build.browser.ts",
+		"build": "bun run build:bun && build:browser",
 		"release": "bun run build && npm publish"
 	},
 	"devDependencies": {
