@@ -1,1 +1,0 @@
-export type Base = "address" | "string" | "bool";

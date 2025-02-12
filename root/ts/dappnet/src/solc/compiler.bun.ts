@@ -3,7 +3,7 @@ import { default as Solc } from "solc";
 import { Result as Result$0 } from "reliq";
 import { Ok } from "reliq";
 import { Unsafe } from "reliq";
-import { EthereumVirtualMachine } from "./evm";
+import { EthereumVirtualMachine } from "../evm/evm.bun";
 import { wrap } from "reliq";
 
 export type Compiler = {

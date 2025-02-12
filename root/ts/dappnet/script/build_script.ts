@@ -1,32 +1,26 @@
-import { Result } from "reliq";
-import { Unsafe } from "reliq";
 import { wrapAsync } from "reliq";
 import { build } from "tsup";
 
-export type BuildScript = {
-    run(): Promise<Result<void, Unsafe>>;
-};
+await wrapAsync(async () => {
+    return await build({
+        entry: ["src/mod.bun.ts"],
+        outDir: "target/bun",
+        format: ["cjs"],
+        sourcemap: "inline",
+        clean: true,
+        minify: false,
+        config: "tsconfig.json"
+    });
+});
 
-export function BuildScript(): BuildScript {
-    /** @constructor */ {
-        return { run };
-    }
-
-    async function run(... []: Parameters<BuildScript["run"]>): ReturnType<BuildScript["run"]> {
-        return await wrapAsync(build, {
-            entry: ["src/mod.ts"],
-            outDir: "target/tslib",
-            format: ["cjs"],
-            dts: true,
-            sourcemap: "inline",
-            clean: true,
-            minify: true,
-            config: "tsconfig.json"
-        });
-    }
-}
-
-/** @script */
-(await BuildScript()
-    .run())
-    .unwrap();
+await wrapAsync(async () => {
+    return await build({
+        entry: ["src/mod.browser.ts"],
+        outDir: "target/browser",
+        format: ["cjs"],
+        sourcemap: "inline",
+        clean: true,
+        minify: false,
+        config: "tsconfig.json"
+    });
+});
