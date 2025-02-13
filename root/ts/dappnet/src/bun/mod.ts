@@ -1,0 +1,1 @@
+export { EthereumVirtualMachine } from "@bun";

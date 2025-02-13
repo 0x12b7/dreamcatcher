@@ -4,7 +4,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@browser": ["src/browser/mod.internal.ts"],
-			"@bun": ["src/browser/mod.internal.ts"],
+			"@bun": ["src/bun/mod.internal.ts"],
 			"@common": ["src/common/mod.internal.ts"]
 		}
 	},
