@@ -1,7 +1,10 @@
+import type { BaseContract } from "ethers";
 import type { ContractMethod } from "ethers";
+import { ContractFactory } from "ethers";
 import type { TransactionResponse } from "ethers";
-import { Contract } from "ethers";
 import type { TransactionReceipt } from "ethers";
+import { Contract } from "ethers";
+import { Interface } from "ethers";
 import { BrowserProvider } from "ethers";
 import { JsonRpcSigner } from "ethers";
 import { Unsafe } from "reliq";
@@ -23,21 +26,23 @@ type _TransactionResponse$0 = TransactionResponse;
 type _TransactionReceipt$0 = TransactionReceipt;
 
 export type Wallet = {
-    use(account: Wallet.Address): Promise<>;
-    use(account: bigint): Promise<>;
-    use(account: Wallet.Address | bigint): Promise<>;
+    use(account: Wallet.Address): Promise<Wallet.Result<Wallet>>;
+    use(account: bigint): Promise<Wallet.Result<Wallet>>;
+    use(account: Wallet.Address | bigint): Promise<Wallet.Result<Wallet>>;
     connected(): boolean;
-    connected(address: Wallet.Address): boolean;
-    connected(address?: Wallet.Address): boolean;
-    address(): Promise<Option<string>>;
-    nonce(): Promise<Option<bigint>>;
+    connected(address: Wallet.Address): Promise<Wallet.Result<boolean>>;
+    connected(address?: Wallet.Address):
+        | Promise<Wallet.Result<boolean>>
+        | boolean;
+    address(): Promise<Wallet.Result<Wallet.Address>>;
+    nonce(): Promise<Wallet.Result<bigint>>;
     query<T1 = unknown, T2 extends Wallet.Payload<T1> = Wallet.Payload<T1>>(transaction: Wallet.Query<T1, T2>): Promise<Wallet.Result<Unsafe>>;
     touch<T1 = unknown, T2 extends Wallet.Payload<T1> = Wallet.Payload<T1>>(transaction: Wallet.Touch<T1, T2>): Promise<Wallet.Result<Option<Wallet.TransactionReceipt>>>;
     deploy<T1 = unknown, T2 extends Wallet.Payload<T1> = Wallet.Payload<T1>>(transaction: Wallet.Deployment<T1, T2>): Promise<Wallet.Result<Wallet.Address>>;
-    disconnect(): Promise<Wallet.Result<void>>;
 }
 
 export async function Wallet(): Promise<Wallet.Result<Wallet>> {
+    let _this: Wallet;
     let _socket: BrowserProvider;
     let _accounts: Array<string>;
     let _signer: Option<JsonRpcSigner> = None;
@@ -46,25 +51,62 @@ export async function Wallet(): Promise<Wallet.Result<Wallet>> {
         return (await _connect()).map(([socket, accounts]) => {
             _socket = socket;
             _accounts = accounts;
-            return {
+            return _this = {
+                use,
+                connected,
                 address,
-                nonce
+                nonce,
+                query,
+                touch,
+                deploy
             };
         });
     }
 
-    async function address(): Promise<Option<string>> {
-        return (await wrapAsync(async () => {
-            return (await _socket.getSigner()).getAddress();
-        }))
-        .toOption();
+    async function use(account: Wallet.Address): Promise<Wallet.Result<Wallet>>;
+    async function use(account: bigint): Promise<Wallet.Result<Wallet>>;
+    async function use(account: Wallet.Address | bigint): Promise<Wallet.Result<Wallet>> {
+        let signer: Wallet.Result<JsonRpcSigner> = (await _map(wrapAsync(async () => {
+            return (await _socket.getSigner(typeof account === "string" ? account : Number(account)));
+        })));
+        if (signer.err()) return signer;
+        return Ok(_this);
     }
 
-    async function nonce(): Promise<Option<bigint>> {
-        return (await wrapAsync(async () => {
+    function connected(): boolean;
+    function connected(address: Wallet.Address): Promise<Wallet.Result<boolean>>;
+    function connected(address?: Wallet.Address): 
+        | Promise<Wallet.Result<boolean>> 
+        | boolean {
+        if (address && _signer.some()) {
+            return new Promise(resolve => {
+                let signer: JsonRpcSigner = _signer.unwrap();
+                _map(wrapAsync(async () => {
+                    return await signer.getAddress();
+                }))
+                .then(address$0 => {
+                    if (address$0.ok()) {
+                        let address$1: string = address$0.unwrap();
+                        resolve(Ok(address$1 === address));
+                        return; 
+                    }
+                    return address$0;
+                });
+            });
+        }
+        return _signer.some();
+    }
+
+    async function address(): Promise<Wallet.Result<Wallet.Address>> {
+        return (await _map(wrapAsync(async () => {
+            return (await (await _socket.getSigner()).getAddress()) as Wallet.Address;
+        })));
+    }
+
+    async function nonce(): Promise<Wallet.Result<bigint>> {
+        return (await _map((wrapAsync(async () => {
             return (await _socket.getSigner()).getNonce();
-        }))
-        .toOption()
+        }))))
         .map(nonce => {
             return BigInt(nonce);
         });
@@ -101,7 +143,104 @@ export async function Wallet(): Promise<Wallet.Result<Wallet>> {
         return Ok(response$0);
     }
 
-    
+    async function touch<T1 = unknown, T2 extends Wallet.Payload<T1> = Wallet.Payload<T1>>(transaction: Wallet.Touch<T1, T2>): Promise<Wallet.Result<Option<Wallet.TransactionReceipt>>> {
+        let signer: JsonRpcSigner;
+        if (_signer.none()) {
+            let signer$0: Wallet.Result<JsonRpcSigner> = await _map(wrapAsync(async () => {
+                return await _socket.getSigner();
+            }));
+            if (signer$0.err()) return signer$0;
+            let signer$1: JsonRpcSigner = signer$0.unwrap();
+            signer = signer$1;
+        }
+        else {
+            signer = _signer.unwrap();
+        }
+        let address$0: Wallet.Result<Wallet.Address> = (await address());
+        if (address$0.err()) return address$0;
+        let address$1: Wallet.Address = address$0.unwrap();
+        let nonce$0: Wallet.Result<bigint> = (await nonce());
+        if (nonce$0.err()) return nonce$0;
+        let nonce$1: bigint = nonce$0.unwrap();
+        let interface$0: Wallet.Result<Interface> = _map(wrap(() => {
+            return new Interface([transaction.signature]);
+        }));
+        if (interface$0.err()) return interface$0;
+        let interface$1: Interface = interface$0.unwrap();
+        let name: Option<string> = Wallet.Signature.nameOf(transaction.signature);
+        if (name.none()) return Err({
+            code: "WALLET.ERR_MALFORMED_SIGNATURE",
+            data: None,
+            message: None,
+            reason: None,
+            transaction: None
+        });
+        let name$0: string = name.unwrap();
+        let data: Wallet.Result<string> = _map(wrap(() => {
+            return interface$1.encodeFunctionData(name$0, transaction.payload);
+        }));
+        if (data.err()) return data;
+        let data$0: string = data.unwrap();
+        let gasPrice: bigint = transaction.gasPrice ? Fpv.Calculator.unwrap(transaction.gasPrice) : 0n;
+        let gasLimit: bigint = transaction.gasLimit ? Fpv.Calculator.unwrap(transaction.gasLimit) : 0n;
+        let response: Wallet.Result<Wallet.TransactionResponse | null> = (await _map(wrapAsync(async () => {
+            return await signer.sendTransaction({
+                from: address$1,
+                to: transaction.to,
+                nonce: Number(nonce$1),
+                gasPrice: gasPrice,
+                gasLimit: gasLimit,
+                data: data$0
+            });
+        })));
+        if (response.err()) return response;
+        let response$0: Wallet.TransactionResponse | null = response.unwrap();
+        if (response$0 === null) return Err({
+            code: "WALLET.ERR_INVALID_RESPONSE",
+            data: None,
+            message: None,
+            transaction: None,
+            reason: None
+        });
+        let receipt: Wallet.Result<Wallet.TransactionReceipt | null> = (await _map(wrapAsync(async () => {
+            return await response$0.wait(Number(transaction.confirmations), Number(transaction.timeout));
+        })));
+        if (receipt.err()) return receipt;
+        let receipt$0: Wallet.TransactionReceipt | null = receipt.unwrap();
+        if (receipt$0 === null) return Ok(None);
+        return Ok(Some(receipt$0));
+    }
+
+    async function deploy<T1 = unknown, T2 extends Wallet.Payload<T1> = Wallet.Payload<T1>>(transaction: Wallet.Deployment<T1, T2>): Promise<Wallet.Result<Wallet.Address>> {
+        let signer: JsonRpcSigner;
+        if (_signer.none()) {
+            let signer$0: Wallet.Result<JsonRpcSigner> = await _map(wrapAsync(async () => {
+                return await _socket.getSigner();
+            }));
+            if (signer$0.err()) return signer$0;
+            let signer$1: JsonRpcSigner = signer$0.unwrap();
+            signer = signer$1;
+        }
+        else {
+            signer = _signer.unwrap();
+        }
+        let contractFactory: Wallet.Result<ContractFactory> = _map(wrap(() => {
+            return new ContractFactory(transaction.abi, transaction.bytecode, signer);
+        }));
+        if (contractFactory.err()) return contractFactory;
+        let contractFactory$0: ContractFactory = contractFactory.unwrap();
+        let contract: Wallet.Result<BaseContract> = (await _map(wrapAsync(async () => {
+            return (await contractFactory$0.deploy(transaction.payload));
+        })));
+        if (contract.err()) return contract;
+        let contract$0: BaseContract = contract.unwrap();
+        let address: Wallet.Result<Wallet.Address> = (await _map(wrapAsync(async () => {
+            return await contract$0.getAddress() as Wallet.Address;
+        })));
+        if (address.err()) return address;
+        let address$0: Wallet.Address = address.unwrap();
+        return Ok(address$0);
+    }
 
     async function _connect(): Promise<Wallet.Result<[BrowserProvider, Array<string>]>> {
         if (window === undefined) return Err({

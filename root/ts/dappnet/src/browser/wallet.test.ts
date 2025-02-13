@@ -1,8 +1,9 @@
 import { Wallet } from "@browser";
 
-(await (await Wallet())
-    .expect()
-    .use(0n)
+(await (await (await Wallet())
+    .expect("Failed to the initialize wallet.")
+    .use(0n))
+    .expect("Failed to pick the address.")
     .query({
         to: "0xb33EaAd8d922B1083446DC23f610c2567fB5180f",
         signature: Wallet.SignatureBuilder()
