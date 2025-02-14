@@ -4,15 +4,15 @@ import {
 
 function testPercentageOf() {
     let x: bigint = Fpv.Calculator
-        .cst(250n, 2n, 18n)
+        .convert(250n, 2n, 18n)
         .expect()
         .unwrap();
     let y: bigint = Fpv.Calculator
-        .cst(750n, 2n, 18n)
+        .convert(750n, 2n, 18n)
         .expect()
         .unwrap();
     let z: bigint = Fpv.Calculator
-        .cst(percentageOf(x, y), 18n, 2n)
+        .convert(percentageOf(x, y), 18n, 2n)
         .expect()
         .unwrap();
     console.log(z);
@@ -26,7 +26,7 @@ function testPercentageOf() {
             .unwrap();
         console.log(
             Fpv.Calculator
-                .cst(z, 18n, 2n)
+                .convert(z, 18n, 2n)
                 .expect()
                 .unwrap()
         )

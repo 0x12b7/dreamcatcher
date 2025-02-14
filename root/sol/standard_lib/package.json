@@ -9,7 +9,7 @@
 		"typescript": "^5.0.0"
 	},
 	"dependencies": {
-		"@tokyo/reliq": "npm:@jsr/tokyo__reliq@0.0.1",
+		"@tokyo/reliq": "npm:@jsr/tokyo__reliq@0.0.2",
 		"solion": "1.0.1"
 	}
 }
