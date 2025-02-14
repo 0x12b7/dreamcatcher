@@ -1,17 +1,17 @@
 /// @ts-ignore
 import { default as Solc } from "solc";
-import { Result as Result$0 } from "reliq";
-import { Ok } from "reliq";
-import { Unsafe } from "reliq";
-import { EthereumVirtualMachine } from "./evm";
-import { wrap } from "reliq";
+import { EthereumVirtualMachine } from "dappnet";
+import { Result as Result$0 } from "@tokyo/reliq";
+import { Ok } from "@tokyo/reliq";
+import { Unsafe } from "@tokyo/reliq";
+import { wrap } from "@tokyo/reliq";
 
 export type Compiler = {
     compile(configuration: Compiler.Configuration): Compiler.Result<Compiler.Output>;
 };
 
 export function Compiler(): Compiler {
-    /***/ {
+    /** @constructor */ {
         return { compile };
     }
 
@@ -193,5 +193,4 @@ export namespace Compiler {
         ast: object;
         legacyAST?: object;
     };
-    
 }

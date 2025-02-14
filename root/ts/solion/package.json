@@ -1,14 +1,14 @@
 {
 	"name": "solion",
-	"version": "1.0.2",
-	"description": "Wrapper for Solc with Enhanced Types & Utilities",
-	"license": "MIT",
-	"main": "target/tslib/mod.cjs",
-	"types": "target/tslib/mod.d.cts",
+	"version": "1.1.0",
+	"description": "Typed Wrapper for Solc with Enhanced Types & Utilities",
+	"license": "Apache-2.0",
+	"main": "target/cjs/mod.cjs",
+	"module": "target/cjs/mod.cjs",
+	"types": "target/cjs/mod.d.cts",
 	"type": "module",
 	"scripts": {
-		"build": "bun run script/build_script.ts",
-		"release": "bun run build && npm publish"
+		"release": "npx jsr publish"
 	},
 	"devDependencies": {
 		"@types/bun": "1.1.14",
@@ -18,7 +18,8 @@
 		"typescript": "5.0.0"
 	},
 	"dependencies": {
-		"dappnet": "0.2.5",
+		"@tokyo/reliq": "npm:@jsr/tokyo__reliq@0.0.1",
+		"dappnet": "0.5.5",
 		"reliq": "^2.4.0",
 		"solc": "0.8.28"
 	}

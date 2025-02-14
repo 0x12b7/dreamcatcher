@@ -1,11 +1,9 @@
 {
 	"extends": "../../../tsconfig.json",
 	"compilerOptions": {
-		"inlineSourceMap": true,
-		"inlineSources": true,
 		"baseUrl": ".",
 		"paths": {
-			"@root": ["src/mod.ts"]
+			"@": ["src/mod.internal.ts"]
 		}
 	},
 	"include": ["."]
