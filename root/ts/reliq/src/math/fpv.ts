@@ -239,7 +239,16 @@ export namespace Fpv {
         yield<T1 extends Decimals>(x: bigint, y: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
         yield<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T1>): Result<Fpv<T1>>;
         yield<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): Result<Fpv<T1>>;
-        
+        loss<T1 extends Decimals>(x: bigint, y: bigint, decimals: T1): Result<Fpv<T1>>;
+        loss<T1 extends Decimals>(x: Fpv<T1>, y: bigint, decimals: T1): Result<Fpv<T1>>;
+        loss<T1 extends Decimals>(x: bigint, y: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        loss<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T1>): Result<Fpv<T1>>;
+        loss<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>): Result<Fpv<T1>>;
+        sliceOf<T1 extends Decimals>(x: bigint, percentage: bigint): Result<Fpv<T1>>;
+        sliceOf<T1 extends Decimals>(x: Fpv<T1>, percentage: bigint): Result<Fpv<T1>>;
+        sliceOf<T1 extends Decimals>(x: bigint, percentage: Fpv<T1>): Result<Fpv<T1>>;
+        sliceOf<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, percentage: Fpv<T1>): Result<Fpv<T1>>;
+        sliceOf<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, percentage: Compatible<T1>): Result<Fpv<T1>>;
     };
 
     export const Calculator: Calculator = (() => {
