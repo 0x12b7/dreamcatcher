@@ -1,10 +1,12 @@
 /// @ts-ignore
 import { default as Solc } from "solc";
 import { EthereumVirtualMachine } from "dappnet";
-import { Result as Result$0 } from "@tokyo/reliq";
-import { Ok } from "@tokyo/reliq";
-import { Unsafe } from "@tokyo/reliq";
-import { wrap } from "@tokyo/reliq";
+import { 
+    Unsafe,
+    Result as Result$0,
+    Ok,
+    wrap
+} from "@tokyo/reliq";
 
 export type Compiler = {
     compile(configuration: Compiler.Configuration): Compiler.Result<Compiler.Output>;
