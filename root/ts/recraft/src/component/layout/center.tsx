@@ -1,12 +1,10 @@
-import type { ReactNode } from "react";
-import type { ComponentPropsWithRef } from "react";
+import {
+    type ReactNode,
+    type ComponentPropsWithRef
+} from "react";
 
-export type CenterProps =
-    & ComponentPropsWithRef<"div">
-    & {};
-
-export function Center(props: CenterProps): ReactNode {
-    let { style, children, ... more } = props;
+export function Center(props: Center.Props): ReactNode {
+    let { style, children, ...more } = props;
     
     return <>
         <div
@@ -15,10 +13,15 @@ export function Center(props: CenterProps): ReactNode {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                ... style
+                ...style
             }}
-            { ... more }>
+            { ...more }>
             { children }
         </div>
     </>;
+}
+
+export namespace Center {
+    export type Props =
+        & ComponentPropsWithRef<"div">;
 }

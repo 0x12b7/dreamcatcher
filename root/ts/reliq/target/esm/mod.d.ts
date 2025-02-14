@@ -461,7 +461,7 @@ type Fpv<T1 extends Fpv.Decimals> = Wrapper<bigint> & {
     pow(x: Fpv<T1>): Fpv.Result<Fpv<T1>>;
     pow(x: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
     sqrt(): Fpv.Result<Fpv<T1>>;
-    cst<T2 extends Fpv.Decimals>(decimals: T2): Fpv.Result<Fpv<T2>>;
+    convert<T2 extends Fpv.Decimals>(decimals: T2): Fpv.Result<Fpv<T2>>;
 };
 /**
  * ***Warning***
@@ -528,9 +528,9 @@ declare namespace Fpv {
         sqrt<T1 extends Decimals>(x: bigint, decimals: T1): Result<Fpv<T1>>;
         sqrt<T1 extends Decimals>(x: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
         sqrt<T1 extends Decimals>(x: Compatible<T1>, decimals: T1): Result<Fpv<T1>>;
-        cst<T1 extends Decimals, T2 extends Decimals>(x: bigint, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
-        cst<T1 extends Decimals, T2 extends Decimals>(x: Fpv<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
-        cst<T1 extends Decimals, T2 extends Decimals>(x: Compatible<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
+        convert<T1 extends Decimals, T2 extends Decimals>(x: bigint, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
+        convert<T1 extends Decimals, T2 extends Decimals>(x: Fpv<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
+        convert<T1 extends Decimals, T2 extends Decimals>(x: Compatible<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
     };
     const Calculator: Calculator;
 }

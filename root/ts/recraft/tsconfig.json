@@ -3,9 +3,9 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@root": ["src/mod.ts"]
+			"@main": ["src/mod.internal.ts"]
 		}
 	},
-	"include": ["."],
+	"include": ["src", "script"],
 	"exclude": ["node_modules", "target/**/*"]
 }

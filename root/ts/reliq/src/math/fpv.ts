@@ -42,7 +42,7 @@ export type Fpv<T1 extends Fpv.Decimals> =
     pow(x: Fpv<T1>): Fpv.Result<Fpv<T1>>;
     pow(x: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
     sqrt(): Fpv.Result<Fpv<T1>>;
-    cst<T2 extends Fpv.Decimals>(decimals: T2): Fpv.Result<Fpv<T2>>;
+    convert<T2 extends Fpv.Decimals>(decimals: T2): Fpv.Result<Fpv<T2>>;
 };
 
 /**
@@ -67,7 +67,7 @@ export function Fpv<T1 extends Fpv.Decimals>(_v: Fpv.Compatible<T1>, _decimals: 
             div,
             pow,
             sqrt,
-            cst
+            convert
         });
     }
 
@@ -153,8 +153,8 @@ export function Fpv<T1 extends Fpv.Decimals>(_v: Fpv.Compatible<T1>, _decimals: 
         return Fpv.Calculator.sqrt(_v, decimals());
     }
 
-    function cst<T2 extends Fpv.Decimals>(decimals$0: T2): Fpv.Result<Fpv<T2>> {
-        return Fpv.Calculator.cst(_v, decimals(), decimals$0);
+    function convert<T2 extends Fpv.Decimals>(decimals$0: T2): Fpv.Result<Fpv<T2>> {
+        return Fpv.Calculator.convert(_v, decimals(), decimals$0);
     }
 }
 
@@ -226,9 +226,9 @@ export namespace Fpv {
         sqrt<T1 extends Decimals>(x: bigint, decimals: T1): Result<Fpv<T1>>;
         sqrt<T1 extends Decimals>(x: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
         sqrt<T1 extends Decimals>(x: Compatible<T1>, decimals: T1): Result<Fpv<T1>>; 
-        cst<T1 extends Decimals, T2 extends Decimals>(x: bigint, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
-        cst<T1 extends Decimals, T2 extends Decimals>(x: Fpv<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
-        cst<T1 extends Decimals, T2 extends Decimals>(x: Compatible<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
+        convert<T1 extends Decimals, T2 extends Decimals>(x: bigint, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
+        convert<T1 extends Decimals, T2 extends Decimals>(x: Fpv<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
+        convert<T1 extends Decimals, T2 extends Decimals>(x: Compatible<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
     };
 
     export const Calculator: Calculator = (() => {
@@ -246,7 +246,7 @@ export namespace Fpv {
                 div,
                 pow,
                 sqrt,
-                cst
+                convert
             };
         }
 
@@ -332,7 +332,7 @@ export namespace Fpv {
             if (y$0 === 0n) return Err("FPV.ERR_DIVISION_BY_ZERO");
             if (decimals === 0n) return Ok(Fpv(x$0 / y$0, decimals).expect(INTERNAL_ERROR_MESSAGE));    
             let z: bigint = x$0 * (10n ** decimals);
-            let q: bigint = z / x$0;
+            let q: bigint = z / y$0;
             return Ok(Fpv(q, decimals).expect(INTERNAL_ERROR_MESSAGE));
         }
 
@@ -350,7 +350,7 @@ export namespace Fpv {
                 base = (base * base) / (10n ** decimals);
                 exponent /= 2n;
             }
-            let result$0: Result<Fpv<T1>> = cst(result, 0n, decimals);
+            let result$0: Result<Fpv<T1>> = convert(result, 0n, decimals);
             if (result$0.err()) return result$0;
             let result$1: Fpv<T1> = result$0.unwrap();
             let result$2: bigint = result$1.unwrap();
@@ -375,9 +375,9 @@ export namespace Fpv {
             return Fpv(x$1, decimals);
         }
 
-        function cst<T1 extends Decimals, T2 extends Decimals>(x: bigint, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
-        function cst<T1 extends Decimals, T2 extends Decimals>(x: Fpv<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
-        function cst<T1 extends Decimals, T2 extends Decimals>(x: Compatible<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>> {
+        function convert<T1 extends Decimals, T2 extends Decimals>(x: bigint, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
+        function convert<T1 extends Decimals, T2 extends Decimals>(x: Fpv<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>>;
+        function convert<T1 extends Decimals, T2 extends Decimals>(x: Compatible<T1>, oldDecimals: T1, newDecimals: T2): Result<Fpv<T2>> {
             if (oldDecimals < 0n) return Err("FPV.ERR_NEGATIVE_DECIMALS");
             if (newDecimals < 0n) return Err("FPV.ERR_NEGATIVE_DECIMALS");
             let x$0: bigint = unwrap(x);

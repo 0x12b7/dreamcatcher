@@ -1,9 +1,8 @@
 import type { ReactNode } from "react";
-import type { CStackProps } from "@root";
-import { CStack } from "@root";
+import { CStack } from "@main";
 
 export type CStackReverseProps =
-    & CStackProps
+    & CStack.Props
     & {};
 
 export function CStackReverse(props: CStackReverseProps): ReactNode {
