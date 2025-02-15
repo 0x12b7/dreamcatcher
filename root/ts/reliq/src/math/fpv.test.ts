@@ -2,6 +2,8 @@ import { Fpv } from "@root";
 
 testMul();
 testDiv();
+testPercentageOf();
+testYield();
 
 function testMul(): void {
     let decimals: bigint = 18n;
@@ -18,6 +20,7 @@ function testMul(): void {
         .expect()
         .unwrap();
     console.log(
+        "[testMul]",
         Fpv.Calculator
             .convert(z, decimals, 2n)
             .expect()
@@ -41,6 +44,7 @@ function testDiv(): void {
         .expect()
         .unwrap();
     console.log(
+        "[testDiv]",
         Fpv.Calculator
             .convert(z, decimals, 2n)
             .expect()
@@ -48,3 +52,64 @@ function testDiv(): void {
     );
     return;
 }
+
+function testPercentageOf(): void {
+    let decimals: bigint = 18n;
+    let x: bigint = Fpv.Calculator
+        .convert(200n, 2n, decimals)
+        .expect()
+        .unwrap();
+    let y: bigint = Fpv.Calculator
+        .convert(1500n, 2n, decimals)
+        .expect()
+        .unwrap();
+    let z: bigint = Fpv.Calculator
+        .percentageOf(x, y, decimals)
+        .expect()
+        .unwrap();
+    console.log(
+        "[testPercentageOf]",
+        Fpv.Calculator
+            .convert(z, decimals, 2n)
+            .expect()
+            .unwrap()
+    );
+    return;
+}
+
+function testYield(): void {
+    let decimals: bigint = 18n;
+    let x: bigint = Fpv.Calculator
+        .convert(200n, 2n, decimals)
+        .expect()
+        .unwrap();
+    let y: bigint = Fpv.Calculator
+        .convert(700n, 2n, decimals)
+        .expect()
+        .unwrap();
+    let z: bigint = Fpv.Calculator
+        .yield(x, y, decimals)
+        .expect()
+        .unwrap();
+    console.log(
+        "[testYield]",
+        x,
+        y,
+        Fpv.Calculator
+            .convert(z, decimals, 2n)
+            .expect()
+            .unwrap()
+    );
+}
+
+function t() {    
+    console.log(
+        Fpv.Calculator
+            .loss(500n, 700n, 2n)
+            .expect()
+            .unwrap()
+    );
+    return;
+}
+
+t();

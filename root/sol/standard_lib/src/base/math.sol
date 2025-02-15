@@ -14,7 +14,7 @@ library Math {
         internal
         pure
         returns (uint256) {
-        return mul(div(x, 100 * representation(decimals)), percentage);
+        return mul(div(x, 100 * representation(decimals), decimals), percentage);
     }
 
     function loss(uint256 x, uint256 y)
