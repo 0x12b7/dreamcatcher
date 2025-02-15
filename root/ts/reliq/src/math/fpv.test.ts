@@ -105,7 +105,9 @@ function testYield(): void {
 function t() {    
     console.log(
         Fpv.Calculator
-            .loss(500n, 700n, 2n)
+            .loss(2_5000000000n, 1_2400000000n, 10n)
+            .expect()
+            .convert(2n)
             .expect()
             .unwrap()
     );

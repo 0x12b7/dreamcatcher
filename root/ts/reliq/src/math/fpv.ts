@@ -507,16 +507,24 @@ export namespace Fpv {
             return mul(z$0, 100n * representation, decimals);
         }
 
-        function yield$0<T1 extends Decimals>(x: bigint, y: bigint, decimals: T1): Result<Fpv<T1>>;
-        function yield$0<T1 extends Decimals>(x: Fpv<T1>, y: bigint, decimals: T1): Result<Fpv<T1>>;
-        function yield$0<T1 extends Decimals>(x: bigint, y: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
-        function yield$0<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
-        function yield$0<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>, decimals: T1): Result<Fpv<T1>> {
-            let x$0: bigint = unwrap(x);
-            let y$0: bigint = unwrap(y);
-            if (x$0 === 0n) return Fpv(0n, decimals);
-            if (x$0 >= y$0) return Fpv(100n * (10n**decimals), decimals);
-            return percentageOf(x$0, y$0, decimals);
+        function yield$0<T1 extends Decimals>(oldValue: bigint, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        function yield$0<T1 extends Decimals>(oldValue: Fpv<T1>, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        function yield$0<T1 extends Decimals>(oldValue: bigint, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        function yield$0<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Fpv<T1>, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        function yield$0<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Compatible<T1>, newValue: Compatible<T2>, decimals: T1): Result<Fpv<T1>> {
+            let oldValue$0: bigint = unwrap(oldValue);
+            let newValue$0: bigint = unwrap(newValue);
+            if (newValue$0 <= oldValue$0) return Fpv(0n, decimals);
+            return sub(newValue$0, oldValue$0, decimals)
+                .and(value => {
+                    return div(value, oldValue$0, decimals);
+                })
+                .and(value => {
+                    return mul(value, 100n * (10n**decimals), decimals);
+                })
+                .mapErr(e => {
+                    return e as ErrorCode;
+                });
         }
 
         function loss<T1 extends Decimals>(oldValue: bigint, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
@@ -526,9 +534,17 @@ export namespace Fpv {
         function loss<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Compatible<T1>, newValue: Compatible<T2>, decimals: T1): Result<Fpv<T1>> {
             let oldValue$0: bigint = unwrap(oldValue);
             let newValue$0: bigint = unwrap(newValue);
-            return yield$0(newValue$0, oldValue$0, decimals).and(yield$1 => {
-                return sub(100n * (10n**decimals), yield$1, decimals);
-            });
+            if (newValue$0 >= oldValue$0) return Fpv(0n, decimals);
+            return sub(newValue$0, oldValue$0, decimals)
+                .and(value => {
+                    return div(value, oldValue$0, decimals)
+                })
+                .and(value => {
+                    return mul(value, 100n * (10n**decimals), decimals);
+                })
+                .mapErr(e => {
+                    return e as ErrorCode;
+                });
         }
 
         function sliceOf<T1 extends Decimals>(x: bigint, percentage: bigint, decimals: T1): Result<Fpv<T1>>;
