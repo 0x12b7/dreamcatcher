@@ -16,12 +16,12 @@ library Address {
         return address(uint160(uint256(value)));
     }
 
-    function run(address implementation)
+    function load_contract(address src)
         internal {
-        require(implementation != zero(), "ERR_INVALID_IMPLEMENTATION");
+        require(src != zero(), "ERR_INVALID_SOURCE");
         assembly {
             calldatacopy(0, 0, calldatasize())
-            let result := delegatecall(gas(), implementation, 0, calldatasize(), 0, 0)
+            let result := delegatecall(gas(), src, 0, calldatasize(), 0, 0)
             returndatacopy(0, 0, returndatasize())
             switch result
                 case 0 {

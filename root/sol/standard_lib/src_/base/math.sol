@@ -2,76 +2,57 @@
 pragma solidity >=0.8.19;
 
 library Math {
-    
-    function sliceOf(uint256 x, uint256 percentage)
+    using Math for *;
+
+    function slice_of(uint256 value, uint256 percentage, uint8 decimals)
         internal
         pure
         returns (uint256) {
-        return sliceOf(x, percentage);
+        return value
+            .div(100 * decimals.representation(), decimals)
+            .mul(percentage, decimals);
     }
 
-    function sliceOf(uint256 x, uint256 percentage, uint8 decimals)
+    function percentage_gain(uint256 old_value, uint256 new_value, uint8 decimals)
+        internal
+        pure
+        returns (uint256 percentage) {
+        if (old_value <= new_value) return 0;
+        return new_value
+            .sub(old_value)
+            .div(old_value, decimals)
+            .mul(100 * decimals.representation(), decimals);
+    }
+
+    function percentage_loss(uint256 old_value, uint256 new_value, uint8 decimals)
+        internal
+        pure
+        returns (uint256 percentage) {
+        if (new_value >= old_value) return 0;
+        return old_value
+            .sub(new_value)
+            .div(old_value, decimals)
+            .mul(100 * decimals.representation(), decimals);
+    }
+
+    function add_percentage(uint256 value, uint256 percentage, uint8 decimals)
         internal
         pure
         returns (uint256) {
-        return mul(div(x, 100 * representation(decimals), decimals), percentage);
+        return value
+            .div(100 * decimals.representation(), decimals)
+            .mul(percentage, decimals)
+            .add(value);
     }
 
-    function loss(uint256 x, uint256 y)
+    function sub_percentage(uint256 value, uint256 percentage, uint8 decimals)
         internal
         pure
-        returns (uint256 percentage) {
-        return loss(x, y, 18);
-    }
-
-    function loss(uint256 x, uint256 y, uint8 decimals)
-        internal
-        pure
-        returns (uint256 percentage) {
-        return sub(uint256(100 * representation(decimals)), yield(x, y, decimals));
-    }
-
-    function yield(uint256 x, uint256 y)
-        internal
-        pure
-        returns (uint256 percentage) {
-        return yield(x, y, 18);
-    }
-
-    function yield(uint256 x, uint256 y, uint8 decimals)
-        internal
-        pure
-        returns (uint256 percentage) {
-        if (x == 0) return 0;
-        if (x >= y) return 100 * representation(decimals);
-        return percentageOf(x, y, decimals);
-    }
-
-    /**
-     * @notice The percentage of `x` in `y` with 18 decimals of precision.
-     * @return percentage The percentage with 18 decimals of precision.
-     */
-    function percentageOf(uint256 x, uint256 y) 
-        internal 
-        pure 
-        returns (uint256 percentage) {
-        return percentageOf(x, y, 18);
-    }
-
-    function percentageOf(uint256 x, uint256 y, uint8 decimals) 
-        internal 
-        pure 
-        returns (uint256 percentage) {   
-        return mul(div(x, y, decimals), 100 * representation(decimals), decimals);
-    }
-
-    function transform(uint256 x, uint8 oldDecimals, uint8 newDecimals) 
-        internal 
-        pure 
-        returns (uint256) {        
-        if (x == 0) return x;
-        if (oldDecimals == newDecimals) return x;
-        return muldiv(x, 10**newDecimals, 10**oldDecimals);
+        returns (uint256) {
+        return value
+            .div(100 * decimals.representation(), decimals)
+            .mul(percentage, decimals)
+            .sub(value);
     }
 
     function add(uint256 x, uint256 y) 
@@ -90,9 +71,8 @@ library Math {
         pure 
         returns (uint256) {
         unchecked {
-            uint256 z = x - y;
             require (y <= x, "ERR_U_256_UNDERFLOW");
-            return z;
+            return x - y;
         }
     }
 
@@ -107,30 +87,39 @@ library Math {
         internal 
         pure 
         returns (uint256) {
-        return muldiv(x, y, representation(decimals));
+        return muldiv(x, y, decimals.representation());
     }
-    
-    function div(uint256 x, uint256 y) 
-        internal 
-        pure 
+
+    function div(uint256 x, uint256 y)
+        internal
+        pure
         returns (uint256) {
         return div(x, y, 18);
     }
-    
-    function div(uint256 x, uint256 y, uint8 decimals) 
-        internal 
-        pure 
+
+    function div(uint256 x, uint256 y, uint8 decimals)
+        internal
+        pure
         returns (uint256) {
-        return muldiv(x, representation(decimals), y);
+        return muldiv(x, decimals.representation(), y);
     }
 
-    /**
-     * @notice Multiplies `x` by `y` and then divides by `z` with full precision.
-     * @dev Reverts with `ERR_U_256_DIV_BY_ZERO` on division by zero.
-     * @dev Reverts with `ERR_U_256_MUL_DIV_OVERFLOW` on overflow.
-     */
+    function convert(uint256 x, uint8 old_decimals)
+        internal
+        pure
+        returns (uint256) {
+        return convert(x, old_decimals, 18);
+    }
+
+    function convert(uint256 x, uint8 old_decimals, uint8 new_decimals)
+        internal
+        pure
+        returns (uint256) {
+        return x == 0 ? x : old_decimals == new_decimals ? x : muldiv(x, new_decimals.representation(), old_decimals.representation());
+    }
+
     function muldiv(uint256 x, uint256 y, uint256 z) 
-        internal 
+        internal
         pure 
         returns (uint256) {
         unchecked {
@@ -168,13 +157,16 @@ library Math {
         }
     }
 
-    /**
-     * ***Brief*** 
-     * The base representation for `decimals`, ie. 18 -> 10^18.
-     */
-    function representation(uint8 decimals) 
-        internal 
-        pure 
+    function clamp(uint256 value, uint256 min, uint256 max)
+        internal
+        pure
+        returns (uint256) {
+        return value < min ? min : value > max : max : value;
+    }
+
+    function representation(uint8 decimals)
+        internal
+        pure
         returns (uint256) {
         return 10**decimals;
     }

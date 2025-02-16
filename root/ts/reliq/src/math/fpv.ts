@@ -48,12 +48,15 @@ export type Fpv<T1 extends Fpv.Decimals> =
     percentageOf(x: bigint): Fpv.Result<Fpv<T1>>;
     percentageOf(x: Fpv<T1>): Fpv.Result<Fpv<T1>>;
     percentageOf(x: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
-    yield(x: bigint): Fpv.Result<Fpv<T1>>;
-    yield(x: Fpv<T1>): Fpv.Result<Fpv<T1>>;
-    yield(x: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
-    loss(x: bigint): Fpv.Result<Fpv<T1>>;
-    loss(x: Fpv<T1>): Fpv.Result<Fpv<T1>>;
-    loss(x: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
+    percentageGain(newValue: bigint): Fpv.Result<Fpv<T1>>;
+    percentageGain(newValue: Fpv<T1>): Fpv.Result<Fpv<T1>>;
+    percentageGain(newValue: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
+    percentageLoss(newValue: bigint): Fpv.Result<Fpv<T1>>;
+    percentageLoss(newValue: Fpv<T1>): Fpv.Result<Fpv<T1>>;
+    percentageLoss(newValue: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
+    percentageChange(newValue: bigint): Fpv.Result<Fpv<T1>>;
+    percentageChange(newValue: Fpv<T1>): Fpv.Result<Fpv<T1>>;
+    percentageChange(newValue: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
     sliceOf(percentage: bigint): Fpv.Result<Fpv<T1>>;
     sliceOf(percentage: Fpv<T1>): Fpv.Result<Fpv<T1>>;
     sliceOf(percentage: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
@@ -63,6 +66,7 @@ export type Fpv<T1 extends Fpv.Decimals> =
     subPercentage(percentage: bigint): Fpv.Result<Fpv<T1>>;
     subPercentage(percentage: Fpv<T1>): Fpv.Result<Fpv<T1>>;
     subPercentage(percentage: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>>;
+    toNumber(): number;
 };
 
 /**
@@ -89,11 +93,13 @@ export function Fpv<T1 extends Fpv.Decimals>(_v: Fpv.Compatible<T1>, _decimals: 
             sqrt,
             convert,
             percentageOf,
-            yield: yield$0,
-            loss,
+            percentageGain,
+            percentageLoss,
+            percentageChange,
             sliceOf,
             addPercentage,
-            subPercentage
+            subPercentage,
+            toNumber
         });
     }
 
@@ -189,16 +195,22 @@ export function Fpv<T1 extends Fpv.Decimals>(_v: Fpv.Compatible<T1>, _decimals: 
         return Fpv.Calculator.percentageOf(_v, x, decimals());
     }
 
-    function yield$0(x: bigint): Fpv.Result<Fpv<T1>>;
-    function yield$0(x: Fpv<T1>): Fpv.Result<Fpv<T1>>;
-    function yield$0(x: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>> {
-        return Fpv.Calculator.yield(_v, x, decimals());
+    function percentageGain(newValue: bigint): Fpv.Result<Fpv<T1>>;
+    function percentageGain(newValue: Fpv<T1>): Fpv.Result<Fpv<T1>>;
+    function percentageGain(newValue: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>> {
+        return Fpv.Calculator.percentageGain(_v, newValue, decimals());
     }
 
-    function loss(x: bigint): Fpv.Result<Fpv<T1>>;
-    function loss(x: Fpv<T1>): Fpv.Result<Fpv<T1>>;
-    function loss(x: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>> {
-        return Fpv.Calculator.loss(_v, x, decimals());
+    function percentageLoss(newValue: bigint): Fpv.Result<Fpv<T1>>;
+    function percentageLoss(newValue: Fpv<T1>): Fpv.Result<Fpv<T1>>;
+    function percentageLoss(newValue: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>> {
+        return Fpv.Calculator.percentageLoss(_v, newValue, decimals());
+    }
+
+    function percentageChange(newValue: bigint): Fpv.Result<Fpv<T1>>;
+    function percentageChange(newValue: Fpv<T1>): Fpv.Result<Fpv<T1>>;
+    function percentageChange(newValue: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>> {
+        return Fpv.Calculator.percentageChange(_v, newValue, decimals());
     }
 
     function sliceOf(percentage: bigint): Fpv.Result<Fpv<T1>>;
@@ -217,6 +229,10 @@ export function Fpv<T1 extends Fpv.Decimals>(_v: Fpv.Compatible<T1>, _decimals: 
     function subPercentage(percentage: Fpv<T1>): Fpv.Result<Fpv<T1>>;
     function subPercentage(percentage: Fpv.Compatible<T1>): Fpv.Result<Fpv<T1>> {
         return Fpv.Calculator.subPercentage(_v, percentage, decimals());
+    }
+
+    function toNumber(): number {
+        return Number(_v) / Number(10n**decimals());
     }
 }
 
@@ -296,16 +312,21 @@ export namespace Fpv {
         percentageOf<T1 extends Decimals>(x: bigint, y: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
         percentageOf<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
         percentageOf<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>, decimals: T1): Result<Fpv<T1>>;
-        yield<T1 extends Decimals>(x: bigint, y: bigint, decimals: T1): Result<Fpv<T1>>;
-        yield<T1 extends Decimals>(x: Fpv<T1>, y: bigint, decimals: T1): Result<Fpv<T1>>;
-        yield<T1 extends Decimals>(x: bigint, y: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
-        yield<T1 extends Decimals, T2 extends T1 = T1>(x: Fpv<T1>, y: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
-        yield<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>, decimals: T1): Result<Fpv<T1>>;
-        loss<T1 extends Decimals>(oldValue: bigint, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
-        loss<T1 extends Decimals>(oldValue: Fpv<T1>, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
-        loss<T1 extends Decimals>(oldValue: bigint, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
-        loss<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Fpv<T1>, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
-        loss<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Compatible<T1>, newValue: Compatible<T2>, decimals: T1): Result<Fpv<T1>>;
+        percentageGain<T1 extends Decimals>(oldValue: bigint, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        percentageGain<T1 extends Decimals>(oldValue: Fpv<T1>, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        percentageGain<T1 extends Decimals>(oldValue: bigint, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        percentageGain<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Fpv<T1>, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        percentageGain<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Compatible<T1>, newValue: Compatible<T2>, decimals: T1): Result<Fpv<T1>>;
+        percentageLoss<T1 extends Decimals>(oldValue: bigint, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        percentageLoss<T1 extends Decimals>(oldValue: Fpv<T1>, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        percentageLoss<T1 extends Decimals>(oldValue: bigint, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        percentageLoss<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Fpv<T1>, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        percentageLoss<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Compatible<T1>, newValue: Compatible<T2>, decimals: T1): Result<Fpv<T1>>;
+        percentageChange<T1 extends Decimals>(oldValue: bigint, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        percentageChange<T1 extends Decimals>(oldValue: Fpv<T1>, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        percentageChange<T1 extends Decimals>(oldValue: bigint, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        percentageChange<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Fpv<T1>, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        percentageChange<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Compatible<T1>, newValue: Compatible<T2>, decimals: T1): Result<Fpv<T1>>;        
         sliceOf<T1 extends Decimals>(x: bigint, percentage: bigint, decimals: T1): Result<Fpv<T1>>;
         sliceOf<T1 extends Decimals>(x: Fpv<T1>, percentage: bigint, decimals: T1): Result<Fpv<T1>>;
         sliceOf<T1 extends Decimals>(x: bigint, percentage: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
@@ -340,8 +361,9 @@ export namespace Fpv {
                 sqrt,
                 convert,
                 percentageOf,
-                yield: yield$0,
-                loss,
+                percentageGain,
+                percentageLoss,
+                percentageChange,
                 sliceOf,
                 addPercentage,
                 subPercentage
@@ -498,20 +520,20 @@ export namespace Fpv {
         function percentageOf<T1 extends Decimals, T2 extends T1 = T1>(x: Compatible<T1>, y: Compatible<T2>, decimals: T1): Result<Fpv<T1>> {
             let x$0: bigint = unwrap(x);
             let y$0: bigint = unwrap(y);
-            let z: Result<Fpv<T1>> = div(x$0, y$0, decimals);
-            if (z.err()) return z;
-            let z$0: bigint = z
-                .unwrap()
-                .unwrap();
-            let representation: bigint = 10n**decimals;
-            return mul(z$0, 100n * representation, decimals);
+            return div(x$0, y$0, decimals)
+                .map(value => {
+                    return value.unwrap();
+                })
+                .and(value => {
+                    return mul(value, 100n * (10n**decimals), decimals);
+                });
         }
 
-        function yield$0<T1 extends Decimals>(oldValue: bigint, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
-        function yield$0<T1 extends Decimals>(oldValue: Fpv<T1>, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
-        function yield$0<T1 extends Decimals>(oldValue: bigint, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
-        function yield$0<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Fpv<T1>, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
-        function yield$0<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Compatible<T1>, newValue: Compatible<T2>, decimals: T1): Result<Fpv<T1>> {
+        function percentageGain<T1 extends Decimals>(oldValue: bigint, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        function percentageGain<T1 extends Decimals>(oldValue: Fpv<T1>, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        function percentageGain<T1 extends Decimals>(oldValue: bigint, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        function percentageGain<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Fpv<T1>, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        function percentageGain<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Compatible<T1>, newValue: Compatible<T2>, decimals: T1): Result<Fpv<T1>> {
             let oldValue$0: bigint = unwrap(oldValue);
             let newValue$0: bigint = unwrap(newValue);
             if (newValue$0 <= oldValue$0) return Fpv(0n, decimals);
@@ -527,11 +549,11 @@ export namespace Fpv {
                 });
         }
 
-        function loss<T1 extends Decimals>(oldValue: bigint, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
-        function loss<T1 extends Decimals>(oldValue: Fpv<T1>, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
-        function loss<T1 extends Decimals>(oldValue: bigint, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
-        function loss<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Fpv<T1>, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
-        function loss<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Compatible<T1>, newValue: Compatible<T2>, decimals: T1): Result<Fpv<T1>> {
+        function percentageLoss<T1 extends Decimals>(oldValue: bigint, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        function percentageLoss<T1 extends Decimals>(oldValue: Fpv<T1>, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        function percentageLoss<T1 extends Decimals>(oldValue: bigint, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        function percentageLoss<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Fpv<T1>, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        function percentageLoss<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Compatible<T1>, newValue: Compatible<T2>, decimals: T1): Result<Fpv<T1>> {
             let oldValue$0: bigint = unwrap(oldValue);
             let newValue$0: bigint = unwrap(newValue);
             if (newValue$0 >= oldValue$0) return Fpv(0n, decimals);
@@ -545,6 +567,17 @@ export namespace Fpv {
                 .mapErr(e => {
                     return e as ErrorCode;
                 });
+        }
+
+        function percentageChange<T1 extends Decimals>(oldValue: bigint, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        function percentageChange<T1 extends Decimals>(oldValue: Fpv<T1>, newValue: bigint, decimals: T1): Result<Fpv<T1>>;
+        function percentageChange<T1 extends Decimals>(oldValue: bigint, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        function percentageChange<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Fpv<T1>, newValue: Fpv<T1>, decimals: T1): Result<Fpv<T1>>;
+        function percentageChange<T1 extends Decimals, T2 extends T1 = T1>(oldValue: Compatible<T1>, newValue: Compatible<T2>, decimals: T1): Result<Fpv<T1>> {
+            let oldValue$0: bigint = unwrap(oldValue);
+            let newValue$0: bigint = unwrap(newValue);
+            if (newValue$0 <= oldValue$0) return percentageLoss(oldValue$0, newValue$0, decimals);
+            return percentageGain(oldValue$0, newValue$0, decimals);
         }
 
         function sliceOf<T1 extends Decimals>(x: bigint, percentage: bigint, decimals: T1): Result<Fpv<T1>>;

@@ -1,7 +1,7 @@
 {
 	"name": "reliq",
 	"description": "Reliq is a library for building unreasonably safe TypeScript applications.",
-	"version": "2.4.2",
+	"version": "2.4.4",
 	"license": "Apache-2.0",
 	"type": "module",
 	"types": "target/esm/mod.d.ts",
@@ -10,7 +10,8 @@
 		"build": "bun run script/build.ts",
 		"link": "bun run script/link.ts",
 		"blink": "bun run link && bun run build",
-		"release": "npx jsr publish --allow-dirty"
+		"release:npm": "npm publish",
+		"release:jsr": "npx jsr publish --allow-dirty"
 	},
 	"devDependencies": {
 		"@types/bun": "1.1.14",
