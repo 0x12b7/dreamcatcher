@@ -1,11 +1,13 @@
-import { type AsyncClosure } from "@root";
-import { type Closure } from "@root";
-import { type Function as Function0 } from "@root";
-import { type Wrapper } from "@root";
-import { type RecoveryWrapper } from "@root";
-import { type Branded } from "@root";
-import { BrandedStruct } from "@root";
-import { Unsafe } from "@root";
+import {
+    type AsyncClosure,
+    type Closure,
+    type Function as Function0,
+    type Wrapper,
+    type RecoveryWrapper,
+    type Branded,
+    BrandedStruct,
+    Unsafe
+} from "@root";
 
 type Array$0<T1> = Array<T1>;
 
