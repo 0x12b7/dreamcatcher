@@ -1,108 +1,52 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity >=0.8.19;
 
-import { Address } from "../base/address.sol";
-
 interface IModule {
-    function selectors()
-        external
-        pure
-        returns (bytes32[] memory);
+    function selectors() external pure returns (bytes4[] memory);
 }
 
-library Kernel {
-    using Kernel for *;
-    using Address for *;
-    event Mount(address indexed module, bytes4[] selectors);
-    event Unmount(address indexed module, bytes4[] selectors);
-
-    struct StorageLayout {
-        mapping(bytes4 => address) _selectorToModule;
-        mapping(address => bytes4[]) _moduleToSelectors;
-        mapping(address => bool) _moduleIsMounted;
-        address[] _mounted;
-        address _admin;
-    }
-
-    function admin(StorageLayout storage kernel)
-        internal
-        view
-        returns (address) {
-        return kernel._admin;
-    }
-
-    function mounted(StorageLayout storage kernel)
-        internal
-        view
-        returns (address[] memory) {
-        return kernel._mounted;
-    }
-
-    function mount(StorageLayout storage kernel, IModule module)
-        internal {
-        address moduleAddress = address(module);
-        require(moduleAddress.hasCode(), "");
-        require(!kernel._moduleIsMounted[moduleAddress], "");
-        bytes4[] memory selectors = module.selectors();
-        require(selectors.length > 0, "");
-        require(selectors.length < 64, "");
-        uint8 i = 0;
-        while (i < selectors.length) {
-            bytes4 selector = selectors[i];
-            require(kernel._selectorToModule[selector] == address(0), "");
-            kernel._selectorToModule[selector] = moduleAddress;
-            kernel._moduleToSelectors[moduleAddress].push(selector);
-            unchecked {
-                i++;
-            }
-        }
-        kernel._mounted.push(moduleAddress);
-        kernel._moduleIsMounted[moduleAddress] = true;
-        emit Mount(moduleAddress, selectors);
-        return;
-    }
-
-    function unmount(StorageLayout storage kernel, IModule module)
-        internal {
-        address moduleAddress = address(module);
-        require(kernel._moduleIsMounted[moduleAddress], "");
-        bytes4[] memory selectors = kernel._moduleToSelectors[moduleAddress];
-        uint8 i = 0;
-        while (i < selectors.length) {
-            delete kernel._selectorToModule[selectors[i]];
-            unchecked {
-                i++;
-            }
-        }
-        delete kernel._moduleToSelectors[moduleAddress];
-        address[] storage moduleAddresses = kernel.mounted;
-        i = 0;
-        while (i < moduleAddresses.length) {
-            if (moduleAddresses[i] == moduleAddress) {
-                moduleAddresses[i] = moduleAddress[moduleAddresses.length - 1];
-                moduleAddresses.pop();
-                break;
-            }
-            unchecked {
-                i++;
-            }
-        }
-        kernel._moduleIsMounted[moduleAddress] = false;
-        emit Unmount(moduleAddress, selectors);
-        return;
-    }
+interface IKernel {
+    event $OwnershipTransfer();
+    event $Mount(address source, bytes4[] selectors);
+    event $Unmount(bytes4[] selectors);
+    function $supportsInterface(bytes4 interfaceId) external view returns (bool);
+    function $checkPermissions(address[] memory accounts) external view returns (bool[] memory);
+    function $checkPermissions(address account) external view returns (bool);
+    function $checkPermissions() external view returns (bool);
+    function $owners(uint256 key) external view returns (address);
+    function $owners() external view returns (address[] memory);
+    function $transferOwnership(address[] memory accounts) external;
+    function $transferOwnership(address account) external;
+    function $renounceOwnership() external;
+    function $length() external view returns (uint256);
+    function $moduleFor(bytes4 selector) external view returns (IModule);
+    function $hasSelectors(bytes4[] memory selectors) external view returns (bool);
+    function $hasSelectors(bytes4 selector) external view returns (bool);
+    function $selectors(uint256 key) external view returns (bytes4);
+    function $selectors() external view returns (bytes4[] memory);
+    function $has(IModule module) external view returns (bool);
+    function $mounted(uint256 key) external view returns (IModule);
+    function $mounted() external view returns (IModule[] memory);
+    function $mountDirectly(address source, bytes4[] memory selectors) external;
+    function $mountDirectly(address source, bytes4 selector) external;
+    function $mount(IModule[] memory modules) external;
+    function $mount(IModule module, bytes4[] memory selectors) external;
+    function $mount(IModule module, bytes4 selector) external;
+    function $mount(IModule module) external;
+    function $updateDirectly(address source, bytes[] memory selectors) external;
+    function $updateDirectly(address source, bytes4 selector) external;
+    function $update(IModule[] memory modules) external;
+    function $update(IModule module, bytes4[] memory selectors) external;
+    function $update(IModule module, bytes4 selector) external;
+    function $update(IModule module) external;
+    function $update(IModule oldModule, IModule newModule) external;
+    function $unmountDirectly(bytes4[] memory selectors) external;
+    function $unmountDirectly(bytes4 selector) external;
+    function $unmount(IModule module) external;
+    function $unmountAll() external;
 }
 
-contract KernelImpl {
-    using Kernel for *;
+contract Kernel {
 
-
-    function _loc()
-        private
-        pure
-        returns (Kernel.StorageLayout storage) {
-        
-    }
-
-    constructor(address admin) {}
+    constructor() {}
 }
