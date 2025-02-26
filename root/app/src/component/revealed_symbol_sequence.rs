@@ -72,9 +72,9 @@ pub fn RevealedSymbolSequence(props: RevealedSymbolSequenceProps) -> Element {
 #[derive(Clone)]
 #[derive(PartialEq)]
 struct _SymbolProps {
-    color: String,
-    opacity: String,
-    symbol: String,
+    pub color: String,
+    pub opacity: String,
+    pub symbol: String,
 }
 
 #[component]
