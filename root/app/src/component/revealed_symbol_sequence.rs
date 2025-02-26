@@ -1,9 +1,11 @@
 use crate::*;
 
-#[derive(Props)]
-#[derive(Debug)]
-#[derive(Clone)]
-#[derive(PartialEq)]
+#[derive(
+    Props, 
+    Debug, 
+    Clone, 
+    PartialEq
+)]
 pub struct RevealedSymbolSequenceProps {
     #[props(default = Duration::from_secs_f32(0.00f32))]
     pub duration: Duration,
@@ -67,10 +69,12 @@ pub fn RevealedSymbolSequence(props: RevealedSymbolSequenceProps) -> Element {
     }
 }
 
-#[derive(Props)]
-#[derive(Debug)]
-#[derive(Clone)]
-#[derive(PartialEq)]
+#[derive(
+    Props, 
+    Debug, 
+    Clone, 
+    PartialEq
+)]
 struct _SymbolProps {
     pub color: String,
     pub opacity: String,
